@@ -1,0 +1,24 @@
+{
+  "name": "agent-on-rails",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The TypeScript Framework AI Agents Understand",
+  "type": "module",
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "typecheck": "turbo typecheck",
+    "validate": "turbo typecheck lint test build && git add .",
+    "clean": "turbo clean"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.5.0",
+    "typescript-eslint": "^8.0.0"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
