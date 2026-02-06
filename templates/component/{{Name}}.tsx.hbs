@@ -1,0 +1,24 @@
+import React from "react";
+
+export interface {{pascalCase name}}Props {
+  /** Add your props here */
+  className?: string;
+  children?: React.ReactNode;
+}
+
+/**
+ * {{pascalCase name}} component
+ */
+export const {{pascalCase name}} = React.forwardRef<HTMLDivElement, {{pascalCase name}}Props>(
+  ({ className, children, ...props }, ref) => {
+    const classes = ["{{kebabCase name}}", className].filter(Boolean).join(" ");
+
+    return (
+      <div ref={ref} className={classes} {...props}>
+        {children}
+      </div>
+    );
+  },
+);
+
+{{pascalCase name}}.displayName = "{{pascalCase name}}";
