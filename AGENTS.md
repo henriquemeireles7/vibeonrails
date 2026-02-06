@@ -70,8 +70,10 @@ pnpm run validate     # Full check: typecheck + lint + test + build + git add
 - ✅ @vibeonrails/core: API, Database, Security, Shared
 - ✅ @vibeonrails/infra: Health, Logging, Queue, Email, Cache, Storage
 - ✅ @vibeonrails/cli: create, generate module, dev, db, build commands
+- ✅ App Template (backend): config, auth, user, post modules, seeds, planning system
+- ✅ Module Template: types, service, controller, test, index, SKILL.md
 - ✅ AI workflow integrated
-- 📋 Next: App template refinement, @vibeonrails/web frontend package
+- 📋 Next: @vibeonrails/web frontend package, then frontend app template
 
 ## Important Notes
 - Don't add dependencies without discussing (keep the stack minimal)

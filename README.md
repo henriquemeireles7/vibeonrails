@@ -137,16 +137,35 @@ import { sendEmail } from '@vibeonrails/infra/email';
 
 The CLI that makes the framework usable:
 
-- **`vibe create <name>`** — Scaffold a new project from the app template
-- **`vibe generate module <name>`** — Generate module with types, service, controller, test
+- **`vibe create <name>`** — Scaffold a new project with auth, user, post modules, seeds, and planning system
+- **`vibe generate module <name>`** — Generate module with types, service, controller, test, SKILL.md
 - **`vibe dev`** — Start development server with hot reload
 - **`vibe db migrate|seed|reset|studio`** — Database operations
 - **`vibe build`** — Production build
 
 ```bash
 npx create-vibe my-app
-npx vibe generate module user
+npx vibe generate module order
 npx vibe dev
+```
+
+#### What `create-vibe` Scaffolds
+
+```
+my-app/
+├── .plan/                # AI-friendly planning system (roadmap, decisions, context)
+├── drizzle.config.ts     # Database migration config
+├── src/
+│   ├── config/           # Env validation (Zod), app config, database client
+│   ├── modules/
+│   │   ├── auth/         # Register, login, refresh, me (JWT auth built-in)
+│   │   ├── user/         # User profiles, list (protected endpoints)
+│   │   └── post/         # Example CRUD module with ownership checks
+│   ├── database/seeds/   # Development + test seed scripts
+│   ├── main.ts           # Server entry point
+│   └── router.ts         # Root tRPC router (merges all modules)
+├── SKILL.md              # Project-level AI skill document
+└── README.md             # Getting started guide
 ```
 
 ## Development

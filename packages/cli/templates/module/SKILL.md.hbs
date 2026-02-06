@@ -1,0 +1,52 @@
+# {{pascalCase name}} Module
+
+## Purpose
+
+The {{pascalCase name}} module handles all {{camelCase name}}-related business logic and API endpoints.
+
+## Structure
+
+```
+{{kebabCase name}}/
+├── types.ts                    # Zod schemas and TypeScript types
+├── {{kebabCase name}}.service.ts       # Business logic (CRUD operations)
+├── {{kebabCase name}}.controller.ts    # tRPC router (API endpoints)
+├── {{kebabCase name}}.service.test.ts  # Tests
+└── index.ts                    # Barrel export
+```
+
+## API Endpoints
+
+| Procedure | Type     | Input | Description |
+|-----------|----------|-------|-------------|
+| `list`    | query    | —     | List all {{camelCase name}}s |
+| `getById` | query    | `{ id }` | Get {{camelCase name}} by ID |
+| `create`  | mutation | `Create{{pascalCase name}}Schema` | Create a new {{camelCase name}} |
+| `update`  | mutation | `{ id, data }` | Update a {{camelCase name}} |
+| `remove`  | mutation | `{ id }` | Delete a {{camelCase name}} |
+
+## Patterns
+
+### Adding a new field
+
+1. Add the field to the Zod schema in `types.ts`
+2. Update `Create{{pascalCase name}}Schema` if it should be set on creation
+3. Update the service methods as needed
+4. Add tests for the new field
+
+### Wiring into the app router
+
+```typescript
+// In src/router.ts
+import { {{camelCase name}}Router } from "./modules/{{kebabCase name}}/index.js";
+
+export const appRouter = createAppRouter({
+  {{camelCase name}}: {{camelCase name}}Router,
+});
+```
+
+## Pitfalls
+
+1. **Always validate input** — Use the Zod schemas, never trust raw input
+2. **Check ownership** — Before update/delete, verify the user has permission
+3. **Use transactions** — For multi-step database operations

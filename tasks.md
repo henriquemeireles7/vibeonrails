@@ -231,56 +231,57 @@
 
 ---
 
-## Project 5: App Template — What `create-vibe` Scaffolds
+## Project 5: App Template — What `create-vibe` Scaffolds ✅
 
 > This is the starter project a real developer gets when they run `npx create-vibe my-app`.
 
 ### Root Config
 
-- [ ] `templates/app/package.json.hbs` — Template package.json with @vibeonrails/core, @vibeonrails/infra, @vibeonrails/web deps
-- [ ] `templates/app/tsconfig.json` — App-level TypeScript config
-- [ ] `templates/app/.env.example` — Environment variables template
-- [ ] `templates/app/.gitignore` — Git ignore for generated app
-- [ ] `templates/app/drizzle.config.ts` — Drizzle Kit migration config
+- [x] `templates/app/package.json` — Template package.json with @vibeonrails/core, @vibeonrails/infra deps
+- [x] `templates/app/tsconfig.json` — App-level TypeScript config
+- [x] `templates/app/.env.example` — Environment variables template
+- [x] `templates/app/.gitignore` — Git ignore for generated app
+- [x] `templates/app/drizzle.config.ts` — Drizzle Kit migration config
 
 ### App Entry
 
-- [ ] `templates/app/src/main.ts` — App entry point (creates server, starts listening on port)
-- [ ] `templates/app/src/router.ts` — Main tRPC router (imports and merges all module routers)
+- [x] `templates/app/src/main.ts` — App entry point (creates server, starts listening on port)
+- [x] `templates/app/src/router.ts` — Main tRPC router (imports and merges all module routers)
 
 ### Config
 
-- [ ] `templates/app/src/config/app.ts` — App config (name, port, env)
-- [ ] `templates/app/src/config/database.ts` — Database config (creates db instance from @vibeonrails/core)
-- [ ] `templates/app/src/config/env.ts` — Env validation with Zod
+- [x] `templates/app/src/config/app.ts` — App config (name, port, env)
+- [x] `templates/app/src/config/database.ts` — Database config (creates db instance from @vibeonrails/core)
+- [x] `templates/app/src/config/env.ts` — Env validation with Zod
 
 ### Auth Module (built-in)
 
-- [ ] `templates/app/src/core/api/modules/auth/auth.types.ts` — LoginSchema, RegisterSchema, RefreshSchema
-- [ ] `templates/app/src/core/api/modules/auth/auth.service.ts` — register, login, refreshToken, logout logic
-- [ ] `templates/app/src/core/api/modules/auth/auth.controller.ts` — tRPC router: register, login, refresh, me
-- [ ] `templates/app/src/core/api/modules/auth/auth.test.ts` — Auth endpoint tests
+- [x] `templates/app/src/modules/auth/auth.types.ts` — LoginSchema, RegisterSchema, RefreshSchema
+- [x] `templates/app/src/modules/auth/auth.service.ts` — register, login, refreshToken, me logic
+- [x] `templates/app/src/modules/auth/auth.controller.ts` — tRPC router: register, login, refresh, me
+- [x] `templates/app/src/modules/auth/auth.test.ts` — Auth endpoint tests
 
 ### User Module (built-in)
 
-- [ ] `templates/app/src/core/api/modules/user/user.types.ts` — UpdateUserSchema, user Zod schemas
-- [ ] `templates/app/src/core/api/modules/user/user.service.ts` — CRUD operations using userRepository
-- [ ] `templates/app/src/core/api/modules/user/user.controller.ts` — tRPC router: getProfile, updateProfile, listUsers(admin)
-- [ ] `templates/app/src/core/api/modules/user/user.test.ts` — User endpoint tests
+- [x] `templates/app/src/modules/user/user.types.ts` — UpdateUserSchema, user Zod schemas
+- [x] `templates/app/src/modules/user/user.service.ts` — CRUD operations
+- [x] `templates/app/src/modules/user/user.controller.ts` — tRPC router: getProfile, updateProfile, list, getById
+- [x] `templates/app/src/modules/user/user.test.ts` — User endpoint tests
 
 ### Post Module (example)
 
-- [ ] `templates/app/src/core/api/modules/post/post.types.ts` — CreatePostSchema, UpdatePostSchema
-- [ ] `templates/app/src/core/api/modules/post/post.service.ts` — CRUD operations with ownership checks
-- [ ] `templates/app/src/core/api/modules/post/post.controller.ts` — tRPC router: list, getById, create, update, delete
-- [ ] `templates/app/src/core/api/modules/post/post.test.ts` — Post endpoint tests
+- [x] `templates/app/src/modules/post/post.types.ts` — CreatePostSchema, UpdatePostSchema
+- [x] `templates/app/src/modules/post/post.service.ts` — CRUD operations with ownership checks
+- [x] `templates/app/src/modules/post/post.controller.ts` — tRPC router: list, getById, create, update, delete
+- [x] `templates/app/src/modules/post/post.test.ts` — Post endpoint tests
 
 ### Database Seeds
 
-- [ ] `templates/app/src/core/database/seeds/development.ts` — Dev seed: sample admin + regular user + posts
-- [ ] `templates/app/src/core/database/seeds/test.ts` — Test seed: minimal fixtures
+- [x] `templates/app/src/database/seeds/development.ts` — Dev seed: sample admin + regular user + posts
+- [x] `templates/app/src/database/seeds/test.ts` — Test seed: minimal fixtures
+- [x] `templates/app/src/database/seeds/index.ts` — Seed runner (picks seed by NODE_ENV)
 
-### Frontend (web)
+### Frontend (web) — Blocked by @vibeonrails/web (Project 4)
 
 - [ ] `templates/app/src/web/App.tsx` — React app entry with router + providers
 - [ ] `templates/app/src/web/pages/HomePage.tsx` — Landing page
@@ -295,32 +296,31 @@
 
 ### SKILL.md Files
 
-- [ ] `templates/app/SKILL.md` — Root project skill
-- [ ] `templates/app/src/core/api/SKILL.md` — API skill (how to create modules)
-- [ ] `templates/app/src/core/api/modules/SKILL.md` — Modules skill (module creation pattern)
-- [ ] `templates/app/src/core/database/SKILL.md` — Database skill (schema + migrations + seeds)
-- [ ] `templates/app/src/core/security/SKILL.md` — Security skill (auth patterns)
-- [ ] `templates/app/src/web/SKILL.md` — Web frontend skill
-- [ ] `templates/app/src/web/components/SKILL.md` — Components skill
+- [x] `templates/app/SKILL.md` — Root project skill
+- [x] `templates/app/src/modules/SKILL.md` — Modules skill (module creation pattern)
+- [x] `templates/app/src/database/SKILL.md` — Database skill (schema + migrations + seeds)
+- [ ] `templates/app/src/web/SKILL.md` — Web frontend skill (blocked by @vibeonrails/web)
+- [ ] `templates/app/src/web/components/SKILL.md` — Components skill (blocked by @vibeonrails/web)
 
 ### Planning System
 
-- [ ] `templates/app/.plan/SKILL.md` — How to use the planning system
-- [ ] `templates/app/.plan/PROJECT.md` — Project overview template
-- [ ] `templates/app/.plan/CONTEXT.md` — AI context template
-- [ ] `templates/app/.plan/ROADMAP.md` — Roadmap template
-- [ ] `templates/app/.plan/CURRENT.md` — Current sprint template
-- [ ] `templates/app/.plan/DECISIONS.md` — Decision log template
+- [x] `templates/app/.plan/SKILL.md` — How to use the planning system
+- [x] `templates/app/.plan/PROJECT.md` — Project overview template
+- [x] `templates/app/.plan/CONTEXT.md` — AI context template
+- [x] `templates/app/.plan/ROADMAP.md` — Roadmap template
+- [x] `templates/app/.plan/CURRENT.md` — Current sprint template
+- [x] `templates/app/.plan/DECISIONS.md` — Decision log template
 
 ---
 
-## Project 6: Module Template — What `vibe generate module` Creates
+## Project 6: Module Template — What `vibe generate module` Creates ✅
 
-- [ ] `templates/module/{{name}}.types.ts.hbs` — Zod schemas (Create + Update)
-- [ ] `templates/module/{{name}}.service.ts.hbs` — Service with CRUD methods
-- [ ] `templates/module/{{name}}.controller.ts.hbs` — tRPC router wiring service to endpoints
-- [ ] `templates/module/{{name}}.test.ts.hbs` — Test file with basic CRUD tests
-- [ ] `templates/module/SKILL.md.hbs` — Module-specific SKILL.md
+- [x] `templates/module/types.ts.hbs` — Zod schemas (Create + Update)
+- [x] `templates/module/service.ts.hbs` — Service with CRUD methods
+- [x] `templates/module/controller.ts.hbs` — tRPC router wiring service to endpoints
+- [x] `templates/module/service.test.ts.hbs` — Test file with basic CRUD tests
+- [x] `templates/module/index.ts.hbs` — Barrel export
+- [x] `templates/module/SKILL.md.hbs` — Module-specific SKILL.md
 
 ---
 

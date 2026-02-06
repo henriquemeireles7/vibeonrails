@@ -24,6 +24,7 @@ describe("module generator", () => {
       "user/user.controller.ts",
       "user/user.service.test.ts",
       "user/index.ts",
+      "user/SKILL.md",
     ];
 
     for (const file of files) {
@@ -40,6 +41,7 @@ describe("module generator", () => {
       "blog-post/blog-post.controller.ts",
       "blog-post/blog-post.service.test.ts",
       "blog-post/index.ts",
+      "blog-post/SKILL.md",
     ];
 
     for (const file of files) {
@@ -118,6 +120,17 @@ describe("module generator", () => {
     expect(content).toContain("./user.controller");
   });
 
+  it("generates SKILL.md with module-specific content", () => {
+    generateModule("user", testDir);
+
+    const content = readFileSync(join(testDir, "user/SKILL.md"), "utf-8");
+
+    expect(content).toContain("# User Module");
+    expect(content).toContain("user.service.ts");
+    expect(content).toContain("user.controller.ts");
+    expect(content).toContain("userRouter");
+  });
+
   it("uses PascalCase for class names with multi-word modules", () => {
     generateModule("blog-post", testDir);
 
@@ -142,7 +155,7 @@ describe("module generator", () => {
   it("returns the list of generated files", () => {
     const result = generateModule("user", testDir);
 
-    expect(result.files).toHaveLength(5);
+    expect(result.files).toHaveLength(6);
     expect(result.moduleName).toBe("user");
     expect(result.directory).toContain("user");
   });
