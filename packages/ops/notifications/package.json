@@ -1,0 +1,48 @@
+{
+  "name": "@vibeonrails/notifications",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Multi-channel notifications — email, in-app, push, Discord with preferences and digests",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "test": "vitest run",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "zod": "^3.22.0"
+  },
+  "peerDependencies": {
+    "@vibeonrails/core": "workspace:*",
+    "@vibeonrails/infra": "workspace:*",
+    "drizzle-orm": "^0.29.0"
+  },
+  "peerDependenciesMeta": {
+    "@vibeonrails/core": {
+      "optional": true
+    },
+    "@vibeonrails/infra": {
+      "optional": true
+    },
+    "drizzle-orm": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.1",
+    "drizzle-orm": "^0.29.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}
