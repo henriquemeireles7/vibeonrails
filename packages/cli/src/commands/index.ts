@@ -5,7 +5,16 @@ export { dbCommand } from "./db.js";
 export { buildCommand } from "./build.js";
 export { deployCommand } from "./deploy.js";
 export { docsCommand } from "./docs.js";
+export { addCommand } from "./add.js";
+export { removeCommand } from "./remove.js";
+export { modulesCommand } from "./modules.js";
+export { connectCommand, disconnectCommand } from "./connect.js";
 export { connectionsCommand } from "./connections-status.js";
+
+// Phase 8: Ecosystem & Testing DX
+export { modulesPublishCommand, modulesListCommunityCommand } from "./modules-publish.js";
+export { testRecordCommand } from "./test-record.js";
+export { testCoverageCommand } from "./test-coverage.js";
 
 // Phase 10: Time Travel, Dashboards & AI Superpowers
 export { contentCommand } from "./content-history.js";

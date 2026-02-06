@@ -11,6 +11,10 @@ import {
   addCommand,
   removeCommand,
   modulesCommand,
+  modulesPublishCommand,
+  modulesListCommunityCommand,
+  testRecordCommand,
+  testCoverageCommand,
   contentCommand,
   configCommand,
   statusCommand,
@@ -38,10 +42,22 @@ program.addCommand(deployCommand());
 program.addCommand(docsCommand());
 program.addCommand(addCommand());
 program.addCommand(removeCommand());
-program.addCommand(modulesCommand());
+// Modules command with publish and community subcommands
+const modules = modulesCommand();
+modules.addCommand(modulesPublishCommand());
+modules.addCommand(modulesListCommunityCommand());
+program.addCommand(modules);
+
 program.addCommand(connectCommand());
 program.addCommand(connectionsCommand());
 program.addCommand(disconnectCommand());
+
+// Phase 8: Ecosystem & Testing DX
+const testCmd = new Command("test")
+  .description("Testing tools — fixture recording and coverage");
+testCmd.addCommand(testRecordCommand());
+testCmd.addCommand(testCoverageCommand());
+program.addCommand(testCmd);
 
 // Phase 10: Time Travel, Dashboards & AI Superpowers
 program.addCommand(undoCommand());
