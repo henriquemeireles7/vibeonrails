@@ -14,7 +14,7 @@
  *   const reqId = getRequestId(c);
  */
 
-import type { MiddlewareHandler, Context } from 'hono';
+import type { MiddlewareHandler, Context } from "hono";
 
 // ---------------------------------------------------------------------------
 // Request ID Generation
@@ -25,7 +25,10 @@ import type { MiddlewareHandler, Context } from 'hono';
  * falls back to timestamp + random for environments without it.
  */
 export function generateRequestId(): string {
-  if (typeof globalThis.crypto !== 'undefined' && typeof globalThis.crypto.randomUUID === 'function') {
+  if (
+    typeof globalThis.crypto !== "undefined" &&
+    typeof globalThis.crypto.randomUUID === "function"
+  ) {
     return globalThis.crypto.randomUUID();
   }
   // Fallback for environments without crypto.randomUUID
@@ -54,10 +57,10 @@ export interface TraceContext {
 }
 
 /** Hono context variable key for the trace context */
-const TRACE_CTX_KEY = 'traceContext';
+const TRACE_CTX_KEY = "traceContext";
 
 /** Header name for request ID propagation */
-export const REQUEST_ID_HEADER = 'x-request-id';
+export const REQUEST_ID_HEADER = "x-request-id";
 
 // ---------------------------------------------------------------------------
 // Middleware

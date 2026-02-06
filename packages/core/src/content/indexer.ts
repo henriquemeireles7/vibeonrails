@@ -7,10 +7,15 @@
  * NOTE: This is build-time/CLI only, never runtime.
  */
 
-import { readFile, writeFile, mkdir, readdir, stat } from 'node:fs/promises';
-import { join, relative, extname } from 'node:path';
-import type { ContentEntry, ContentIndex, IndexConfig, Frontmatter } from './types.js';
-import { frontmatterSchema } from './types.js';
+import { readFile, writeFile, mkdir, readdir, stat } from "node:fs/promises";
+import { join, relative, extname } from "node:path";
+import type {
+  ContentEntry,
+  ContentIndex,
+  IndexConfig,
+  Frontmatter,
+} from "./types.js";
+import { frontmatterSchema } from "./types.js";
 
 // ---------------------------------------------------------------------------
 // Frontmatter Parser
@@ -40,14 +45,14 @@ function parseFrontmatter(content: string): {
 
   // Parse YAML-like key: value pairs
   const frontmatter: Record<string, unknown> = {};
-  const lines = frontmatterText.split('\n');
+  const lines = frontmatterText.split("\n");
 
   for (const line of lines) {
     const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
+    if (!trimmed || trimmed.startsWith("#")) continue;
 
     // Array item: - value
-    if (trimmed.startsWith('-')) {
+    if (trimmed.startsWith("-")) {
       const value = trimmed.slice(1).trim();
       // If previous line was a key, add to that key's array
       const lastKey = Object.keys(frontmatter).pop();
@@ -55,7 +60,7 @@ function parseFrontmatter(content: string): {
         (frontmatter[lastKey] as unknown[]).push(value);
       } else {
         // New array
-        const arrayKey = 'tags'; // Default to tags if no key
+        const arrayKey = "tags"; // Default to tags if no key
         if (!frontmatter[arrayKey]) {
           frontmatter[arrayKey] = [];
         }
@@ -65,16 +70,16 @@ function parseFrontmatter(content: string): {
     }
 
     // Key: value pair
-    const colonIndex = trimmed.indexOf(':');
+    const colonIndex = trimmed.indexOf(":");
     if (colonIndex > 0) {
       const key = trimmed.slice(0, colonIndex).trim();
       const value = trimmed.slice(colonIndex + 1).trim();
 
       // Remove quotes if present
-      const unquotedValue = value.replace(/^["']|["']$/g, '');
+      const unquotedValue = value.replace(/^["']|["']$/g, "");
 
       // Try to parse as array if it looks like one
-      if (unquotedValue.startsWith('[') && unquotedValue.endsWith(']')) {
+      if (unquotedValue.startsWith("[") && unquotedValue.endsWith("]")) {
         try {
           frontmatter[key] = JSON.parse(unquotedValue);
         } catch {
@@ -118,7 +123,7 @@ async function scanMarkdownFiles(
       if (entry.isDirectory()) {
         const subFiles = await scanMarkdownFiles(fullPath, baseDir);
         files.push(...subFiles);
-      } else if (entry.isFile() && extname(entry.name) === '.md') {
+      } else if (entry.isFile() && extname(entry.name) === ".md") {
         const relativePath = relative(baseDir, fullPath);
         files.push(relativePath);
       }
@@ -144,20 +149,19 @@ async function buildEntry(
   const fullPath = join(contentRoot, filePath);
 
   try {
-    const content = await readFile(fullPath, 'utf-8');
+    const content = await readFile(fullPath, "utf-8");
     const stats = await stat(fullPath);
 
     const { frontmatter, body } = parseFrontmatter(content);
 
     // Extract title from frontmatter or filename
-    const filename = filePath.split('/').pop()?.replace(/\.md$/, '') ?? '';
+    const filename = filePath.split("/").pop()?.replace(/\.md$/, "") ?? "";
     const title = frontmatter.title ?? filename;
 
     // Extract type from frontmatter or infer from directory
-    const pathParts = filePath.split('/');
+    const pathParts = filePath.split("/");
     const type =
-      frontmatter.type ??
-      (pathParts.length > 1 ? pathParts[0] : 'page');
+      frontmatter.type ?? (pathParts.length > 1 ? pathParts[0] : "page");
 
     // Extract tags
     const tags = frontmatter.tags ?? [];
@@ -169,7 +173,7 @@ async function buildEntry(
     const description = frontmatter.description ?? null;
 
     // Extract content snippet (first 200 chars, no frontmatter)
-    const snippet = body.trim().slice(0, 200).replace(/\n/g, ' ');
+    const snippet = body.trim().slice(0, 200).replace(/\n/g, " ");
 
     return {
       path: filePath,
@@ -195,7 +199,7 @@ async function buildEntry(
  */
 async function loadIndex(outputPath: string): Promise<ContentIndex | null> {
   try {
-    const content = await readFile(outputPath, 'utf-8');
+    const content = await readFile(outputPath, "utf-8");
     return JSON.parse(content) as ContentIndex;
   } catch {
     return null;
@@ -209,9 +213,7 @@ async function loadIndex(outputPath: string): Promise<ContentIndex | null> {
 /**
  * Build content index from scratch.
  */
-export async function buildIndex(
-  config: IndexConfig,
-): Promise<ContentIndex> {
+export async function buildIndex(config: IndexConfig): Promise<ContentIndex> {
   const { contentRoot } = config;
 
   // Scan all markdown files
@@ -244,9 +246,7 @@ export async function buildIndex(
 /**
  * Update index incrementally by checking mtime.
  */
-export async function updateIndex(
-  config: IndexConfig,
-): Promise<ContentIndex> {
+export async function updateIndex(config: IndexConfig): Promise<ContentIndex> {
   const { contentRoot, outputPath } = config;
 
   if (!outputPath) {
@@ -314,12 +314,12 @@ export async function writeIndex(
   index: ContentIndex,
   outputPath: string,
 ): Promise<void> {
-  const dir = outputPath.split('/').slice(0, -1).join('/');
+  const dir = outputPath.split("/").slice(0, -1).join("/");
   if (dir) {
     await mkdir(dir, { recursive: true });
   }
 
-  await writeFile(outputPath, JSON.stringify(index, null, 2), 'utf-8');
+  await writeFile(outputPath, JSON.stringify(index, null, 2), "utf-8");
 }
 
 // ---------------------------------------------------------------------------

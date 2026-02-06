@@ -20,14 +20,14 @@
  *   vibe deploy docker           Build Docker image
  */
 
-import { Command } from 'commander';
-import chalk from 'chalk';
+import { Command } from "commander";
+import chalk from "chalk";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export type DeployPlatform = 'railway' | 'fly' | 'docker' | 'unknown';
+export type DeployPlatform = "railway" | "fly" | "docker" | "unknown";
 
 export interface DeployConfig {
   platform: DeployPlatform;
@@ -70,11 +70,11 @@ export function detectPlatform(options?: {
 }): DeployPlatform {
   const env = options?.env ?? process.env;
 
-  if (env.RAILWAY_TOKEN) return 'railway';
-  if (env.FLY_ACCESS_TOKEN) return 'fly';
-  if (options?.hasDockerfile) return 'docker';
+  if (env.RAILWAY_TOKEN) return "railway";
+  if (env.FLY_ACCESS_TOKEN) return "fly";
+  if (options?.hasDockerfile) return "docker";
 
-  return 'unknown';
+  return "unknown";
 }
 
 /**
@@ -82,10 +82,10 @@ export function detectPlatform(options?: {
  */
 export function getPlatformDisplayName(platform: DeployPlatform): string {
   const names: Record<DeployPlatform, string> = {
-    railway: 'Railway',
-    fly: 'Fly.io',
-    docker: 'Docker',
-    unknown: 'Unknown',
+    railway: "Railway",
+    fly: "Fly.io",
+    docker: "Docker",
+    unknown: "Unknown",
   };
   return names[platform];
 }
@@ -95,15 +95,12 @@ export function getPlatformDisplayName(platform: DeployPlatform): string {
 // ---------------------------------------------------------------------------
 
 /** Required env vars for production deploy */
-const REQUIRED_ENV_VARS = [
-  'DATABASE_URL',
-  'JWT_SECRET',
-];
+const REQUIRED_ENV_VARS = ["DATABASE_URL", "JWT_SECRET"];
 
 /** Env vars required per platform */
 const PLATFORM_ENV_VARS: Record<DeployPlatform, string[]> = {
-  railway: ['RAILWAY_TOKEN'],
-  fly: ['FLY_ACCESS_TOKEN'],
+  railway: ["RAILWAY_TOKEN"],
+  fly: ["FLY_ACCESS_TOKEN"],
   docker: [],
   unknown: [],
 };
@@ -160,10 +157,12 @@ export async function healthCheck(
   let attempts = 0;
   let delay = 1000; // Start with 1s
 
-  const doFetch = fetcher ?? (async (fetchUrl: string) => {
-    const res = await fetch(fetchUrl);
-    return { status: res.status };
-  });
+  const doFetch =
+    fetcher ??
+    (async (fetchUrl: string) => {
+      const res = await fetch(fetchUrl);
+      return { status: res.status };
+    });
 
   while (Date.now() - startTime < timeoutMs) {
     attempts++;
@@ -201,9 +200,9 @@ export async function healthCheck(
  */
 export function getDeployCommand(platform: DeployPlatform): string | null {
   const commands: Record<DeployPlatform, string | null> = {
-    railway: 'railway up',
-    fly: 'fly deploy',
-    docker: 'docker build -t app .',
+    railway: "railway up",
+    fly: "fly deploy",
+    docker: "docker build -t app .",
     unknown: null,
   };
   return commands[platform];
@@ -214,70 +213,94 @@ export function getDeployCommand(platform: DeployPlatform): string | null {
 // ---------------------------------------------------------------------------
 
 export function deployCommand(): Command {
-  return new Command('deploy')
-    .description('Deploy to a cloud provider')
-    .argument('[target]', 'Deployment target (railway, fly, docker)')
-    .option('--skip-migrate', 'Skip database migrations')
-    .option('--skip-health-check', 'Skip health check gate')
-    .option('--destructive', 'Allow destructive migrations')
-    .option('--health-url <url>', 'Health check URL', '/health')
-    .option('--health-timeout <seconds>', 'Health check timeout in seconds', '30')
-    .action((target: string | undefined, options: {
-      skipMigrate?: boolean;
-      skipHealthCheck?: boolean;
-      destructive?: boolean;
-      healthUrl?: string;
-      healthTimeout?: string;
-    }) => {
-      // Detect or use specified platform
-      const platform: DeployPlatform = (target as DeployPlatform) ?? detectPlatform();
+  return new Command("deploy")
+    .description("Deploy to a cloud provider")
+    .argument("[target]", "Deployment target (railway, fly, docker)")
+    .option("--skip-migrate", "Skip database migrations")
+    .option("--skip-health-check", "Skip health check gate")
+    .option("--destructive", "Allow destructive migrations")
+    .option("--health-url <url>", "Health check URL", "/health")
+    .option(
+      "--health-timeout <seconds>",
+      "Health check timeout in seconds",
+      "30",
+    )
+    .action(
+      (
+        target: string | undefined,
+        options: {
+          skipMigrate?: boolean;
+          skipHealthCheck?: boolean;
+          destructive?: boolean;
+          healthUrl?: string;
+          healthTimeout?: string;
+        },
+      ) => {
+        // Detect or use specified platform
+        const platform: DeployPlatform =
+          (target as DeployPlatform) ?? detectPlatform();
 
-      if (platform === 'unknown') {
-        console.log(chalk.red('\n  Could not detect deployment platform.\n'));
-        console.log('  Set one of:');
-        console.log(chalk.dim('    RAILWAY_TOKEN   — for Railway'));
-        console.log(chalk.dim('    FLY_ACCESS_TOKEN — for Fly.io'));
-        console.log(chalk.dim('  Or have a Dockerfile in your project root.\n'));
-        process.exitCode = 1;
-        return;
-      }
+        if (platform === "unknown") {
+          console.log(chalk.red("\n  Could not detect deployment platform.\n"));
+          console.log("  Set one of:");
+          console.log(chalk.dim("    RAILWAY_TOKEN   — for Railway"));
+          console.log(chalk.dim("    FLY_ACCESS_TOKEN — for Fly.io"));
+          console.log(
+            chalk.dim("  Or have a Dockerfile in your project root.\n"),
+          );
+          process.exitCode = 1;
+          return;
+        }
 
-      // Validate environment
-      const envCheck = validateEnvironment(platform);
-      if (!envCheck.valid) {
-        console.log(chalk.red('\n  Missing required environment variables:\n'));
-        for (const key of envCheck.missing) {
-          console.log(chalk.dim(`    - ${key}`));
+        // Validate environment
+        const envCheck = validateEnvironment(platform);
+        if (!envCheck.valid) {
+          console.log(
+            chalk.red("\n  Missing required environment variables:\n"),
+          );
+          for (const key of envCheck.missing) {
+            console.log(chalk.dim(`    - ${key}`));
+          }
+          console.log();
+          process.exitCode = 1;
+          return;
+        }
+
+        const displayName = getPlatformDisplayName(platform);
+        const deployCmd = getDeployCommand(platform);
+
+        console.log(chalk.cyan(`\n  Deploying to ${displayName}...\n`));
+
+        // Show the deploy pipeline steps
+        console.log(chalk.dim("  Pipeline:"));
+        console.log(chalk.dim("    1. Env validation    ... done"));
+        if (!options.skipMigrate) {
+          console.log(chalk.dim("    2. Build             ... npx vibe build"));
+          console.log(
+            chalk.dim("    3. Migrate           ... npx vibe db migrate"),
+          );
+        }
+        console.log(chalk.dim(`    4. Deploy            ... ${deployCmd}`));
+        if (!options.skipHealthCheck) {
+          console.log(
+            chalk.dim(
+              `    5. Health check      ... GET ${options.healthUrl ?? "/health"}`,
+            ),
+          );
         }
         console.log();
-        process.exitCode = 1;
-        return;
-      }
 
-      const displayName = getPlatformDisplayName(platform);
-      const deployCmd = getDeployCommand(platform);
-
-      console.log(chalk.cyan(`\n  Deploying to ${displayName}...\n`));
-
-      // Show the deploy pipeline steps
-      console.log(chalk.dim('  Pipeline:'));
-      console.log(chalk.dim('    1. Env validation    ... done'));
-      if (!options.skipMigrate) {
-        console.log(chalk.dim('    2. Build             ... npx vibe build'));
-        console.log(chalk.dim('    3. Migrate           ... npx vibe db migrate'));
-      }
-      console.log(chalk.dim(`    4. Deploy            ... ${deployCmd}`));
-      if (!options.skipHealthCheck) {
-        console.log(chalk.dim(`    5. Health check      ... GET ${options.healthUrl ?? '/health'}`));
-      }
-      console.log();
-
-      console.log(chalk.yellow('  Deploy pipeline is ready. Run the following commands:\n'));
-      console.log(chalk.dim('    npx vibe build'));
-      if (!options.skipMigrate) {
-        console.log(chalk.dim('    npx vibe db migrate'));
-      }
-      console.log(chalk.dim(`    ${deployCmd}`));
-      console.log();
-    });
+        console.log(
+          chalk.yellow(
+            "  Deploy pipeline is ready. Run the following commands:\n",
+          ),
+        );
+        console.log(chalk.dim("    npx vibe build"));
+        if (!options.skipMigrate) {
+          console.log(chalk.dim("    npx vibe db migrate"));
+        }
+        console.log(chalk.dim(`    ${deployCmd}`));
+        console.log();
+      },
+    );
 }

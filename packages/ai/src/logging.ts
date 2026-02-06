@@ -14,7 +14,7 @@
  *   const provider = wrapProviderWithLogging(rawProvider, aiLog);
  */
 
-import type { AIProviderName, TokenUsage } from './types.js';
+import type { AIProviderName, TokenUsage } from "./types.js";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -26,16 +26,16 @@ import type { AIProviderName, TokenUsage } from './types.js';
  */
 const COST_PER_1K_TOKENS: Record<string, { input: number; output: number }> = {
   // Anthropic
-  'claude-sonnet-4-20250514': { input: 0.003, output: 0.015 },
-  'claude-3-5-sonnet-20241022': { input: 0.003, output: 0.015 },
-  'claude-3-haiku-20240307': { input: 0.00025, output: 0.00125 },
+  "claude-sonnet-4-20250514": { input: 0.003, output: 0.015 },
+  "claude-3-5-sonnet-20241022": { input: 0.003, output: 0.015 },
+  "claude-3-haiku-20240307": { input: 0.00025, output: 0.00125 },
   // OpenAI
-  'gpt-4o': { input: 0.0025, output: 0.01 },
-  'gpt-4o-mini': { input: 0.00015, output: 0.0006 },
-  'gpt-4-turbo': { input: 0.01, output: 0.03 },
+  "gpt-4o": { input: 0.0025, output: 0.01 },
+  "gpt-4o-mini": { input: 0.00015, output: 0.0006 },
+  "gpt-4-turbo": { input: 0.01, output: 0.03 },
   // Ollama — local, free
-  'llama3': { input: 0, output: 0 },
-  'mistral': { input: 0, output: 0 },
+  llama3: { input: 0, output: 0 },
+  mistral: { input: 0, output: 0 },
 };
 
 /**
@@ -124,25 +124,32 @@ export class AICallLogger {
   private totalCostUsd = 0;
 
   constructor(options: AILoggerOptions = {}) {
-    const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+    const isDev =
+      process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
     this.logFullContent = options.logFullContent ?? isDev;
     this.costTable = options.costTable ?? COST_PER_1K_TOKENS;
-    this.writer = options.writer ?? ((entry) => {
-      // Default: structured JSON to stdout
-      const output = { ...entry };
-      if (!this.logFullContent) {
-        delete output.prompt;
-        delete output.response;
-      }
-      console.log(JSON.stringify({ type: 'ai_call', ...output }));
-    });
+    this.writer =
+      options.writer ??
+      ((entry) => {
+        // Default: structured JSON to stdout
+        const output = { ...entry };
+        if (!this.logFullContent) {
+          delete output.prompt;
+          delete output.response;
+        }
+        console.log(JSON.stringify({ type: "ai_call", ...output }));
+      });
   }
 
   /**
    * Log a completed AI call.
    */
-  log(entry: Omit<AICallLogEntry, 'timestamp' | 'estimatedCostUsd'>): void {
-    const estimatedCostUsd = estimateCost(entry.model, entry.usage, this.costTable);
+  log(entry: Omit<AICallLogEntry, "timestamp" | "estimatedCostUsd">): void {
+    const estimatedCostUsd = estimateCost(
+      entry.model,
+      entry.usage,
+      this.costTable,
+    );
 
     const fullEntry: AICallLogEntry = {
       ...entry,

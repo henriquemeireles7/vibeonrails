@@ -13,10 +13,13 @@
  * - Falls back to device code flow in headless environments (non-TTY)
  */
 
-import { createServer, type Server } from 'node:http';
-import { createServer as createNetServer } from 'node:net';
-import { randomBytes } from 'node:crypto';
-import { createFileTokenStore, type OAuthToken } from '@vibeonrails/core/security';
+import { createServer, type Server } from "node:http";
+import { createServer as createNetServer } from "node:net";
+import { randomBytes } from "node:crypto";
+import {
+  createFileTokenStore,
+  type OAuthToken,
+} from "@vibeonrails/core/security";
 
 export interface ConnectOptions {
   /** OAuth provider identifier (e.g., "twitter", "bluesky") */
@@ -52,14 +55,14 @@ async function findFreePort(): Promise<number> {
     const server = createNetServer();
     server.listen(0, () => {
       const address = server.address();
-      if (address && typeof address === 'object' && 'port' in address) {
+      if (address && typeof address === "object" && "port" in address) {
         const port = address.port;
         server.close(() => resolve(port));
       } else {
-        server.close(() => reject(new Error('Could not determine port')));
+        server.close(() => reject(new Error("Could not determine port")));
       }
     });
-    server.on('error', (err) => {
+    server.on("error", (err) => {
       reject(err);
     });
   });
@@ -78,9 +81,9 @@ function isTTY(): boolean {
  */
 async function openBrowser(url: string): Promise<void> {
   try {
-    const openModule = await import('open');
+    const openModule = await import("open");
     // The 'open' package exports a default function
-    const openFn = 'default' in openModule ? openModule.default : openModule;
+    const openFn = "default" in openModule ? openModule.default : openModule;
     await openFn(url);
   } catch {
     // Fallback: print the URL
@@ -92,7 +95,7 @@ async function openBrowser(url: string): Promise<void> {
  * Generate a random state string for OAuth CSRF protection.
  */
 function generateState(): string {
-  return randomBytes(32).toString('hex');
+  return randomBytes(32).toString("hex");
 }
 
 /**
@@ -108,8 +111,8 @@ function buildAuthorizationUrl(
   const params = new URLSearchParams({
     client_id: clientId,
     redirect_uri: redirectUri,
-    response_type: 'code',
-    scope: scopes.join(' '),
+    response_type: "code",
+    scope: scopes.join(" "),
     state,
   });
   return `${authorizationUrl}?${params.toString()}`;
@@ -125,16 +128,16 @@ async function exchangeCodeForToken(
   redirectUri: string,
 ): Promise<Record<string, unknown>> {
   const response = await fetch(tokenUrl, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Accept: 'application/json',
+      "Content-Type": "application/x-www-form-urlencoded",
+      Accept: "application/json",
     },
     body: new URLSearchParams({
       client_id: clientId,
       code,
       redirect_uri: redirectUri,
-      grant_type: 'authorization_code',
+      grant_type: "authorization_code",
     }),
   });
 
@@ -156,10 +159,14 @@ function normalizeToken(
   rawToken: Record<string, unknown>,
   scopes: string[],
 ): OAuthToken {
-  const accessToken = String(rawToken.access_token ?? '');
-  const refreshToken = rawToken.refresh_token ? String(rawToken.refresh_token) : undefined;
-  const tokenType = String(rawToken.token_type ?? 'Bearer');
-  const expiresIn = rawToken.expires_in ? Number(rawToken.expires_in) : undefined;
+  const accessToken = String(rawToken.access_token ?? "");
+  const refreshToken = rawToken.refresh_token
+    ? String(rawToken.refresh_token)
+    : undefined;
+  const tokenType = String(rawToken.token_type ?? "Bearer");
+  const expiresIn = rawToken.expires_in
+    ? Number(rawToken.expires_in)
+    : undefined;
   const expiresAt = expiresIn
     ? new Date(Date.now() + expiresIn * 1000).toISOString()
     : undefined;
@@ -206,8 +213,8 @@ export async function startConnectFlow(
   // Check if we're in a headless environment (non-TTY)
   if (!isTTY()) {
     throw new Error(
-      'OAuth connect flow requires an interactive terminal. ' +
-        'Device code flow fallback is not yet implemented.',
+      "OAuth connect flow requires an interactive terminal. " +
+        "Device code flow fallback is not yet implemented.",
     );
   }
 
@@ -238,26 +245,29 @@ export async function startConnectFlow(
     };
 
     // Set a timeout for the OAuth flow (5 minutes)
-    timeoutId = setTimeout(() => {
-      cleanup();
-      reject(new Error('OAuth flow timed out after 5 minutes'));
-    }, 5 * 60 * 1000);
+    timeoutId = setTimeout(
+      () => {
+        cleanup();
+        reject(new Error("OAuth flow timed out after 5 minutes"));
+      },
+      5 * 60 * 1000,
+    );
 
     // Create HTTP server for OAuth callback
     server = createServer(async (req, res) => {
       if (!req.url) {
         res.writeHead(400);
-        res.end('Bad Request');
+        res.end("Bad Request");
         return;
       }
 
       const url = new URL(req.url, `http://localhost:${port}`);
 
       // Handle callback
-      if (url.pathname === '/callback') {
-        const code = url.searchParams.get('code');
-        const error = url.searchParams.get('error');
-        const returnedState = url.searchParams.get('state');
+      if (url.pathname === "/callback") {
+        const code = url.searchParams.get("code");
+        const error = url.searchParams.get("error");
+        const returnedState = url.searchParams.get("state");
 
         // Check for OAuth error
         if (error) {
@@ -272,8 +282,8 @@ export async function startConnectFlow(
         if (returnedState !== state) {
           cleanup();
           res.writeHead(400);
-          res.end('Invalid state parameter');
-          reject(new Error('OAuth state mismatch - possible CSRF attack'));
+          res.end("Invalid state parameter");
+          reject(new Error("OAuth state mismatch - possible CSRF attack"));
           return;
         }
 
@@ -281,14 +291,19 @@ export async function startConnectFlow(
         if (!code) {
           cleanup();
           res.writeHead(400);
-          res.end('Missing authorization code');
-          reject(new Error('OAuth callback missing authorization code'));
+          res.end("Missing authorization code");
+          reject(new Error("OAuth callback missing authorization code"));
           return;
         }
 
         try {
           // Exchange code for tokens
-          const rawToken = await exchangeCodeForToken(tokenUrl, clientId, code, redirectUri);
+          const rawToken = await exchangeCodeForToken(
+            tokenUrl,
+            clientId,
+            code,
+            redirectUri,
+          );
 
           // Normalize token format
           const token = normalizeToken(provider, rawToken, scopes);
@@ -297,7 +312,7 @@ export async function startConnectFlow(
           await tokenStore.set(provider, token);
 
           // Send success response
-          res.writeHead(200, { 'Content-Type': 'text/html' });
+          res.writeHead(200, { "Content-Type": "text/html" });
           res.end(`
             <html>
               <head><title>Authorization Successful</title></head>
@@ -314,13 +329,13 @@ export async function startConnectFlow(
         } catch (err) {
           cleanup();
           res.writeHead(500);
-          res.end('Token exchange failed');
+          res.end("Token exchange failed");
           reject(err);
         }
       } else {
         // Unknown path
         res.writeHead(404);
-        res.end('Not Found');
+        res.end("Not Found");
       }
     });
 
@@ -344,7 +359,7 @@ export async function startConnectFlow(
       }
     });
 
-    server.on('error', (err) => {
+    server.on("error", (err) => {
       cleanup();
       reject(err);
     });

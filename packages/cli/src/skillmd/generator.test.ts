@@ -245,7 +245,11 @@ describe("skillmd generator", () => {
 
     it("skips manually edited SKILL.md files", () => {
       const skillMdPath = join(testDir, "SKILL.md");
-      writeFileSync(skillMdPath, "# Manual SKILL.md\n\nCustom content\n", "utf-8");
+      writeFileSync(
+        skillMdPath,
+        "# Manual SKILL.md\n\nCustom content\n",
+        "utf-8",
+      );
 
       writeFileSync(
         join(testDir, "service.ts"),
@@ -263,7 +267,11 @@ describe("skillmd generator", () => {
 
     it("overwrites manually edited SKILL.md when force is true", () => {
       const skillMdPath = join(testDir, "SKILL.md");
-      writeFileSync(skillMdPath, "# Manual SKILL.md\n\nCustom content\n", "utf-8");
+      writeFileSync(
+        skillMdPath,
+        "# Manual SKILL.md\n\nCustom content\n",
+        "utf-8",
+      );
 
       writeFileSync(
         join(testDir, "service.ts"),

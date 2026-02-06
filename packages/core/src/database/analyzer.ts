@@ -92,16 +92,18 @@ export interface QueryAnalyzerOptions {
  * Replaces literal values with placeholders to group similar queries.
  */
 export function normalizeQuery(sql: string): string {
-  return sql
-    // Remove excess whitespace
-    .replace(/\s+/g, ' ')
-    .trim()
-    // Normalize numeric literals
-    .replace(/\b\d+\b/g, '?')
-    // Normalize string literals
-    .replace(/'[^']*'/g, "'?'")
-    // Normalize parameter placeholders ($1, $2, etc.)
-    .replace(/\$\d+/g, '$?');
+  return (
+    sql
+      // Remove excess whitespace
+      .replace(/\s+/g, " ")
+      .trim()
+      // Normalize numeric literals
+      .replace(/\b\d+\b/g, "?")
+      // Normalize string literals
+      .replace(/'[^']*'/g, "'?'")
+      // Normalize parameter placeholders ($1, $2, etc.)
+      .replace(/\$\d+/g, "$?")
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -129,19 +131,21 @@ export function suggestIndex(sql: string): string | undefined {
 
   // Extract column names from conditions (column = ?, column IN (?), etc.)
   const columns: string[] = [];
-  const colMatches = whereClause.matchAll(/(\w+)\s*(?:=|IN|LIKE|>|<|>=|<=|!=|IS)/g);
+  const colMatches = whereClause.matchAll(
+    /(\w+)\s*(?:=|IN|LIKE|>|<|>=|<=|!=|IS)/g,
+  );
   for (const match of colMatches) {
     const col = match[1].toLowerCase();
     // Skip common non-column words
-    if (!['and', 'or', 'not', 'null', 'true', 'false'].includes(col)) {
+    if (!["and", "or", "not", "null", "true", "false"].includes(col)) {
       columns.push(col);
     }
   }
 
   if (columns.length === 0) return undefined;
 
-  const indexName = `idx_${table}_${columns.join('_')}`;
-  const columnList = columns.join(', ');
+  const indexName = `idx_${table}_${columns.join("_")}`;
+  const columnList = columns.join(", ");
 
   return `CREATE INDEX ${indexName} ON ${table} (${columnList});`;
 }
@@ -160,7 +164,8 @@ export class QueryAnalyzer {
   private readonly queryMap = new Map<string, TrackedQuery[]>();
 
   constructor(options: QueryAnalyzerOptions = {}) {
-    const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+    const isDev =
+      process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
     this.enabled = options.enabled ?? isDev;
     this.slowThresholdMs = options.slowQueryThresholdMs ?? 100;
     this.nPlusOneThreshold = options.nPlusOneThreshold ?? 3;
@@ -195,11 +200,11 @@ export class QueryAnalyzer {
     // Emit slow query warning immediately
     if (durationMs > this.slowThresholdMs) {
       const suggestion = suggestIndex(sql);
-      const indexHint = suggestion ? `\n  Suggested index: ${suggestion}` : '';
+      const indexHint = suggestion ? `\n  Suggested index: ${suggestion}` : "";
       this.writer(
         `[SLOW QUERY] ${durationMs}ms (threshold: ${this.slowThresholdMs}ms)\n` +
-        `  SQL: ${sql}${indexHint}\n` +
-        `  Request: ${requestId}`,
+          `  SQL: ${sql}${indexHint}\n` +
+          `  Request: ${requestId}`,
       );
     }
   }
@@ -247,8 +252,8 @@ export class QueryAnalyzer {
 
         this.writer(
           `[N+1 DETECTED] Query repeated ${count}x in request ${requestId}\n` +
-          `  Pattern: ${pattern}\n` +
-          `  Fix: Use a JOIN or batch query (WHERE id IN (...))`,
+            `  Pattern: ${pattern}\n` +
+            `  Fix: Use a JOIN or batch query (WHERE id IN (...))`,
         );
       }
     }
@@ -295,6 +300,8 @@ export class QueryAnalyzer {
  *   analyzer.track('SELECT * FROM posts WHERE user_id = $1', 3, 'req-abc');
  *   const report = analyzer.report('req-abc');
  */
-export function createQueryAnalyzer(options?: QueryAnalyzerOptions): QueryAnalyzer {
+export function createQueryAnalyzer(
+  options?: QueryAnalyzerOptions,
+): QueryAnalyzer {
   return new QueryAnalyzer(options);
 }

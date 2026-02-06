@@ -145,7 +145,9 @@ describe("templates", () => {
 
       it("contains correct Vitest structure", () => {
         const template = getModuleServiceTestTemplate();
-        expect(template).toContain('import { describe, it, expect } from "vitest"');
+        expect(template).toContain(
+          'import { describe, it, expect } from "vitest"',
+        );
         expect(template).toContain("describe");
         expect(template).toContain("{{pascalCase name}}Service");
       });
@@ -185,8 +187,8 @@ describe("templates", () => {
       it("contains correct export statements", () => {
         const template = getModuleIndexTemplate();
         expect(template).toContain('export * from "./types.js"');
-        expect(template).toContain('export { {{pascalCase name}}Service }');
-        expect(template).toContain('export { {{camelCase name}}Router }');
+        expect(template).toContain("export { {{pascalCase name}}Service }");
+        expect(template).toContain("export { {{camelCase name}}Router }");
       });
 
       it("renders correctly with Handlebars", () => {
@@ -258,8 +260,12 @@ describe("templates", () => {
 
       it("contains correct Vitest and React Testing Library imports", () => {
         const template = getComponentTestTemplate();
-        expect(template).toContain('import { describe, it, expect } from "vitest"');
-        expect(template).toContain('import { render, screen } from "@testing-library/react"');
+        expect(template).toContain(
+          'import { describe, it, expect } from "vitest"',
+        );
+        expect(template).toContain(
+          'import { render, screen } from "@testing-library/react"',
+        );
       });
 
       it("contains correct component import", () => {

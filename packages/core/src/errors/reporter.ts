@@ -155,7 +155,10 @@ export class ErrorReporter {
     }
 
     // Newest first
-    results.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+    results.sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+    );
 
     // Limit
     if (options.limit !== undefined) {
@@ -173,15 +176,14 @@ export class ErrorReporter {
     byCode: Record<string, number>;
     autoFixable: number;
   } {
-    const reports = lastHours !== undefined
-      ? this.query({ lastHours })
-      : [...this.entries];
+    const reports =
+      lastHours !== undefined ? this.query({ lastHours }) : [...this.entries];
 
     const byCode: Record<string, number> = {};
     let autoFixable = 0;
 
     for (const r of reports) {
-      const key = r.code ?? 'UNKNOWN';
+      const key = r.code ?? "UNKNOWN";
       byCode[key] = (byCode[key] ?? 0) + 1;
       if (r.autoFixable) autoFixable++;
     }
@@ -275,10 +277,10 @@ export class ErrorReporter {
   } {
     return (
       error !== null &&
-      typeof error === 'object' &&
-      'code' in error &&
-      'statusCode' in error &&
-      'autoFixable' in error &&
+      typeof error === "object" &&
+      "code" in error &&
+      "statusCode" in error &&
+      "autoFixable" in error &&
       error instanceof Error
     );
   }
@@ -296,6 +298,8 @@ export class ErrorReporter {
  *   reporter.capture(new Error('Something broke'), { requestId: 'req-123' });
  *   const recent = reporter.query({ lastHours: 24 });
  */
-export function createErrorReporter(options?: ErrorReporterOptions): ErrorReporter {
+export function createErrorReporter(
+  options?: ErrorReporterOptions,
+): ErrorReporter {
   return new ErrorReporter(options);
 }

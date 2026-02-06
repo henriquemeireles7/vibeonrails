@@ -8,8 +8,8 @@
  * Always shows SQL before executing for safety.
  */
 
-import { Command } from 'commander';
-import chalk from 'chalk';
+import { Command } from "commander";
+import chalk from "chalk";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -53,20 +53,21 @@ export interface RollbackResult {
  */
 export function formatDryRunOutput(
   sql: string,
-  direction: 'up' | 'down',
+  direction: "up" | "down",
 ): string {
-  const header = direction === 'up'
-    ? chalk.green('-- MIGRATE UP (would execute)')
-    : chalk.yellow('-- ROLLBACK DOWN (would execute)');
+  const header =
+    direction === "up"
+      ? chalk.green("-- MIGRATE UP (would execute)")
+      : chalk.yellow("-- ROLLBACK DOWN (would execute)");
 
-  const separator = chalk.dim('--' + '-'.repeat(60));
+  const separator = chalk.dim("--" + "-".repeat(60));
 
   const formattedSql = sql
-    .split(';')
+    .split(";")
     .map((s) => s.trim())
     .filter((s) => s.length > 0)
     .map((s) => `  ${s};`)
-    .join('\n\n');
+    .join("\n\n");
 
   return `\n${header}\n${separator}\n${formattedSql}\n${separator}\n`;
 }
@@ -89,7 +90,9 @@ export function planRollback(
   if (applied.length === 0) return [];
 
   // Sort by version descending (newest first)
-  const sorted = [...applied].sort((a, b) => b.version.localeCompare(a.version));
+  const sorted = [...applied].sort((a, b) =>
+    b.version.localeCompare(a.version),
+  );
 
   if (!targetVersion) {
     // Roll back the last migration only
@@ -116,15 +119,18 @@ export function verifyRoundTrip(
 ): { consistent: boolean; reason?: string } {
   // Basic check: both must be non-empty
   if (!upSql.trim()) {
-    return { consistent: false, reason: 'Empty up SQL' };
+    return { consistent: false, reason: "Empty up SQL" };
   }
   if (!downSql.trim()) {
-    return { consistent: false, reason: 'Empty down SQL (no rollback)' };
+    return { consistent: false, reason: "Empty down SQL (no rollback)" };
   }
 
   // Check for TODO markers (indicates incomplete rollback)
-  if (downSql.includes('TODO')) {
-    return { consistent: false, reason: 'Down SQL contains TODO markers (manual rollback needed)' };
+  if (downSql.includes("TODO")) {
+    return {
+      consistent: false,
+      reason: "Down SQL contains TODO markers (manual rollback needed)",
+    };
   }
 
   return { consistent: true };
@@ -135,39 +141,46 @@ export function verifyRoundTrip(
 // ---------------------------------------------------------------------------
 
 export function dbMigrateOpsCommand(): Command {
-  const migrate = new Command('migrate-ops')
-    .description('Migration dry-run and rollback operations');
+  const migrate = new Command("migrate-ops").description(
+    "Migration dry-run and rollback operations",
+  );
 
   migrate
-    .command('dry-run')
-    .description('Show migration SQL without executing')
+    .command("dry-run")
+    .description("Show migration SQL without executing")
     .action(() => {
-      console.log(chalk.cyan('\n  Migration Dry-Run Mode\n'));
-      console.log(chalk.dim('  This shows what SQL would be executed without making changes.\n'));
-      console.log(chalk.yellow('  To see pending changes, run:\n'));
-      console.log(chalk.dim('    npx drizzle-kit push --dry-run\n'));
+      console.log(chalk.cyan("\n  Migration Dry-Run Mode\n"));
+      console.log(
+        chalk.dim(
+          "  This shows what SQL would be executed without making changes.\n",
+        ),
+      );
+      console.log(chalk.yellow("  To see pending changes, run:\n"));
+      console.log(chalk.dim("    npx drizzle-kit push --dry-run\n"));
     });
 
   migrate
-    .command('rollback')
-    .description('Roll back the last migration')
-    .option('--to <version>', 'Roll back to a specific version')
-    .option('--dry-run', 'Show rollback SQL without executing')
+    .command("rollback")
+    .description("Roll back the last migration")
+    .option("--to <version>", "Roll back to a specific version")
+    .option("--dry-run", "Show rollback SQL without executing")
     .action((options: { to?: string; dryRun?: boolean }) => {
-      console.log(chalk.cyan('\n  Database Rollback\n'));
+      console.log(chalk.cyan("\n  Database Rollback\n"));
 
       if (options.to) {
         console.log(chalk.dim(`  Target version: ${options.to}\n`));
       } else {
-        console.log(chalk.dim('  Rolling back last migration.\n'));
+        console.log(chalk.dim("  Rolling back last migration.\n"));
       }
 
       if (options.dryRun) {
-        console.log(chalk.yellow('  (dry-run mode — no changes will be made)\n'));
+        console.log(
+          chalk.yellow("  (dry-run mode — no changes will be made)\n"),
+        );
       }
 
-      console.log(chalk.dim('  To see applied migrations:\n'));
-      console.log(chalk.dim('    npx drizzle-kit status\n'));
+      console.log(chalk.dim("  To see applied migrations:\n"));
+      console.log(chalk.dim("    npx drizzle-kit status\n"));
     });
 
   return migrate;

@@ -10,8 +10,8 @@
  * Provides instant rollback during development.
  */
 
-import { Command } from 'commander';
-import chalk from 'chalk';
+import { Command } from "commander";
+import chalk from "chalk";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -50,7 +50,7 @@ export interface SnapshotOptions {
 /**
  * Default snapshot directory.
  */
-export const DEFAULT_SNAPSHOT_DIR = '.vibe/snapshots';
+export const DEFAULT_SNAPSHOT_DIR = ".vibe/snapshots";
 
 /**
  * Mask a database URL for safe display.
@@ -60,11 +60,11 @@ export function maskDatabaseUrl(url: string): string {
   try {
     const parsed = new URL(url);
     if (parsed.password) {
-      parsed.password = '***';
+      parsed.password = "***";
     }
     return parsed.toString();
   } catch {
-    return '***masked***';
+    return "***masked***";
   }
 }
 
@@ -74,23 +74,29 @@ export function maskDatabaseUrl(url: string): string {
 export function sanitizeSnapshotName(name: string): string {
   return name
     .toLowerCase()
-    .replace(/[^a-z0-9_-]/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
+    .replace(/[^a-z0-9_-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
     .slice(0, 64);
 }
 
 /**
  * Get the pg_dump command for creating a snapshot.
  */
-export function getPgDumpCommand(databaseUrl: string, outputPath: string): string {
+export function getPgDumpCommand(
+  databaseUrl: string,
+  outputPath: string,
+): string {
   return `pg_dump "${databaseUrl}" --format=custom --file="${outputPath}"`;
 }
 
 /**
  * Get the pg_restore command for restoring a snapshot.
  */
-export function getPgRestoreCommand(databaseUrl: string, inputPath: string): string {
+export function getPgRestoreCommand(
+  databaseUrl: string,
+  inputPath: string,
+): string {
   return `pg_restore --clean --if-exists --dbname="${databaseUrl}" "${inputPath}"`;
 }
 
@@ -100,7 +106,8 @@ export function getPgRestoreCommand(databaseUrl: string, inputPath: string): str
 export function formatFileSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  if (bytes < 1024 * 1024 * 1024)
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
 }
 
@@ -123,7 +130,7 @@ function getTimeAgo(date: Date): string {
   const diffMs = now - date.getTime();
 
   const minutes = Math.floor(diffMs / (1000 * 60));
-  if (minutes < 1) return 'just now';
+  if (minutes < 1) return "just now";
   if (minutes < 60) return `${minutes}m ago`;
 
   const hours = Math.floor(minutes / 60);
@@ -140,19 +147,20 @@ function getTimeAgo(date: Date): string {
 // ---------------------------------------------------------------------------
 
 export function dbSnapshotCommand(): Command {
-  const snapshot = new Command('snapshot')
-    .description('Database snapshot management');
+  const snapshot = new Command("snapshot").description(
+    "Database snapshot management",
+  );
 
   snapshot
-    .command('create')
-    .description('Create a snapshot of the current database state')
-    .argument('<name>', 'Snapshot name')
+    .command("create")
+    .description("Create a snapshot of the current database state")
+    .argument("<name>", "Snapshot name")
     .action((name: string) => {
       const sanitized = sanitizeSnapshotName(name);
       const dbUrl = process.env.DATABASE_URL;
 
       if (!dbUrl) {
-        console.log(chalk.red('\n  DATABASE_URL is not set.\n'));
+        console.log(chalk.red("\n  DATABASE_URL is not set.\n"));
         process.exitCode = 1;
         return;
       }
@@ -163,21 +171,21 @@ export function dbSnapshotCommand(): Command {
       console.log(chalk.cyan(`\n  Creating snapshot: ${sanitized}\n`));
       console.log(chalk.dim(`  Database: ${maskDatabaseUrl(dbUrl)}`));
       console.log(chalk.dim(`  Output: ${outputPath}\n`));
-      console.log(chalk.yellow('  Run:\n'));
+      console.log(chalk.yellow("  Run:\n"));
       console.log(chalk.dim(`    mkdir -p ${DEFAULT_SNAPSHOT_DIR}`));
       console.log(chalk.dim(`    ${command}\n`));
     });
 
   snapshot
-    .command('restore')
-    .description('Restore a database snapshot')
-    .argument('<name>', 'Snapshot name to restore')
+    .command("restore")
+    .description("Restore a database snapshot")
+    .argument("<name>", "Snapshot name to restore")
     .action((name: string) => {
       const sanitized = sanitizeSnapshotName(name);
       const dbUrl = process.env.DATABASE_URL;
 
       if (!dbUrl) {
-        console.log(chalk.red('\n  DATABASE_URL is not set.\n'));
+        console.log(chalk.red("\n  DATABASE_URL is not set.\n"));
         process.exitCode = 1;
         return;
       }
@@ -188,26 +196,32 @@ export function dbSnapshotCommand(): Command {
       console.log(chalk.cyan(`\n  Restoring snapshot: ${sanitized}\n`));
       console.log(chalk.dim(`  Database: ${maskDatabaseUrl(dbUrl)}`));
       console.log(chalk.dim(`  Input: ${inputPath}\n`));
-      console.log(chalk.yellow('  Run:\n'));
+      console.log(chalk.yellow("  Run:\n"));
       console.log(chalk.dim(`    ${command}\n`));
     });
 
   snapshot
-    .command('list')
-    .description('List all database snapshots')
+    .command("list")
+    .description("List all database snapshots")
     .action(() => {
       console.log(chalk.cyan(`\n  Snapshots in ${DEFAULT_SNAPSHOT_DIR}/\n`));
-      console.log(chalk.dim('  No snapshots found. Create one with: vibe db snapshot create <name>\n'));
+      console.log(
+        chalk.dim(
+          "  No snapshots found. Create one with: vibe db snapshot create <name>\n",
+        ),
+      );
     });
 
   snapshot
-    .command('delete')
-    .description('Delete a database snapshot')
-    .argument('<name>', 'Snapshot name to delete')
+    .command("delete")
+    .description("Delete a database snapshot")
+    .argument("<name>", "Snapshot name to delete")
     .action((name: string) => {
       const sanitized = sanitizeSnapshotName(name);
       console.log(chalk.cyan(`\n  Deleting snapshot: ${sanitized}\n`));
-      console.log(chalk.dim(`  rm ${DEFAULT_SNAPSHOT_DIR}/${sanitized}.dump\n`));
+      console.log(
+        chalk.dim(`  rm ${DEFAULT_SNAPSHOT_DIR}/${sanitized}.dump\n`),
+      );
     });
 
   return snapshot;

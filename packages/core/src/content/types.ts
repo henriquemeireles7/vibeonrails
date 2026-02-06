@@ -5,7 +5,7 @@
  * Used to index markdown files with YAML frontmatter.
  */
 
-import { z } from 'zod';
+import { z } from "zod";
 
 // ---------------------------------------------------------------------------
 // Frontmatter Schema

@@ -24,7 +24,7 @@
 // Types
 // ---------------------------------------------------------------------------
 
-export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
+export type LogLevel = "debug" | "info" | "warn" | "error";
 
 const LOG_LEVELS: Record<LogLevel, number> = {
   debug: 0,
@@ -64,25 +64,33 @@ export interface LoggerOptions {
 // ---------------------------------------------------------------------------
 
 const COLORS: Record<LogLevel, string> = {
-  debug: '\x1b[36m', // cyan
-  info: '\x1b[32m',  // green
-  warn: '\x1b[33m',  // yellow
-  error: '\x1b[31m', // red
+  debug: "\x1b[36m", // cyan
+  info: "\x1b[32m", // green
+  warn: "\x1b[33m", // yellow
+  error: "\x1b[31m", // red
 };
 
-const RESET = '\x1b[0m';
-const DIM = '\x1b[2m';
-const BOLD = '\x1b[1m';
+const RESET = "\x1b[0m";
+const DIM = "\x1b[2m";
+const BOLD = "\x1b[1m";
 
 function formatDev(entry: LogEntry): string {
   const color = COLORS[entry.level];
   const time = entry.timestamp.slice(11, 23); // HH:mm:ss.SSS
-  const mod = entry.module ? `${DIM}(${entry.module})${RESET} ` : '';
-  const reqId = entry.requestId ? `${DIM}[${entry.requestId.slice(0, 8)}]${RESET} ` : '';
+  const mod = entry.module ? `${DIM}(${entry.module})${RESET} ` : "";
+  const reqId = entry.requestId
+    ? `${DIM}[${entry.requestId.slice(0, 8)}]${RESET} `
+    : "";
   const levelTag = `${color}${BOLD}${entry.level.toUpperCase().padEnd(5)}${RESET}`;
 
   // Extract extra data (exclude known fields)
-  const known = new Set(['level', 'message', 'timestamp', 'module', 'requestId']);
+  const known = new Set([
+    "level",
+    "message",
+    "timestamp",
+    "module",
+    "requestId",
+  ]);
   const extra: Record<string, unknown> = {};
   let hasExtra = false;
 
@@ -93,7 +101,7 @@ function formatDev(entry: LogEntry): string {
     }
   }
 
-  const extraStr = hasExtra ? ` ${DIM}${JSON.stringify(extra)}${RESET}` : '';
+  const extraStr = hasExtra ? ` ${DIM}${JSON.stringify(extra)}${RESET}` : "";
 
   return `${DIM}${time}${RESET} ${levelTag} ${mod}${reqId}${entry.message}${extraStr}`;
 }
@@ -115,7 +123,8 @@ export class Logger {
   constructor(options: LoggerOptions = {}) {
     this.moduleName = options.module;
     this.context = options.context ?? {};
-    this.minLevel = options.minLevel ?? (process.env.LOG_LEVEL as LogLevel) ?? 'info';
+    this.minLevel =
+      options.minLevel ?? (process.env.LOG_LEVEL as LogLevel) ?? "info";
     this.write = options.writer ?? ((line: string) => console.log(line));
   }
 
@@ -133,22 +142,29 @@ export class Logger {
   }
 
   debug(message: string, data?: Record<string, unknown>): void {
-    this.log('debug', message, data);
+    this.log("debug", message, data);
   }
 
   info(message: string, data?: Record<string, unknown>): void {
-    this.log('info', message, data);
+    this.log("info", message, data);
   }
 
   warn(message: string, data?: Record<string, unknown>): void {
-    this.log('warn', message, data);
+    this.log("warn", message, data);
   }
 
   error(message: string, error?: Error | Record<string, unknown>): void {
-    const data = error instanceof Error
-      ? { error: { message: error.message, stack: error.stack, name: error.name } }
-      : error;
-    this.log('error', message, data);
+    const data =
+      error instanceof Error
+        ? {
+            error: {
+              message: error.message,
+              stack: error.stack,
+              name: error.name,
+            },
+          }
+        : error;
+    this.log("error", message, data);
   }
 
   /**
@@ -177,7 +193,11 @@ export class Logger {
   // Internal
   // -----------------------------------------------------------------------
 
-  private log(level: LogLevel, message: string, data?: Record<string, unknown>): void {
+  private log(
+    level: LogLevel,
+    message: string,
+    data?: Record<string, unknown>,
+  ): void {
     if (LOG_LEVELS[level] < LOG_LEVELS[this.minLevel]) {
       return;
     }
@@ -208,7 +228,8 @@ export class Logger {
     // Spread remaining context
     Object.assign(entry, merged);
 
-    const isDev = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+    const isDev =
+      process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
     const formatted = isDev ? formatDev(entry) : formatJson(entry);
 
     this.write(formatted);

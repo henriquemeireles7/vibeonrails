@@ -14,14 +14,14 @@
  *   vibe db seed --dry-run       Show seed plan without executing
  */
 
-import { Command } from 'commander';
-import chalk from 'chalk';
+import { Command } from "commander";
+import chalk from "chalk";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export type SeedEnv = 'development' | 'staging' | 'production' | 'test';
+export type SeedEnv = "development" | "staging" | "production" | "test";
 
 /**
  * Seed plan describing what will be seeded.
@@ -52,10 +52,14 @@ export function detectSeedEnvironment(override?: string): SeedEnv {
   const env = override ?? process.env.NODE_ENV;
 
   switch (env) {
-    case 'production': return 'production';
-    case 'staging': return 'staging';
-    case 'test': return 'test';
-    default: return 'development';
+    case "production":
+      return "production";
+    case "staging":
+      return "staging";
+    case "test":
+      return "test";
+    default:
+      return "development";
   }
 }
 
@@ -68,46 +72,78 @@ export function detectSeedEnvironment(override?: string): SeedEnv {
  */
 export function getSeedPlan(env: SeedEnv): SeedPlan {
   switch (env) {
-    case 'development':
+    case "development":
       return {
         env,
         tables: [
-          { table: 'users', recordCount: 50, description: 'Rich fake users with profiles' },
-          { table: 'posts', recordCount: 200, description: 'Blog posts with varied content' },
-          { table: 'comments', recordCount: 500, description: 'User comments on posts' },
-          { table: 'settings', recordCount: 1, description: 'Default application settings' },
+          {
+            table: "users",
+            recordCount: 50,
+            description: "Rich fake users with profiles",
+          },
+          {
+            table: "posts",
+            recordCount: 200,
+            description: "Blog posts with varied content",
+          },
+          {
+            table: "comments",
+            recordCount: 500,
+            description: "User comments on posts",
+          },
+          {
+            table: "settings",
+            recordCount: 1,
+            description: "Default application settings",
+          },
         ],
         totalRecords: 751,
       };
 
-    case 'staging':
+    case "staging":
       return {
         env,
         tables: [
-          { table: 'users', recordCount: 5, description: 'Minimal test users' },
-          { table: 'posts', recordCount: 10, description: 'Sample blog posts' },
-          { table: 'settings', recordCount: 1, description: 'Default application settings' },
+          { table: "users", recordCount: 5, description: "Minimal test users" },
+          { table: "posts", recordCount: 10, description: "Sample blog posts" },
+          {
+            table: "settings",
+            recordCount: 1,
+            description: "Default application settings",
+          },
         ],
         totalRecords: 16,
       };
 
-    case 'production':
+    case "production":
       return {
         env,
         tables: [
-          { table: 'users', recordCount: 1, description: 'Admin user (system)' },
-          { table: 'settings', recordCount: 1, description: 'Default application settings' },
+          {
+            table: "users",
+            recordCount: 1,
+            description: "Admin user (system)",
+          },
+          {
+            table: "settings",
+            recordCount: 1,
+            description: "Default application settings",
+          },
         ],
         totalRecords: 2,
       };
 
-    case 'test':
+    case "test":
       return {
         env,
         tables: [
-          { table: 'users', recordCount: 3, description: 'Test users (admin, user, viewer)' },
-          { table: 'posts', recordCount: 5, description: 'Test posts' },
-          { table: 'settings', recordCount: 1, description: 'Test settings' },
+          {
+            table: "users",
+            recordCount: 3,
+            description: "Test users (admin, user, viewer)",
+          },
+          { table: "posts", recordCount: 5, description: "Test posts" },
+          { table: "settings", recordCount: 1, description: "Test settings" },
         ],
         totalRecords: 9,
       };
@@ -122,20 +158,19 @@ export function getSeedPlan(env: SeedEnv): SeedPlan {
  * Format a seed plan for display.
  */
 export function formatSeedPlan(plan: SeedPlan): string {
-  const lines = [
-    chalk.bold(`  Seed Plan: ${plan.env}`),
-    '',
-  ];
+  const lines = [chalk.bold(`  Seed Plan: ${plan.env}`), ""];
 
   for (const table of plan.tables) {
     const count = String(table.recordCount).padStart(5);
-    lines.push(`    ${chalk.cyan(count)}  ${table.table.padEnd(15)} ${chalk.dim(table.description)}`);
+    lines.push(
+      `    ${chalk.cyan(count)}  ${table.table.padEnd(15)} ${chalk.dim(table.description)}`,
+    );
   }
 
-  lines.push('');
+  lines.push("");
   lines.push(chalk.dim(`  Total: ${plan.totalRecords} records`));
 
-  return lines.join('\n');
+  return lines.join("\n");
 }
 
 // ---------------------------------------------------------------------------
@@ -143,10 +178,13 @@ export function formatSeedPlan(plan: SeedPlan): string {
 // ---------------------------------------------------------------------------
 
 export function dbSeedEnvCommand(): Command {
-  return new Command('seed-env')
-    .description('Run environment-specific database seeds')
-    .option('--env <environment>', 'Force specific environment (dev, staging, production, test)')
-    .option('--dry-run', 'Show seed plan without executing')
+  return new Command("seed-env")
+    .description("Run environment-specific database seeds")
+    .option(
+      "--env <environment>",
+      "Force specific environment (dev, staging, production, test)",
+    )
+    .option("--dry-run", "Show seed plan without executing")
     .action((options: { env?: string; dryRun?: boolean }) => {
       const env = detectSeedEnvironment(options.env);
       const plan = getSeedPlan(env);
@@ -154,11 +192,13 @@ export function dbSeedEnvCommand(): Command {
       console.log(`\n${formatSeedPlan(plan)}\n`);
 
       if (options.dryRun) {
-        console.log(chalk.yellow('  (dry-run — no records will be created)\n'));
+        console.log(chalk.yellow("  (dry-run — no records will be created)\n"));
         return;
       }
 
-      console.log(chalk.dim(`  To seed, ensure database/seeds/${env}.ts exists and run:`));
+      console.log(
+        chalk.dim(`  To seed, ensure database/seeds/${env}.ts exists and run:`),
+      );
       console.log(chalk.dim(`    npx tsx database/seeds/${env}.ts\n`));
     });
 }

@@ -5,7 +5,7 @@
  * Uses in-memory caching for performance.
  */
 
-import type { ContentEntry, ContentIndex } from './types.js';
+import type { ContentEntry, ContentIndex } from "./types.js";
 
 // ---------------------------------------------------------------------------
 // Query Cache
@@ -52,13 +52,9 @@ function buildCache(index: ContentIndex): QueryCache {
     }
 
     // Index by keyword (title, description, content snippet)
-    const keywords = [
-      entry.title,
-      entry.description,
-      entry.contentSnippet,
-    ]
+    const keywords = [entry.title, entry.description, entry.contentSnippet]
       .filter(Boolean)
-      .join(' ')
+      .join(" ")
       .toLowerCase()
       .split(/\s+/);
 
@@ -96,10 +92,7 @@ function getCache(index: ContentIndex): QueryCache {
 /**
  * List all entries of a specific type.
  */
-export function listByType(
-  index: ContentIndex,
-  type: string,
-): ContentEntry[] {
+export function listByType(index: ContentIndex, type: string): ContentEntry[] {
   const queryCache = getCache(index);
   return queryCache.byType.get(type) ?? [];
 }
@@ -107,10 +100,7 @@ export function listByType(
 /**
  * Filter entries by tag.
  */
-export function filterByTag(
-  index: ContentIndex,
-  tag: string,
-): ContentEntry[] {
+export function filterByTag(index: ContentIndex, tag: string): ContentEntry[] {
   const queryCache = getCache(index);
   return queryCache.byTag.get(tag) ?? [];
 }
@@ -155,7 +145,7 @@ export function searchByKeyword(
       entry.contentSnippet,
     ]
       .filter(Boolean)
-      .join(' ')
+      .join(" ")
       .toLowerCase();
 
     if (searchableText.includes(normalizedKeyword)) {
@@ -186,10 +176,7 @@ export function getAll(index: ContentIndex): ContentEntry[] {
 /**
  * Get entries sorted by date (newest first).
  */
-export function getByDate(
-  index: ContentIndex,
-  limit?: number,
-): ContentEntry[] {
+export function getByDate(index: ContentIndex, limit?: number): ContentEntry[] {
   const entries = Object.values(index.entries);
 
   const sorted = entries.sort((a, b) => {

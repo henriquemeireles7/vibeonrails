@@ -14,15 +14,20 @@
  *   vibe deploy                  Full deploy (both sites + API)
  */
 
-import { Command } from 'commander';
-import chalk from 'chalk';
-import { detectPlatform, validateEnvironment, healthCheck, type DeployPlatform } from './deploy.js';
+import { Command } from "commander";
+import chalk from "chalk";
+import {
+  detectPlatform,
+  validateEnvironment,
+  healthCheck,
+  type DeployPlatform,
+} from "./deploy.js";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-export type DeployMode = 'full' | 'sites-only' | 'api-only';
+export type DeployMode = "full" | "sites-only" | "api-only";
 
 export interface SplitDeployConfig {
   mode: DeployMode;
@@ -54,8 +59,8 @@ export interface SplitDeployResult {
  * These should be set on all SSG-generated files.
  */
 export const CDN_CACHE_HEADERS: Record<string, string> = {
-  'Cache-Control': 'public, max-age=31536000, immutable',
-  'X-Content-Type-Options': 'nosniff',
+  "Cache-Control": "public, max-age=31536000, immutable",
+  "X-Content-Type-Options": "nosniff",
 };
 
 /**
@@ -63,7 +68,8 @@ export const CDN_CACHE_HEADERS: Record<string, string> = {
  * Serve stale for 24 hours while refreshing in background.
  */
 export const SSG_PAGE_CACHE_HEADERS: Record<string, string> = {
-  'Cache-Control': 'public, max-age=0, s-maxage=86400, stale-while-revalidate=86400',
+  "Cache-Control":
+    "public, max-age=0, s-maxage=86400, stale-while-revalidate=86400",
 };
 
 /**
@@ -71,13 +77,24 @@ export const SSG_PAGE_CACHE_HEADERS: Record<string, string> = {
  */
 export function getCacheHeaders(filePath: string): Record<string, string> {
   // Static assets (JS, CSS, images, fonts) get immutable caching
-  const assetExtensions = ['.js', '.css', '.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.woff', '.woff2'];
+  const assetExtensions = [
+    ".js",
+    ".css",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".webp",
+    ".gif",
+    ".svg",
+    ".woff",
+    ".woff2",
+  ];
   if (assetExtensions.some((ext) => filePath.endsWith(ext))) {
     return CDN_CACHE_HEADERS;
   }
 
   // HTML pages get stale-while-revalidate
-  if (filePath.endsWith('.html')) {
+  if (filePath.endsWith(".html")) {
     return SSG_PAGE_CACHE_HEADERS;
   }
 
@@ -102,9 +119,9 @@ export function getSitesDeployCommand(outputDir: string): string {
  */
 export function getApiDeployCommand(platform: DeployPlatform): string | null {
   const commands: Record<DeployPlatform, string | null> = {
-    railway: 'railway up',
-    fly: 'fly deploy',
-    docker: 'docker build -t app . && docker push',
+    railway: "railway up",
+    fly: "fly deploy",
+    docker: "docker build -t app . && docker push",
     unknown: null,
   };
   return commands[platform];
@@ -115,55 +132,69 @@ export function getApiDeployCommand(platform: DeployPlatform): string | null {
 // ---------------------------------------------------------------------------
 
 export function deploySplitCommand(): Command {
-  return new Command('deploy-split')
-    .description('Deploy with static/API split')
-    .option('--sites-only', 'Deploy only static sites to CDN')
-    .option('--api-only', 'Deploy only the API server')
-    .option('--sites-dir <dir>', 'SSG output directory', 'dist/sites')
-    .option('--health-url <url>', 'Health check URL', '/health')
-    .option('--health-timeout <seconds>', 'Health check timeout in seconds', '30')
-    .action((options: {
-      sitesOnly?: boolean;
-      apiOnly?: boolean;
-      sitesDir?: string;
-      healthUrl?: string;
-      healthTimeout?: string;
-    }) => {
-      const mode: DeployMode = options.sitesOnly
-        ? 'sites-only'
-        : options.apiOnly
-          ? 'api-only'
-          : 'full';
+  return new Command("deploy-split")
+    .description("Deploy with static/API split")
+    .option("--sites-only", "Deploy only static sites to CDN")
+    .option("--api-only", "Deploy only the API server")
+    .option("--sites-dir <dir>", "SSG output directory", "dist/sites")
+    .option("--health-url <url>", "Health check URL", "/health")
+    .option(
+      "--health-timeout <seconds>",
+      "Health check timeout in seconds",
+      "30",
+    )
+    .action(
+      (options: {
+        sitesOnly?: boolean;
+        apiOnly?: boolean;
+        sitesDir?: string;
+        healthUrl?: string;
+        healthTimeout?: string;
+      }) => {
+        const mode: DeployMode = options.sitesOnly
+          ? "sites-only"
+          : options.apiOnly
+            ? "api-only"
+            : "full";
 
-      const platform = detectPlatform();
-      const sitesDir = options.sitesDir ?? 'dist/sites';
+        const platform = detectPlatform();
+        const sitesDir = options.sitesDir ?? "dist/sites";
 
-      console.log(chalk.cyan(`\n  Deploy mode: ${mode}\n`));
+        console.log(chalk.cyan(`\n  Deploy mode: ${mode}\n`));
 
-      // Sites deploy
-      if (mode === 'full' || mode === 'sites-only') {
-        console.log(chalk.bold('  Static Sites Deploy:'));
-        console.log(chalk.dim(`    Output dir: ${sitesDir}`));
-        console.log(chalk.dim(`    Cache: ${CDN_CACHE_HEADERS['Cache-Control']}`));
-        console.log(chalk.dim(`    Command: ${getSitesDeployCommand(sitesDir)}`));
-        console.log();
-      }
-
-      // API deploy
-      if (mode === 'full' || mode === 'api-only') {
-        if (platform === 'unknown') {
-          console.log(chalk.red('  Cannot detect API deployment platform.\n'));
-          console.log(chalk.dim('  Set RAILWAY_TOKEN or FLY_ACCESS_TOKEN.\n'));
-          process.exitCode = 1;
-          return;
+        // Sites deploy
+        if (mode === "full" || mode === "sites-only") {
+          console.log(chalk.bold("  Static Sites Deploy:"));
+          console.log(chalk.dim(`    Output dir: ${sitesDir}`));
+          console.log(
+            chalk.dim(`    Cache: ${CDN_CACHE_HEADERS["Cache-Control"]}`),
+          );
+          console.log(
+            chalk.dim(`    Command: ${getSitesDeployCommand(sitesDir)}`),
+          );
+          console.log();
         }
 
-        const apiCmd = getApiDeployCommand(platform);
-        console.log(chalk.bold('  API Server Deploy:'));
-        console.log(chalk.dim(`    Platform: ${platform}`));
-        console.log(chalk.dim(`    Command: ${apiCmd}`));
-        console.log(chalk.dim(`    Health check: GET ${options.healthUrl}`));
-        console.log();
-      }
-    });
+        // API deploy
+        if (mode === "full" || mode === "api-only") {
+          if (platform === "unknown") {
+            console.log(
+              chalk.red("  Cannot detect API deployment platform.\n"),
+            );
+            console.log(
+              chalk.dim("  Set RAILWAY_TOKEN or FLY_ACCESS_TOKEN.\n"),
+            );
+            process.exitCode = 1;
+            return;
+          }
+
+          const apiCmd = getApiDeployCommand(platform);
+          console.log(chalk.bold("  API Server Deploy:"));
+          console.log(chalk.dim(`    Platform: ${platform}`));
+          console.log(chalk.dim(`    Command: ${apiCmd}`));
+          console.log(chalk.dim(`    Health check: GET ${options.healthUrl}`));
+          console.log();
+        }
+      },
+    );
 }

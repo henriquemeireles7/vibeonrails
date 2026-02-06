@@ -5,6 +5,6 @@
  * Provides indexing and querying capabilities.
  */
 
-export * from './types.js';
-export * from './indexer.js';
-export * from './query.js';
+export * from "./types.js";
+export * from "./indexer.js";
+export * from "./query.js";

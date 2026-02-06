@@ -4,10 +4,10 @@ import {
   type AIProviderName,
   AIConfigSchema,
   AIError,
-} from './types.js';
-import { createAnthropicProvider } from './providers/anthropic.js';
-import { createOpenAIProvider } from './providers/openai.js';
-import { createOllamaProvider } from './providers/ollama.js';
+} from "./types.js";
+import { createAnthropicProvider } from "./providers/anthropic.js";
+import { createOpenAIProvider } from "./providers/openai.js";
+import { createOllamaProvider } from "./providers/ollama.js";
 
 // Re-export all types
 export type {
@@ -26,7 +26,7 @@ export type {
   GenerateStructuredResponse,
   RetryConfig,
   AIErrorCode,
-} from './types.js';
+} from "./types.js";
 
 export {
   AIConfigSchema,
@@ -37,17 +37,17 @@ export {
   AI_ERROR_CODES,
   AIError,
   DEFAULT_RETRY_CONFIG,
-} from './types.js';
+} from "./types.js";
 
 // Re-export providers
 export {
   createAnthropicProvider,
   createOpenAIProvider,
   createOllamaProvider,
-} from './providers/index.js';
+} from "./providers/index.js";
 
 // Re-export retry utilities
-export { withRetry, isRetryableError, calculateDelay } from './retry.js';
+export { withRetry, isRetryableError, calculateDelay } from "./retry.js";
 
 // Re-export AI call logging
 export {
@@ -56,7 +56,7 @@ export {
   estimateCost,
   type AICallLogEntry,
   type AILoggerOptions,
-} from './logging.js';
+} from "./logging.js";
 
 // ---------------------------------------------------------------------------
 // Factory
@@ -82,21 +82,21 @@ const ENV_DETECTION: Array<{
   baseUrlEnv?: string;
 }> = [
   {
-    provider: 'anthropic',
-    envKey: 'ANTHROPIC_API_KEY',
-    apiKeyEnv: 'ANTHROPIC_API_KEY',
+    provider: "anthropic",
+    envKey: "ANTHROPIC_API_KEY",
+    apiKeyEnv: "ANTHROPIC_API_KEY",
   },
   {
-    provider: 'openai',
-    envKey: 'OPENAI_API_KEY',
-    apiKeyEnv: 'OPENAI_API_KEY',
-    baseUrlEnv: 'OPENAI_BASE_URL',
+    provider: "openai",
+    envKey: "OPENAI_API_KEY",
+    apiKeyEnv: "OPENAI_API_KEY",
+    baseUrlEnv: "OPENAI_BASE_URL",
   },
   {
-    provider: 'ollama',
-    envKey: 'OLLAMA_HOST',
-    apiKeyEnv: 'OLLAMA_HOST',
-    baseUrlEnv: 'OLLAMA_HOST',
+    provider: "ollama",
+    envKey: "OLLAMA_HOST",
+    apiKeyEnv: "OLLAMA_HOST",
+    baseUrlEnv: "OLLAMA_HOST",
   },
 ];
 
@@ -174,8 +174,8 @@ export function createAI(config?: Partial<AIConfig>): AIProvider {
     if (!parseResult.success) {
       throw new AIError(
         `Invalid AI configuration: ${parseResult.error.message}`,
-        'INVALID_REQUEST',
-        (config.provider as AIProviderName) ?? 'anthropic',
+        "INVALID_REQUEST",
+        (config.provider as AIProviderName) ?? "anthropic",
       );
     }
     resolvedConfig = parseResult.data;
@@ -184,9 +184,9 @@ export function createAI(config?: Partial<AIConfig>): AIProvider {
     const detected = detectProviderFromEnv();
     if (!detected) {
       throw new AIError(
-        'No AI provider configured. Set ANTHROPIC_API_KEY, OPENAI_API_KEY, or OLLAMA_HOST environment variable.',
-        'AUTH_ERROR',
-        'anthropic',
+        "No AI provider configured. Set ANTHROPIC_API_KEY, OPENAI_API_KEY, or OLLAMA_HOST environment variable.",
+        "AUTH_ERROR",
+        "anthropic",
       );
     }
 
@@ -201,7 +201,7 @@ export function createAI(config?: Partial<AIConfig>): AIProvider {
   if (!factory) {
     throw new AIError(
       `Unknown AI provider: ${resolvedConfig.provider}`,
-      'INVALID_REQUEST',
+      "INVALID_REQUEST",
       resolvedConfig.provider,
     );
   }
