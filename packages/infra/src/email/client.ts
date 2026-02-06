@@ -5,7 +5,7 @@
  * Templates are stored in content/locales/{lang}/emails/.
  *
  * Usage:
- *   import { sendEmail } from '@aor/infra/email';
+ *   import { sendEmail } from '@vibeonrails/infra/email';
  *
  *   await sendEmail('welcome', {
  *     to: 'user@example.com',

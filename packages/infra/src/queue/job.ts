@@ -5,7 +5,7 @@
  * and backoff strategies. Jobs are processed by BullMQ workers.
  *
  * Usage:
- *   import { defineJob } from '@aor/infra/queue';
+ *   import { defineJob } from '@vibeonrails/infra/queue';
  *
  *   export const sendWelcomeEmail = defineJob({
  *     name: 'send-welcome-email',

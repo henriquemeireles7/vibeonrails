@@ -10,7 +10,7 @@
  * - Health check endpoint
  *
  * Usage:
- *   import { createServer } from '@aor/core/api';
+ *   import { createServer } from '@vibeonrails/core/api';
  *   import { appRouter } from './router';
  *
  *   const app = createServer({ router: appRouter });

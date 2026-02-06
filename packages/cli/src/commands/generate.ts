@@ -6,7 +6,7 @@ import { generateModule } from "../generators/module.generator.js";
 import { toKebabCase } from "../utils/template.js";
 
 /**
- * `aor generate module <name>` — Generate a new module (types, service, controller, test).
+ * `vibe generate module <name>` — Generate a new module (types, service, controller, test).
  */
 export function generateCommand(): Command {
   const generate = new Command("generate")

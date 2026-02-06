@@ -1,8 +1,8 @@
-# @aor/core Skill
+# @vibeonrails/core Skill
 
 ## Purpose
 
-The `@aor/core` package provides the fundamental building blocks for every Agent on Rails application:
+The `@vibeonrails/core` package provides the fundamental building blocks for every Vibe on Rails application:
 
 - **API**: Hono HTTP server + tRPC for type-safe endpoints
 - **Database**: Drizzle ORM with PostgreSQL, schema definitions, and migrations
@@ -66,13 +66,13 @@ packages/core/
 1. Create schema file: `src/database/schema/{name}.ts`
 2. Export from `src/database/schema/index.ts`
 3. Add relations in `src/database/schema/relations.ts`
-4. Run `npx aor db:migrate` to generate migration
+4. Run `npx vibe db:migrate` to generate migration
 
 ### Adding authorization
 
 ```typescript
 // In controller:
-import { requireRole, requireOwnership } from '@aor/core/security';
+import { requireRole, requireOwnership } from '@vibeonrails/core/security';
 
 deletePost: protectedProcedure
   .input(z.object({ id: z.string().uuid() }))

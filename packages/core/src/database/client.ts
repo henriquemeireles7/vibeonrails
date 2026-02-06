@@ -5,7 +5,7 @@
  * Uses PostgreSQL via the `postgres` driver.
  *
  * Usage in app:
- *   import { createDatabase } from '@aor/core/database';
+ *   import { createDatabase } from '@vibeonrails/core/database';
  *   export const db = createDatabase();
  */
 

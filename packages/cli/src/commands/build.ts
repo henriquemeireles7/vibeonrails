@@ -4,7 +4,7 @@ import chalk from "chalk";
 import ora from "ora";
 
 /**
- * `aor build` — Production build.
+ * `vibe build` — Production build.
  */
 export function buildCommand(): Command {
   return new Command("build")

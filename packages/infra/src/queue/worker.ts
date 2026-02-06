@@ -5,7 +5,7 @@
  * execution, retries, and error reporting.
  *
  * Usage:
- *   import { createQueue, enqueue } from '@aor/infra/queue';
+ *   import { createQueue, enqueue } from '@vibeonrails/infra/queue';
  *
  *   const queue = createQueue([sendWelcomeEmail, processPayment]);
  *   await enqueue(sendWelcomeEmail, { userId: '123', email: 'test@test.com' });

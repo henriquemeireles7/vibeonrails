@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { generateModule } from "./module.generator.js";
 
 describe("module generator", () => {
-  const testDir = join(tmpdir(), "aor-cli-module-test-" + Date.now());
+  const testDir = join(tmpdir(), "vibe-cli-module-test-" + Date.now());
 
   beforeEach(() => {
     mkdirSync(testDir, { recursive: true });

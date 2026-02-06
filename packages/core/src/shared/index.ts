@@ -1,5 +1,5 @@
 /**
- * @aor/core/shared - Shared module barrel export
+ * @vibeonrails/core/shared - Shared module barrel export
  */
 
 export * from './errors/index.js';

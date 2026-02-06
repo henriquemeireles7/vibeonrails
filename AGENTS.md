@@ -1,4 +1,4 @@
-# Agent on Rails (VibeOnRails)
+# Vibe on Rails (VibeOnRails)
 
 ## What We're Building
 A full-stack TypeScript framework designed for AI-assisted development. Predictable conventions, SKILL.md in every folder, zero ambiguity for humans and AI.
@@ -46,7 +46,7 @@ pnpm run validate     # Full check: typecheck + lint + test + build + git add
 
 ## Architecture Rules
 - Each package has a SKILL.md that teaches AI agents how to use it
-- Packages export via barrel pattern: `@aor/core/api`, `@aor/core/database`
+- Packages export via barrel pattern: `@vibeonrails/core/api`, `@vibeonrails/core/database`
 - All user input validated with Zod schemas
 - Use tRPC procedures: `publicProcedure`, `protectedProcedure`
 - Database queries use Drizzle ORM, no raw SQL unless necessary
@@ -58,13 +58,20 @@ pnpm run validate     # Full check: typecheck + lint + test + build + git add
 - Colocate tests: `feature.test.ts` next to `feature.ts`
 - Use Vitest for all testing
 
+## CLI Commands
+- `vibe create <name>` — Scaffold new project
+- `vibe generate module <name>` — Generate a module
+- `vibe dev` — Start dev server
+- `vibe db migrate|seed|reset|studio` — Database operations
+- `vibe build` — Production build
+
 ## Current Status
 - ✅ Monorepo structure with Turborepo + pnpm
-- ✅ @aor/core: API, Database, Security, Shared
-- ✅ @aor/infra: Health, Logging, Queue, Email, Cache, Storage
-- ✅ @aor/cli: create, generate module, dev, db, build commands
+- ✅ @vibeonrails/core: API, Database, Security, Shared
+- ✅ @vibeonrails/infra: Health, Logging, Queue, Email, Cache, Storage
+- ✅ @vibeonrails/cli: create, generate module, dev, db, build commands
 - ✅ AI workflow integrated
-- 📋 Next: App template refinement, @aor/web frontend package
+- 📋 Next: App template refinement, @vibeonrails/web frontend package
 
 ## Important Notes
 - Don't add dependencies without discussing (keep the stack minimal)

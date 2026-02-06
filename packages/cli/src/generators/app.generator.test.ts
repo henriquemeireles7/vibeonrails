@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { generateApp } from "./app.generator.js";
 
 describe("app generator", () => {
-  const testDir = join(tmpdir(), "aor-cli-app-test-" + Date.now());
+  const testDir = join(tmpdir(), "vibe-cli-app-test-" + Date.now());
 
   beforeEach(() => {
     mkdirSync(testDir, { recursive: true });

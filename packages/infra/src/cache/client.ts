@@ -5,7 +5,7 @@
  * Supports get/set/delete with automatic JSON serialization and TTL.
  *
  * Usage:
- *   import { createCache } from '@aor/infra/cache';
+ *   import { createCache } from '@vibeonrails/infra/cache';
  *
  *   const cache = createCache();
  *   await cache.set('user:123', userData, 3600); // TTL in seconds

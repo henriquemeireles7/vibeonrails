@@ -5,7 +5,7 @@
  * The app imports feature routers and merges them here.
  *
  * Usage in app:
- *   import { createAppRouter } from '@aor/core/api';
+ *   import { createAppRouter } from '@vibeonrails/core/api';
  *   import { userRouter } from './modules/user/user.controller';
  *   import { postRouter } from './modules/post/post.controller';
  *

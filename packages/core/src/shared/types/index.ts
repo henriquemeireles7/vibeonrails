@@ -1,5 +1,5 @@
 /**
- * @aor/core - Shared Type Definitions
+ * @vibeonrails/core - Shared Type Definitions
  *
  * Central type definitions used across the framework.
  * These types are the single source of truth.
@@ -7,8 +7,8 @@
 
 /**
  * Note: The canonical User type is derived from the database schema.
- * Import it from '@aor/core/database' instead:
- *   import { type User } from '@aor/core/database';
+ * Import it from '@vibeonrails/core/database' instead:
+ *   import { type User } from '@vibeonrails/core/database';
  */
 
 export interface TokenPayload {

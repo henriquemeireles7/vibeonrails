@@ -7,11 +7,11 @@ import { copyDir, replaceInFile, ensureDir } from "../utils/fs.js";
 import { toKebabCase } from "../utils/template.js";
 
 /**
- * `aor create <name>` — Scaffold a new Agent on Rails project from the app template.
+ * `vibe create <name>` — Scaffold a new Vibe on Rails project from the app template.
  */
 export function createCommand(): Command {
   return new Command("create")
-    .description("Create a new Agent on Rails project")
+    .description("Create a new Vibe on Rails project")
     .argument("<name>", "Project name (e.g. my-app)")
     .option("--skip-install", "Skip dependency installation")
     .action(async (name: string, options: { skipInstall?: boolean }) => {
@@ -43,7 +43,7 @@ export function createCommand(): Command {
         const templateDir = join(cliRoot, "templates", "app");
 
         if (!existsSync(templateDir)) {
-          spinner.fail("App template not found. Is @aor/cli installed correctly?");
+          spinner.fail("App template not found. Is @vibeonrails/cli installed correctly?");
           process.exit(1);
         }
 

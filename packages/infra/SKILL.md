@@ -1,8 +1,8 @@
-# @aor/infra Skill
+# @vibeonrails/infra Skill
 
 ## Purpose
 
-The `@aor/infra` package provides infrastructure modules for production applications:
+The `@vibeonrails/infra` package provides infrastructure modules for production applications:
 
 - **Health**: Registry-based health check system for monitoring
 - **Logging**: Structured JSON logging with child loggers
@@ -48,7 +48,7 @@ packages/infra/
 ### Adding a health check
 
 ```typescript
-import { registerHealthCheck } from '@aor/infra/health';
+import { registerHealthCheck } from '@vibeonrails/infra/health';
 
 registerHealthCheck('database', async () => {
   await db.execute(sql`SELECT 1`);
@@ -59,7 +59,7 @@ registerHealthCheck('database', async () => {
 ### Defining a background job
 
 ```typescript
-import { defineJob, enqueue } from '@aor/infra/queue';
+import { defineJob, enqueue } from '@vibeonrails/infra/queue';
 
 const sendEmail = defineJob({
   name: 'send-email',
@@ -75,7 +75,7 @@ await enqueue(sendEmail, { to: 'user@test.com', template: 'welcome' });
 ### Sending emails
 
 ```typescript
-import { sendEmail } from '@aor/infra/email';
+import { sendEmail } from '@vibeonrails/infra/email';
 
 await sendEmail('welcome', {
   to: 'user@example.com',

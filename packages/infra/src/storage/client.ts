@@ -5,7 +5,7 @@
  * DigitalOcean Spaces, or any S3-compatible provider.
  *
  * Usage:
- *   import { createStorage } from '@aor/infra/storage';
+ *   import { createStorage } from '@vibeonrails/infra/storage';
  *
  *   const storage = createStorage();
  *   const url = await storage.upload('avatars/user-123.jpg', fileBuffer, 'image/jpeg');

@@ -1,11 +1,11 @@
-# Agent on Rails — Remaining Tasks
+# Vibe on Rails — Remaining Tasks
 
 > Each task = one file change. Organized by project.
 > Status: `[ ]` = not started, `[x]` = done
 
 ---
 
-## Project 1: @aor/core — Remaining Framework Gaps
+## Project 1: @vibeonrails/core — Remaining Framework Gaps
 
 > What exists: API (server, trpc, context, router, middleware), Database (client, migrate, schema), Security (jwt, password, guards), Shared (errors, types, utils)
 > What's missing: database seeds/repos, session auth, OAuth, crypto utils, CSRF, audit logging
@@ -67,7 +67,7 @@
 
 ---
 
-## Project 2: @aor/infra — Remaining Framework Gaps
+## Project 2: @vibeonrails/infra — Remaining Framework Gaps
 
 > What exists: Health, Logging, Queue (jobs), Email, Cache, Storage
 > What's missing: cron jobs, realtime/WebSockets, monitoring/metrics
@@ -101,9 +101,9 @@
 
 ---
 
-## Project 3: @aor/cli — New Package (Developer Experience)
+## Project 3: @vibeonrails/cli — New Package (Developer Experience)
 
-> This is what makes the framework usable. `npx create-aor my-app` and `npx aor generate module user`.
+> This is what makes the framework usable. `npx create-vibe my-app` and `npx vibe generate module user`.
 
 ### Package Setup
 
@@ -114,8 +114,8 @@
 
 ### Binary Entry Point
 
-- [x] `packages/cli/bin/aor.js` — CLI entry point (#!/usr/bin/env node, loads dist/index.js)
-- [x] `packages/cli/bin/create-aor.js` — create-aor entry point
+- [x] `packages/cli/bin/vibe.js` — CLI entry point (#!/usr/bin/env node, loads dist/index.js)
+- [x] `packages/cli/bin/create-vibe.js` — create-vibe entry point
 
 ### CLI Main Router
 
@@ -123,18 +123,18 @@
 
 ### Commands
 
-- [x] `packages/cli/src/commands/create.ts` — `npx create-aor <name>` — scaffold new project from app template
-- [x] `packages/cli/src/commands/generate.ts` — `npx aor generate module|component <name>` — generate code from templates
-- [x] `packages/cli/src/commands/dev.ts` — `npx aor dev` — start dev server (API + web concurrently)
-- [x] `packages/cli/src/commands/db.ts` — `npx aor db:migrate|seed|reset` — database operations
-- [x] `packages/cli/src/commands/build.ts` — `npx aor build` — production build
-- [x] `packages/cli/src/commands/deploy.ts` — `npx aor deploy railway|fly` — deploy to cloud (placeholder)
+- [x] `packages/cli/src/commands/create.ts` — `npx create-vibe <name>` — scaffold new project from app template
+- [x] `packages/cli/src/commands/generate.ts` — `npx vibe generate module|component <name>` — generate code from templates
+- [x] `packages/cli/src/commands/dev.ts` — `npx vibe dev` — start dev server (API + web concurrently)
+- [x] `packages/cli/src/commands/db.ts` — `npx vibe db:migrate|seed|reset` — database operations
+- [x] `packages/cli/src/commands/build.ts` — `npx vibe build` — production build
+- [x] `packages/cli/src/commands/deploy.ts` — `npx vibe deploy railway|fly` — deploy to cloud (placeholder)
 
 ### Generators
 
 - [x] `packages/cli/src/generators/app.generator.ts` — Copy app template, replace placeholders, install deps
 - [x] `packages/cli/src/generators/module.generator.ts` — Generate types + service + controller + test for an API module
-- [ ] `packages/cli/src/generators/component.generator.ts` — Generate React component from template (needs @aor/web first)
+- [ ] `packages/cli/src/generators/component.generator.ts` — Generate React component from template (needs @vibeonrails/web first)
 
 ### Utilities
 
@@ -158,9 +158,9 @@
 
 ---
 
-## Project 4: @aor/web — New Package (Frontend)
+## Project 4: @vibeonrails/web — New Package (Frontend)
 
-> CSS system, React components, hooks, tRPC client. Published as `@aor/web`.
+> CSS system, React components, hooks, tRPC client. Published as `@vibeonrails/web`.
 
 ### Package Setup
 
@@ -217,7 +217,7 @@
 
 ### Package Entry
 
-- [ ] `packages/web/src/index.ts` — Main barrel export for entire @aor/web package
+- [ ] `packages/web/src/index.ts` — Main barrel export for entire @vibeonrails/web package
 
 ### Tests
 
@@ -231,13 +231,13 @@
 
 ---
 
-## Project 5: App Template — What `create-aor` Scaffolds
+## Project 5: App Template — What `create-vibe` Scaffolds
 
-> This is the starter project a real developer gets when they run `npx create-aor my-app`.
+> This is the starter project a real developer gets when they run `npx create-vibe my-app`.
 
 ### Root Config
 
-- [ ] `templates/app/package.json.hbs` — Template package.json with @aor/core, @aor/infra, @aor/web deps
+- [ ] `templates/app/package.json.hbs` — Template package.json with @vibeonrails/core, @vibeonrails/infra, @vibeonrails/web deps
 - [ ] `templates/app/tsconfig.json` — App-level TypeScript config
 - [ ] `templates/app/.env.example` — Environment variables template
 - [ ] `templates/app/.gitignore` — Git ignore for generated app
@@ -251,7 +251,7 @@
 ### Config
 
 - [ ] `templates/app/src/config/app.ts` — App config (name, port, env)
-- [ ] `templates/app/src/config/database.ts` — Database config (creates db instance from @aor/core)
+- [ ] `templates/app/src/config/database.ts` — Database config (creates db instance from @vibeonrails/core)
 - [ ] `templates/app/src/config/env.ts` — Env validation with Zod
 
 ### Auth Module (built-in)
@@ -314,7 +314,7 @@
 
 ---
 
-## Project 6: Module Template — What `aor generate module` Creates
+## Project 6: Module Template — What `vibe generate module` Creates
 
 - [ ] `templates/module/{{name}}.types.ts.hbs` — Zod schemas (Create + Update)
 - [ ] `templates/module/{{name}}.service.ts.hbs` — Service with CRUD methods
@@ -324,14 +324,14 @@
 
 ---
 
-## Project 7: Component Template — What `aor generate component` Creates
+## Project 7: Component Template — What `vibe generate component` Creates
 
 - [ ] `templates/component/{{Name}}.tsx.hbs` — React component template
 - [ ] `templates/component/{{Name}}.test.tsx.hbs` — Component test template
 
 ---
 
-## Project 8: @aor/payments — Feature Package (Stripe)
+## Project 8: @vibeonrails/payments — Feature Package (Stripe)
 
 ### Package Setup
 
@@ -358,11 +358,11 @@
 
 ---
 
-## Project 9: @aor/admin — Feature Package (Admin Panel)
+## Project 9: @vibeonrails/admin — Feature Package (Admin Panel)
 
 ### Package Setup
 
-- [ ] `packages/features/admin/package.json` — Package config (depends on @aor/web)
+- [ ] `packages/features/admin/package.json` — Package config (depends on @vibeonrails/web)
 - [ ] `packages/features/admin/tsconfig.json` — TypeScript config
 - [ ] `packages/features/admin/tsup.config.ts` — Build config
 
@@ -391,7 +391,7 @@
 
 ---
 
-## Project 10: @aor/support — Feature Package (Helpdesk)
+## Project 10: @vibeonrails/support — Feature Package (Helpdesk)
 
 ### Package Setup
 
@@ -414,7 +414,7 @@
 
 ---
 
-## Project 11: @aor/sales — Feature Package (AI Sales Agent)
+## Project 11: @vibeonrails/sales — Feature Package (AI Sales Agent)
 
 ### Package Setup
 
@@ -437,7 +437,7 @@
 
 ---
 
-## Project 12: @aor/marketing — Feature Package (Marketing Automation)
+## Project 12: @vibeonrails/marketing — Feature Package (Marketing Automation)
 
 ### Package Setup
 
@@ -504,10 +504,10 @@
 
 - [ ] `docs/src/pages/index.md` — Documentation home page
 - [ ] `docs/src/pages/getting-started.md` — Quick start guide (create project, add module, run dev)
-- [ ] `docs/src/pages/core/api.md` — @aor/core API reference
+- [ ] `docs/src/pages/core/api.md` — @vibeonrails/core API reference
 - [ ] `docs/src/pages/core/database.md` — Database module reference
 - [ ] `docs/src/pages/core/security.md` — Security module reference
-- [ ] `docs/src/pages/infra/overview.md` — @aor/infra overview
+- [ ] `docs/src/pages/infra/overview.md` — @vibeonrails/infra overview
 - [ ] `docs/src/pages/web/css-system.md` — CSS system documentation
 - [ ] `docs/src/pages/web/components.md` — Component library reference
 - [ ] `docs/src/pages/cli/commands.md` — CLI commands reference
@@ -523,7 +523,7 @@
 
 ### Basic Example
 
-- [ ] `examples/basic/package.json` — Minimal AoR app (auth + posts)
+- [ ] `examples/basic/package.json` — Minimal VoR app (auth + posts)
 - [ ] `examples/basic/src/main.ts` — App entry
 - [ ] `examples/basic/src/router.ts` — Router with auth + post modules
 - [ ] `examples/basic/README.md` — How to run the example
@@ -537,7 +537,7 @@
 
 ---
 
-## Project 16: @aor/mobile — Future Package (React Native)
+## Project 16: @vibeonrails/mobile — Future Package (React Native)
 
 > Lower priority. Listed for completeness from vision doc.
 
@@ -555,21 +555,21 @@
 
 | Priority | Project | Why |
 |----------|---------|-----|
-| 1 | **Project 3: @aor/cli** | Without the CLI, nobody can use the framework |
+| 1 | **Project 3: @vibeonrails/cli** | Without the CLI, nobody can use the framework |
 | 2 | **Project 5: App Template** | What the CLI scaffolds — makes the framework real |
-| 3 | **Project 6: Module Template** | What `aor generate module` produces |
-| 4 | **Project 4: @aor/web** | Frontend components + CSS system |
-| 5 | **Project 1: @aor/core gaps** | Repos, seeds, sessions, OAuth, crypto |
-| 6 | **Project 2: @aor/infra gaps** | Cron, realtime, monitoring |
+| 3 | **Project 6: Module Template** | What `vibe generate module` produces |
+| 4 | **Project 4: @vibeonrails/web** | Frontend components + CSS system |
+| 5 | **Project 1: @vibeonrails/core gaps** | Repos, seeds, sessions, OAuth, crypto |
+| 6 | **Project 2: @vibeonrails/infra gaps** | Cron, realtime, monitoring |
 | 7 | **Project 13: Content System** | Email/website templates for the app template |
-| 8 | **Project 8: @aor/payments** | First feature package |
-| 9 | **Project 9: @aor/admin** | Second feature package |
+| 8 | **Project 8: @vibeonrails/payments** | First feature package |
+| 9 | **Project 9: @vibeonrails/admin** | Second feature package |
 | 10 | **Project 14: Documentation** | Docs site for public launch |
 | 11 | **Project 15: Examples** | Proof that everything works together |
 | 12 | **Project 7: Component Template** | Nice-to-have generator |
-| 13 | **Project 10: @aor/support** | Feature package |
-| 14 | **Project 11: @aor/sales** | Feature package |
-| 15 | **Project 12: @aor/marketing** | Feature package |
-| 16 | **Project 16: @aor/mobile** | Future |
+| 13 | **Project 10: @vibeonrails/support** | Feature package |
+| 14 | **Project 11: @vibeonrails/sales** | Feature package |
+| 15 | **Project 12: @vibeonrails/marketing** | Feature package |
+| 16 | **Project 16: @vibeonrails/mobile** | Future |
 
 **Total remaining tasks: ~195 file changes across 16 projects.**

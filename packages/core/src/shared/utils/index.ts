@@ -1,5 +1,5 @@
 /**
- * @aor/core - Shared Utilities
+ * @vibeonrails/core - Shared Utilities
  *
  * Common utility functions used across the framework.
  */
