@@ -32,3 +32,9 @@ coverage/
 *.log
 npm-debug.log*
 pnpm-debug.log*
+
+# AI Workflow
+sessions/
+sessions/*.log
+sessions/*.md
+IMPLEMENTATION_PLAN.md

@@ -1,0 +1,92 @@
+# AI Workflow Rules for Cursor
+
+> CUSTOMIZE: Replace [brackets] with your project's details.
+
+## Project: [YOUR PROJECT NAME]
+
+[Brief description of what this project does]
+
+## Tech Stack
+
+- Frontend: [e.g., Next.js 15, React 19, Tailwind CSS]
+- Backend: [e.g., Node.js, Express, FastAPI]
+- Database: [e.g., PostgreSQL, Prisma ORM]
+- Testing: [e.g., Vitest, Playwright]
+
+## Development Modes
+
+### Interactive Mode (default in Cursor)
+1. Plan first - Break down features into steps before coding
+2. TDD - Write tests first (RED), implement (GREEN), refactor (IMPROVE)
+3. Review - Check code quality and security after changes
+4. Commit - Use conventional commits (feat:, fix:, refactor:, etc.)
+
+### Autonomous Mode (loop.sh - Claude Code headless)
+For long-running autonomous tasks, use the loop script:
+- `./loop.sh plan` - Generate implementation plan from specs/
+- `./loop.sh build` - Execute tasks from IMPLEMENTATION_PLAN.md
+- `./loop.sh plan-work` - Hybrid: plan + build in one loop
+See README.md for full documentation.
+
+## Code Style
+
+- TypeScript strict mode always
+- No `any` type - use `unknown` for external data
+- Small files (200-400 lines max)
+- Small functions (<50 lines)
+- Immutability preferred (const, spread, map)
+- No emojis in code or comments
+- No console.log in production code
+
+## Naming Conventions
+
+- Variables/Functions: camelCase
+- Classes/Types: PascalCase
+- Constants: UPPER_SNAKE_CASE
+- Files: kebab-case
+- Directories: kebab-case
+
+## Security (MANDATORY)
+
+Before any commit:
+- No hardcoded secrets (API keys, passwords, tokens)
+- All user inputs validated
+- SQL injection prevention (parameterized queries)
+- XSS prevention (sanitized HTML)
+- Error messages don't leak sensitive data
+
+## Testing Requirements
+
+- Minimum 80% test coverage
+- Unit tests for all functions
+- Integration tests for API endpoints
+- E2E tests for critical user flows
+- Always fix implementation, not tests (unless tests are wrong)
+
+## Git Workflow
+
+- Conventional commits: feat:, fix:, refactor:, docs:, test:, chore:
+- Branch naming: feat/description, fix/description, refactor/description
+- Always create PR with comprehensive summary
+
+## Available Agents (in agents/ folder)
+
+- planner.md - Feature planning
+- architect.md - System design
+- tdd-guide.md - Test-driven development
+- code-reviewer.md - Code review
+- security-reviewer.md - Security audit
+- build-error-resolver.md - Fix build errors
+- database-reviewer.md - SQL/schema optimization
+- e2e-runner.md - E2E testing
+- refactor-cleaner.md - Dead code cleanup
+- doc-updater.md - Documentation maintenance
+
+## Autonomous Loop Files
+
+- loop.sh - The outer loop script (plan/build/plan-work modes)
+- prompts/ - Prompt templates for autonomous mode
+- specs/ - Feature requirements (input for planning)
+- sessions/ - Auto-generated session logs
+- templates/AGENTS.md - Operational brief template
+- templates/IMPLEMENTATION_PLAN.md - Plan template
