@@ -1,21 +1,138 @@
 ---
-title: "Error Handling"
-description: "Error handling strategy with AppError subclasses."
+title: Error Handling
+description: How VibeonRails provides structured, AI-friendly error responses with error codes and documentation links.
 sidebar:
   order: 7
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+VibeonRails has a built-in error system that produces structured, predictable error responses. Every error includes a code, message, and a link to documentation. This makes errors useful for both humans and AI agents.
 
-## Overview
+## Error Response Format
 
-{/* TODO: Write comprehensive content for this page */}
+```json
+{
+  "code": "E2001",
+  "message": "User not found (id: abc-123)",
+  "details": { "resource": "User", "id": "abc-123" },
+  "docs": "https://vibeonrails.dev/errors/E2001"
+}
+```
 
-## See Also
+## Error Classes
 
-{/* TODO: Add cross-references to related pages */}
+VibeonRails provides error classes for common HTTP scenarios:
+
+```typescript
+import {
+  AppError,
+  NotFoundError,
+  UnauthorizedError,
+  ForbiddenError,
+  ValidationError,
+  AuthenticationError,
+} from '@vibeonrails/core';
+
+// 404 - Resource not found
+throw new NotFoundError('User', userId);
+
+// 401 - Not authenticated
+throw new UnauthorizedError('Authentication required');
+
+// 403 - Not authorized
+throw new ForbiddenError('Insufficient permissions');
+
+// 422 - Validation failed
+throw new ValidationError('Email is invalid', { field: 'email' });
+
+// 401 - Wrong credentials
+throw new AuthenticationError('Invalid credentials');
+```
+
+## Error Codes
+
+Errors are organized by category with numeric codes:
+
+| Code Range | Category | Example |
+|-----------|----------|---------|
+| `E1xxx` | Authentication | `E1001` Invalid credentials, `E1002` Token expired |
+| `E2xxx` | User | `E2001` User not found, `E2002` Already exists |
+| `E3xxx` | Resource | `E3001` Not found, `E3002` Already exists |
+| `E4xxx` | Validation | `E4001` Validation failed |
+| `E5xxx` | Authorization | `E5001` Unauthorized, `E5002` Forbidden |
+| `E6xxx` | Rate Limiting | `E6001` Rate limit exceeded |
+| `E9xxx` | Internal | `E9999` Unhandled server error |
+
+## Using Errors in Procedures
+
+```typescript
+import { NotFoundError } from '@vibeonrails/core';
+
+export const postRouter = router({
+  getById: publicProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .query(async ({ input }) => {
+      const post = await postRepo.findById(input.id);
+
+      if (!post) {
+        throw new NotFoundError('Post', input.id);
+      }
+
+      return post;
+    }),
+});
+```
+
+## Custom AppError
+
+Create custom errors by extending `AppError`:
+
+```typescript
+import { AppError } from '@vibeonrails/core';
+
+export class InsufficientBalanceError extends AppError {
+  constructor(required: number, available: number) {
+    super(
+      'E7001',
+      `Insufficient balance: need ${required}, have ${available}`,
+      402,
+      { required, available },
+    );
+    this.name = 'InsufficientBalanceError';
+  }
+}
+```
+
+## Error Handler Middleware
+
+The global error handler catches all unhandled errors and formats them:
+
+- **AppError instances**: Serialized with `error.toJSON()`, using the error's status code
+- **Unknown errors**: Logged to console, returns generic `500` with code `E9999`
+
+The error handler is automatically applied by `createServer()`. It never leaks stack traces or sensitive data to the client.
+
+## tRPC Error Integration
+
+tRPC errors include an additional `docs` field:
+
+```typescript
+// tRPC error formatter adds docs links
+{
+  "error": {
+    "message": "Authentication required.",
+    "code": -32001,
+    "data": {
+      "code": "UNAUTHORIZED",
+      "docs": "https://vibeonrails.dev/errors/UNAUTHORIZED"
+    }
+  }
+}
+```
+
+## Best Practices
+
+- **Use specific error classes** instead of generic `Error` or `AppError`
+- **Include context in errors** -- resource name, IDs, field names
+- **Never expose internal details** -- no stack traces, no SQL queries, no file paths
+- **Use error codes** for programmatic handling on the client side
+- **Log unknown errors** server-side for debugging, but return generic messages to clients

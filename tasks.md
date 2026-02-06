@@ -624,7 +624,7 @@
 - [x] `docs/src/styles/custom.css` — Uses default VibeonRails theme from package
 - [x] `turbo.json` — Updated build dependency chain for docs-site
 
-### Phase 3: Fill Documentation Content (P0 — Core User Journey)
+### Phase 3: Fill Documentation Content (P0 — Core User Journey) ✅
 
 > These are the most important pages. Written from source code + SKILL.md files.
 
@@ -638,43 +638,43 @@
 
 #### Guides — Database (P0)
 
-- [ ] `docs/src/content/docs/guides/database/index.mdx` — Database overview
-- [ ] `docs/src/content/docs/guides/database/client.mdx` — Client & connections
-- [ ] `docs/src/content/docs/guides/database/schema.mdx` — Schema definitions
-- [ ] `docs/src/content/docs/guides/database/migrations.mdx` — Migrations
-- [ ] `docs/src/content/docs/guides/database/repositories.mdx` — Repository pattern
-- [ ] `docs/src/content/docs/guides/database/seeds.mdx` — Seeds
-- [ ] `docs/src/content/docs/guides/database/relations.mdx` — Relations
-- [ ] `docs/src/content/docs/guides/database/queries.mdx` — Query patterns
-- [ ] `docs/src/content/docs/guides/database/transactions.mdx` — Transactions
+- [x] `docs/src/content/docs/guides/database/index.mdx` — Database overview
+- [x] `docs/src/content/docs/guides/database/client.mdx` — Client & connections
+- [x] `docs/src/content/docs/guides/database/schema.mdx` — Schema definitions
+- [x] `docs/src/content/docs/guides/database/migrations.mdx` — Migrations
+- [x] `docs/src/content/docs/guides/database/repositories.mdx` — Repository pattern
+- [x] `docs/src/content/docs/guides/database/seeds.mdx` — Seeds
+- [x] `docs/src/content/docs/guides/database/relations.mdx` — Relations
+- [x] `docs/src/content/docs/guides/database/queries.mdx` — Query patterns
+- [x] `docs/src/content/docs/guides/database/transactions.mdx` — Transactions
 
 #### Guides — API (P0)
 
-- [ ] `docs/src/content/docs/guides/api/index.mdx` — API overview
-- [ ] `docs/src/content/docs/guides/api/server.mdx` — Hono server
-- [ ] `docs/src/content/docs/guides/api/trpc.mdx` — tRPC integration
-- [ ] `docs/src/content/docs/guides/api/procedures.mdx` — Procedures
-- [ ] `docs/src/content/docs/guides/api/context.mdx` — Request context
-- [ ] `docs/src/content/docs/guides/api/middleware.mdx` — Middleware
-- [ ] `docs/src/content/docs/guides/api/error-handling.mdx` — Error handling
-- [ ] `docs/src/content/docs/guides/api/rate-limiting.mdx` — Rate limiting
+- [x] `docs/src/content/docs/guides/api/index.mdx` — API overview
+- [x] `docs/src/content/docs/guides/api/server.mdx` — Hono server
+- [x] `docs/src/content/docs/guides/api/trpc.mdx` — tRPC integration
+- [x] `docs/src/content/docs/guides/api/procedures.mdx` — Procedures
+- [x] `docs/src/content/docs/guides/api/context.mdx` — Request context
+- [x] `docs/src/content/docs/guides/api/middleware.mdx` — Middleware
+- [x] `docs/src/content/docs/guides/api/error-handling.mdx` — Error handling
+- [x] `docs/src/content/docs/guides/api/rate-limiting.mdx` — Rate limiting
 
 #### Guides — Security (P0)
 
-- [ ] `docs/src/content/docs/guides/security/index.mdx` — Security overview
-- [ ] `docs/src/content/docs/guides/security/authentication.mdx` — Authentication
-- [ ] `docs/src/content/docs/guides/security/jwt.mdx` — JWT tokens
+- [x] `docs/src/content/docs/guides/security/index.mdx` — Security overview
+- [x] `docs/src/content/docs/guides/security/authentication.mdx` — Authentication
+- [x] `docs/src/content/docs/guides/security/jwt.mdx` — JWT tokens
 
 #### Tutorials (P0)
 
-- [ ] `docs/src/content/docs/tutorials/your-first-app.mdx` — Build a todo app
-- [ ] `docs/src/content/docs/tutorials/authentication.mdx` — Add authentication
+- [x] `docs/src/content/docs/tutorials/your-first-app.mdx` — Build a todo app
+- [x] `docs/src/content/docs/tutorials/authentication.mdx` — Add authentication
 
 #### Reference (P0)
 
-- [ ] `docs/src/content/docs/reference/api/create-server.mdx` — createServer() reference
-- [ ] `docs/src/content/docs/reference/database/create-database.mdx` — createDatabase() reference
-- [ ] `docs/src/content/docs/reference/security/jwt-api.mdx` — JWT functions reference
+- [x] `docs/src/content/docs/reference/api/create-server.mdx` — createServer() reference
+- [x] `docs/src/content/docs/reference/database/create-database.mdx` — createDatabase() reference
+- [x] `docs/src/content/docs/reference/security/jwt-api.mdx` — JWT functions reference
 
 ### Phase 4: Fill Documentation Content (P1 — Essential)
 

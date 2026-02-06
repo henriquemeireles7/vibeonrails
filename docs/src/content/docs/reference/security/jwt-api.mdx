@@ -1,21 +1,199 @@
 ---
-title: "JWT Functions"
-description: "API reference for JWT sign, verify, and decode."
+title: JWT Functions
+description: API reference for JWT token signing and verification functions.
 sidebar:
   order: 1
-  badge:
-    text: Reference
-    variant: danger
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+Functions for signing and verifying JWT tokens using the `jose` library with HMAC-SHA256.
 
-## Overview
+## Import
 
-{/* TODO: Write comprehensive content for this page */}
+```typescript
+import {
+  signAccessToken,
+  signRefreshToken,
+  verifyToken,
+} from '@vibeonrails/core/security';
+```
+
+---
+
+## signAccessToken()
+
+Signs a JWT access token containing the user's identity.
+
+### Signature
+
+```typescript
+async function signAccessToken(
+  user: { id: string; email: string; role: string },
+  expiresIn?: string,
+): Promise<string>
+```
+
+### Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `user` | `{ id, email, role }` | Yes | -- | User data to encode |
+| `expiresIn` | `string` | No | `'15m'` | Token lifetime (e.g., `'15m'`, `'1h'`, `'7d'`) |
+
+### Returns
+
+`Promise<string>` -- Signed JWT string.
+
+### Token Payload
+
+```json
+{
+  "sub": "user-id",
+  "email": "user@example.com",
+  "role": "admin",
+  "iat": 1738800000,
+  "exp": 1738800900
+}
+```
+
+### Example
+
+```typescript
+const token = await signAccessToken({
+  id: 'user-123',
+  email: 'user@example.com',
+  role: 'admin',
+});
+
+// Custom expiration
+const longToken = await signAccessToken(user, '1h');
+```
+
+---
+
+## signRefreshToken()
+
+Signs a JWT refresh token containing only the user ID.
+
+### Signature
+
+```typescript
+async function signRefreshToken(
+  userId: string,
+  expiresIn?: string,
+): Promise<string>
+```
+
+### Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `userId` | `string` | Yes | -- | User ID to encode |
+| `expiresIn` | `string` | No | `'7d'` | Token lifetime |
+
+### Returns
+
+`Promise<string>` -- Signed JWT string.
+
+### Token Payload
+
+```json
+{
+  "sub": "user-id",
+  "iat": 1738800000,
+  "exp": 1739404800
+}
+```
+
+### Example
+
+```typescript
+const refreshToken = await signRefreshToken('user-123');
+
+// Custom expiration
+const shortRefresh = await signRefreshToken('user-123', '1d');
+```
+
+---
+
+## verifyToken()
+
+Verifies a JWT token and returns the decoded payload.
+
+### Signature
+
+```typescript
+async function verifyToken(token: string): Promise<TokenPayload>
+```
+
+### Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `token` | `string` | Yes | JWT string to verify |
+
+### Returns
+
+`Promise<TokenPayload>` -- Decoded token payload.
+
+### TokenPayload Type
+
+```typescript
+interface TokenPayload {
+  sub: string;   // User ID
+  email: string; // User email
+  role: string;  // User role
+  iat?: number;  // Issued at (Unix timestamp)
+  exp?: number;  // Expires at (Unix timestamp)
+}
+```
+
+### Throws
+
+- `JWSSignatureVerificationFailed` -- Token has been tampered with
+- `JWTExpired` -- Token has expired
+- `JWTClaimValidationFailed` -- Claims are invalid
+
+### Example
+
+```typescript
+try {
+  const payload = await verifyToken(token);
+  console.log(payload.sub);   // 'user-123'
+  console.log(payload.email); // 'user@example.com'
+  console.log(payload.role);  // 'admin'
+} catch (error) {
+  // Token is invalid, expired, or tampered with
+}
+```
+
+---
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `JWT_SECRET` | Yes | HMAC-SHA256 signing key (minimum 32 characters) |
+
+### Missing JWT_SECRET Error
+
+```
+[AOR] JWT_SECRET environment variable is required.
+  Fix: Add JWT_SECRET to your .env file (minimum 32 characters).
+  Docs: https://vibeonrails.dev/errors/JWT_SECRET_MISSING
+```
+
+## Algorithm
+
+All functions use **HS256** (HMAC-SHA256):
+- Symmetric key (same key for signing and verification)
+- Protected header: `{ "alg": "HS256" }`
+
+## Source
+
+`packages/core/src/security/auth/jwt.ts`
 
 ## See Also
 
-{/* TODO: Add cross-references to related pages */}
+- [JWT Tokens Guide](/guides/security/jwt/) -- How tokens work in detail
+- [Authentication Guide](/guides/security/authentication/) -- Full auth flow
+- [Request Context](/guides/api/context/) -- How tokens become user context

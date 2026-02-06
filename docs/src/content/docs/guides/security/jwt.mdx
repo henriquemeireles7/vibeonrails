@@ -1,21 +1,157 @@
 ---
-title: "JWT Tokens"
-description: "JSON Web Token management and best practices."
+title: JWT Tokens
+description: How VibeonRails creates, verifies, and manages JWT access and refresh tokens.
 sidebar:
-  order: 5
-  badge:
-    text: Guide
-    variant: note
+  order: 3
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+VibeonRails uses JSON Web Tokens (JWT) for stateless authentication. Tokens are signed with HMAC-SHA256 using the `jose` library, which works across all JavaScript runtimes (Node.js, Bun, Deno, Edge).
 
-## Overview
+## Token Types
 
-{/* TODO: Write comprehensive content for this page */}
+| Token | Default Lifetime | Purpose | Contains |
+|-------|-----------------|---------|----------|
+| **Access Token** | 15 minutes | API authentication | `sub`, `email`, `role` |
+| **Refresh Token** | 7 days | Renewing access tokens | `sub` only |
 
-## See Also
+## Configuration
 
-{/* TODO: Add cross-references to related pages */}
+Set the `JWT_SECRET` environment variable (minimum 32 characters):
+
+```bash
+JWT_SECRET=your-secret-key-at-least-32-characters-long
+```
+
+If missing, VibeonRails throws a clear error:
+
+```
+[AOR] JWT_SECRET environment variable is required.
+  Fix: Add JWT_SECRET to your .env file (minimum 32 characters).
+```
+
+## Signing Tokens
+
+### Access Token
+
+```typescript
+import { signAccessToken } from '@vibeonrails/core/security';
+
+const token = await signAccessToken(
+  { id: 'user-123', email: 'user@example.com', role: 'admin' },
+  '15m',  // optional, defaults to 15 minutes
+);
+```
+
+The access token payload:
+
+```json
+{
+  "sub": "user-123",
+  "email": "user@example.com",
+  "role": "admin",
+  "iat": 1738800000,
+  "exp": 1738800900
+}
+```
+
+### Refresh Token
+
+```typescript
+import { signRefreshToken } from '@vibeonrails/core/security';
+
+const refreshToken = await signRefreshToken(
+  'user-123',
+  '7d',  // optional, defaults to 7 days
+);
+```
+
+The refresh token is minimal -- it only contains the user ID:
+
+```json
+{
+  "sub": "user-123",
+  "iat": 1738800000,
+  "exp": 1739404800
+}
+```
+
+## Verifying Tokens
+
+```typescript
+import { verifyToken } from '@vibeonrails/core/security';
+
+try {
+  const payload = await verifyToken(token);
+  // payload: { sub: 'user-123', email: 'user@example.com', role: 'admin', iat: ..., exp: ... }
+  console.log(payload.sub);   // User ID
+  console.log(payload.email); // User email
+  console.log(payload.role);  // User role
+} catch (error) {
+  // Token is invalid or expired
+  console.error('Token verification failed:', error.message);
+}
+```
+
+## Token Payload Type
+
+```typescript
+interface TokenPayload {
+  sub: string;   // User ID
+  email: string; // User email
+  role: string;  // User role
+  iat?: number;  // Issued at (Unix timestamp)
+  exp?: number;  // Expires at (Unix timestamp)
+}
+```
+
+## How Context Uses JWT
+
+When a request hits your API, the context creator automatically extracts and verifies the JWT:
+
+1. Reads `Authorization: Bearer <token>` header
+2. Calls `verifyToken(token)`
+3. If valid: sets `ctx.user = { id, email, role }`
+4. If invalid/missing: sets `ctx.user = null`
+
+This happens transparently for every request -- you just use `ctx.user` in your procedures.
+
+## Refresh Flow
+
+```
+Client                          Server
+  |                               |
+  |-- POST /trpc/auth.login ----> |
+  |<-- { accessToken, refresh } --|
+  |                               |
+  |-- GET /trpc/post.list ------> | (Authorization: Bearer <access>)
+  |<-- { data: [...] } -----------|
+  |                               |
+  |   ... 15 minutes later ...    |
+  |                               |
+  |-- GET /trpc/post.list ------> | (access token expired)
+  |<-- 401 UNAUTHORIZED ----------|
+  |                               |
+  |-- POST /trpc/auth.refresh --> | (refreshToken in body)
+  |<-- { accessToken } -----------|
+  |                               |
+  |-- GET /trpc/post.list ------> | (new access token)
+  |<-- { data: [...] } -----------|
+```
+
+## Algorithm
+
+VibeonRails uses **HS256** (HMAC-SHA256) for token signing:
+- Symmetric key (same key for sign and verify)
+- Fast and widely supported
+- Suitable for single-service architectures
+
+For microservices that need asymmetric keys (RS256), you can extend the JWT module.
+
+## Best Practices
+
+- **Keep access tokens short-lived** (15 minutes is the default and recommended)
+- **Use strong secrets** -- at least 32 characters, generated randomly
+- **Never expose JWT_SECRET** -- keep it in environment variables only
+- **Don't store sensitive data in tokens** -- tokens can be decoded (but not forged) by anyone
+- **Rotate secrets** periodically and implement token revocation for sensitive applications
+- **Use refresh tokens** instead of long-lived access tokens

@@ -1,21 +1,169 @@
 ---
-title: "Repository Pattern"
-description: "The data access layer and repository pattern."
+title: Repository Pattern
+description: How to create repositories that encapsulate database queries for each table.
 sidebar:
   order: 5
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+Repositories encapsulate all database operations for a specific table. They keep your controllers thin, your queries organized, and your code testable.
 
-## Overview
+## Creating a Repository
 
-{/* TODO: Write comprehensive content for this page */}
+A repository is a factory function that takes a `Database` instance and returns an object with query methods:
 
-## See Also
+```typescript
+// src/database/repositories/user.repository.ts
+import { eq } from 'drizzle-orm';
+import type { Database } from '../client';
+import { users, type User, type NewUser } from '../schema/user';
 
-{/* TODO: Add cross-references to related pages */}
+export function createUserRepository(db: Database) {
+  return {
+    async findById(id: string): Promise<User | undefined> {
+      const result = await db.select().from(users).where(eq(users.id, id)).limit(1);
+      return result[0];
+    },
+
+    async findByEmail(email: string): Promise<User | undefined> {
+      const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+      return result[0];
+    },
+
+    async create(data: NewUser): Promise<User> {
+      const result = await db.insert(users).values(data).returning();
+      return result[0]!;
+    },
+
+    async update(id: string, data: Partial<Omit<NewUser, 'id'>>): Promise<User | undefined> {
+      const result = await db
+        .update(users)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(users.id, id))
+        .returning();
+      return result[0];
+    },
+
+    async list(): Promise<User[]> {
+      return db.select().from(users);
+    },
+  };
+}
+
+export type UserRepository = ReturnType<typeof createUserRepository>;
+```
+
+## Using Repositories
+
+```typescript
+import { createDatabase, createUserRepository, createPostRepository } from '@vibeonrails/core/database';
+
+const db = createDatabase();
+const users = createUserRepository(db);
+const posts = createPostRepository(db);
+
+// Find a user
+const user = await users.findByEmail('admin@example.com');
+
+// Create a post
+const post = await posts.create({
+  title: 'My First Post',
+  body: 'Hello, world!',
+  published: true,
+  authorId: user!.id,
+});
+
+// Get all posts by this user
+const userPosts = await posts.findByAuthor(user!.id);
+```
+
+## Repository Methods
+
+Each repository typically includes these standard methods:
+
+| Method | Description | Returns |
+|--------|-------------|---------|
+| `findById(id)` | Find a single record by primary key | `T \| undefined` |
+| `create(data)` | Insert a new record | `T` |
+| `update(id, data)` | Update a record by primary key | `T \| undefined` |
+| `list()` or `findAll()` | Get all records | `T[]` |
+| `remove(id)` | Delete a record by primary key | `boolean` |
+
+Plus domain-specific methods like `findByEmail()`, `findByAuthor()`, etc.
+
+## The Repository Type
+
+Export the inferred type for use in service layers:
+
+```typescript
+export type UserRepository = ReturnType<typeof createUserRepository>;
+```
+
+This lets you type function parameters without importing the full implementation:
+
+```typescript
+function createAuthService(userRepo: UserRepository) {
+  return {
+    async login(email: string, password: string) {
+      const user = await userRepo.findByEmail(email);
+      // ...
+    },
+  };
+}
+```
+
+## Creating Your Own Repository
+
+When generating a module with `vibe generate module`, a repository is created automatically. Here's the pattern:
+
+```typescript
+// src/modules/comment/comment.repository.ts
+import { eq, and } from 'drizzle-orm';
+import type { Database } from '@vibeonrails/core/database';
+import { comments, type Comment, type NewComment } from './schema';
+
+export function createCommentRepository(db: Database) {
+  return {
+    async findById(id: string): Promise<Comment | undefined> {
+      const result = await db.select().from(comments).where(eq(comments.id, id)).limit(1);
+      return result[0];
+    },
+
+    async findByPost(postId: string): Promise<Comment[]> {
+      return db.select().from(comments).where(eq(comments.postId, postId));
+    },
+
+    async create(data: NewComment): Promise<Comment> {
+      const result = await db.insert(comments).values(data).returning();
+      return result[0]!;
+    },
+
+    async remove(id: string, authorId: string): Promise<boolean> {
+      const result = await db
+        .delete(comments)
+        .where(and(eq(comments.id, id), eq(comments.authorId, authorId)))
+        .returning();
+      return result.length > 0;
+    },
+  };
+}
+
+export type CommentRepository = ReturnType<typeof createCommentRepository>;
+```
+
+## Exporting Repositories
+
+All repositories are exported from a barrel file:
+
+```typescript
+// src/database/repositories/index.ts
+export { createUserRepository, type UserRepository } from './user.repository';
+export { createPostRepository, type PostRepository } from './post.repository';
+```
+
+## Best Practices
+
+- **One repository per table** -- keeps queries organized
+- **Always use `.returning()`** on INSERT/UPDATE/DELETE to get the affected rows back
+- **Auto-set `updatedAt`** in update methods: `.set({ ...data, updatedAt: new Date() })`
+- **Return `undefined`** (not throw) when a record isn't found -- let the caller decide
+- **Use domain-specific method names** like `findByEmail`, `findByAuthor` instead of generic queries

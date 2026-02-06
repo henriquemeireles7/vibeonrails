@@ -1,21 +1,81 @@
 ---
-title: "API Overview"
-description: "How the VibeonRails API layer works with Hono and tRPC."
+title: API Overview
+description: How VibeonRails builds APIs with Hono HTTP server and tRPC for end-to-end type safety.
 sidebar:
   order: 1
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+VibeonRails combines **Hono** (a fast, edge-ready HTTP framework) with **tRPC** (end-to-end type-safe RPC) to give you the best of both worlds: standard HTTP endpoints plus fully typed client-server communication.
 
-## Overview
+## Architecture
 
-{/* TODO: Write comprehensive content for this page */}
+```
+Client (React)  --->  Hono Server  --->  tRPC Router  --->  Procedures  --->  Database
+                         |                    |                  |
+                    Middleware           AppRouter          Business logic
+                   (CORS, Auth,         (merges all         (validation,
+                    Logging,             feature             queries,
+                    Error handling)      routers)            mutations)
+```
 
-## See Also
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **HTTP Server** | Hono | Request handling, middleware, static files |
+| **API Protocol** | tRPC | Type-safe RPC, procedures, input validation |
+| **Validation** | Zod | Schema validation for inputs |
+| **Context** | Custom | JWT extraction, user identity |
+| **Error Handling** | AppError | Structured errors with codes and docs links |
 
-{/* TODO: Add cross-references to related pages */}
+## Quick Example
+
+```typescript
+// src/main.ts
+import { createServer } from '@vibeonrails/core/api';
+import { appRouter } from './router';
+
+const app = createServer({ router: appRouter });
+
+export default app;
+```
+
+```typescript
+// src/router.ts
+import { createAppRouter } from '@vibeonrails/core/api';
+import { userRouter } from './modules/user/user.controller';
+import { postRouter } from './modules/post/post.controller';
+
+export const appRouter = createAppRouter({
+  user: userRouter,
+  post: postRouter,
+});
+
+export type AppRouter = typeof appRouter;
+```
+
+## Key Exports
+
+Everything you need is exported from `@vibeonrails/core/api`:
+
+```typescript
+import {
+  createServer,        // Create the HTTP server
+  createAppRouter,     // Merge feature routers
+  router,              // Create a tRPC router
+  publicProcedure,     // No auth required
+  protectedProcedure,  // Auth required
+  middleware,           // Custom middleware builder
+  createContext,        // Request context creator
+  errorHandler,        // Global error handler
+  rateLimit,           // Rate limiting middleware
+} from '@vibeonrails/core/api';
+```
+
+## What's Next
+
+- [Hono Server](/guides/api/server/) -- Server creation and configuration
+- [tRPC Integration](/guides/api/trpc/) -- How tRPC is set up
+- [Procedures](/guides/api/procedures/) -- Writing API endpoints
+- [Request Context](/guides/api/context/) -- User identity and request data
+- [Middleware](/guides/api/middleware/) -- Custom middleware
+- [Error Handling](/guides/api/error-handling/) -- Structured error responses
+- [Rate Limiting](/guides/api/rate-limiting/) -- Protecting endpoints from abuse

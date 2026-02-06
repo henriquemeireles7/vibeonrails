@@ -1,21 +1,117 @@
 ---
-title: "Migrations"
-description: "Creating, running, and managing database migrations."
+title: Migrations
+description: How to manage database schema changes with Drizzle ORM migrations.
 sidebar:
   order: 4
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+Migrations track changes to your database schema over time. VibeonRails uses Drizzle Kit to generate migration SQL from your schema definitions.
 
-## Overview
+## How It Works
 
-{/* TODO: Write comprehensive content for this page */}
+1. You modify your TypeScript schema files
+2. Run `vibe db migrate` to generate a SQL migration
+3. The migration is applied to your database automatically
 
-## See Also
+Drizzle compares your current schema to the database state and generates the exact SQL needed.
 
-{/* TODO: Add cross-references to related pages */}
+## Generating Migrations
+
+After changing your schema files, generate a migration:
+
+```bash
+vibe db migrate
+```
+
+This runs Drizzle Kit under the hood, producing a SQL migration file in `drizzle/migrations/`:
+
+```
+drizzle/
+  migrations/
+    0000_initial.sql
+    0001_add_posts_table.sql
+    0002_add_published_column.sql
+```
+
+## Running Migrations Programmatically
+
+You can also run migrations from code:
+
+```typescript
+import { runMigrations } from '@vibeonrails/core/database';
+
+await runMigrations('./drizzle/migrations');
+
+// Or with a custom connection string
+await runMigrations('./drizzle/migrations', 'postgresql://user:pass@host:5432/db');
+```
+
+The `runMigrations` function:
+1. Creates a database connection
+2. Runs all pending migrations in order
+3. Logs progress to the console
+
+## CLI Commands
+
+| Command | Description |
+|---------|------------|
+| `vibe db migrate` | Generate and run migrations |
+| `vibe db seed` | Run seed data |
+| `vibe db reset` | Drop all tables and re-migrate |
+| `vibe db studio` | Open Drizzle Studio (visual DB browser) |
+
+## Migration Workflow
+
+### Adding a New Table
+
+1. Create the schema file:
+
+```typescript
+// src/database/schema/comment.ts
+import { pgTable, uuid, text, timestamp } from 'drizzle-orm/pg-core';
+import { posts } from './post';
+import { users } from './user';
+
+export const comments = pgTable('comments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  body: text('body').notNull(),
+  postId: uuid('post_id').references(() => posts.id).notNull(),
+  authorId: uuid('author_id').references(() => users.id).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+});
+```
+
+2. Export it from the barrel:
+
+```typescript
+// src/database/schema/index.ts
+export * from './user';
+export * from './post';
+export * from './comment';  // Add this
+export * from './relations';
+```
+
+3. Generate and run the migration:
+
+```bash
+vibe db migrate
+```
+
+### Modifying an Existing Table
+
+Simply edit the schema file. For example, to add a `bio` column to users:
+
+```typescript
+// In src/database/schema/user.ts, add:
+bio: text('bio'),
+```
+
+Then run `vibe db migrate`. Drizzle generates the `ALTER TABLE` SQL automatically.
+
+## Best Practices
+
+- **Never edit migration files** after they've been applied
+- **Review generated SQL** before running in production
+- **Use `vibe db reset`** in development when migrations get messy
+- **Commit migration files** to version control
+- **Test migrations** on a staging database before production

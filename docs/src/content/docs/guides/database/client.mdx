@@ -1,21 +1,100 @@
 ---
-title: "Client and Connections"
-description: "Creating and configuring database connections."
+title: Client & Connections
+description: How to create and manage database connections with Drizzle ORM and PostgreSQL.
 sidebar:
   order: 2
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+The database client manages your connection to PostgreSQL using Drizzle ORM. VibeonRails provides a `createDatabase()` factory that handles connection setup, schema binding, and error handling.
 
-## Overview
+## Creating a Connection
 
-{/* TODO: Write comprehensive content for this page */}
+```typescript
+import { createDatabase } from '@vibeonrails/core/database';
 
-## See Also
+// Uses DATABASE_URL from environment
+export const db = createDatabase();
 
-{/* TODO: Add cross-references to related pages */}
+// Or pass a connection string explicitly
+export const db = createDatabase('postgresql://user:pass@localhost:5432/myapp');
+```
+
+The `createDatabase` function:
+1. Reads `DATABASE_URL` from the environment (or uses the provided string)
+2. Creates a `postgres` driver connection
+3. Returns a Drizzle instance with your full schema loaded
+
+## Environment Configuration
+
+Add your database URL to `.env`:
+
+```bash
+DATABASE_URL=postgresql://user:password@localhost:5432/myapp
+```
+
+If `DATABASE_URL` is missing, VibeonRails throws a clear error with a fix suggestion:
+
+```
+[AOR] DATABASE_URL environment variable is required.
+  Fix: Add DATABASE_URL to your .env file.
+  Example: DATABASE_URL=postgresql://user:pass@localhost:5432/myapp
+```
+
+## The Database Type
+
+The `Database` type is inferred from `createDatabase()`, which includes your full schema:
+
+```typescript
+import type { Database } from '@vibeonrails/core/database';
+
+// Use this type when passing the database to repositories or services
+function createUserService(db: Database) {
+  // db is fully typed with all your tables and relations
+}
+```
+
+## Connection in Your App
+
+Typically, you create the database connection once in your app's entry point:
+
+```typescript
+// src/main.ts
+import { createDatabase } from '@vibeonrails/core/database';
+import { createServer } from '@vibeonrails/core/api';
+import { appRouter } from './router';
+
+export const db = createDatabase();
+
+const app = createServer({ router: appRouter });
+
+export default app;
+```
+
+Then import `db` wherever you need it:
+
+```typescript
+// src/modules/user/user.service.ts
+import { db } from '../../main';
+import { createUserRepository } from '@vibeonrails/core/database';
+
+const users = createUserRepository(db);
+```
+
+## Connection Pooling
+
+The underlying `postgres` driver automatically handles connection pooling. For production environments, you can tune pool settings via connection string parameters:
+
+```bash
+DATABASE_URL=postgresql://user:pass@host:5432/db?pool_max_size=20&pool_timeout=30
+```
+
+## Multiple Databases
+
+If you need to connect to multiple databases:
+
+```typescript
+const mainDb = createDatabase(process.env.DATABASE_URL);
+const analyticsDb = createDatabase(process.env.ANALYTICS_DATABASE_URL);
+```
+
+Each call to `createDatabase()` creates an independent connection pool.

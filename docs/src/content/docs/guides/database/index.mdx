@@ -1,21 +1,89 @@
 ---
-title: "Database Overview"
-description: "How the VibeonRails database layer works with Drizzle ORM."
+title: Database Overview
+description: How VibeonRails handles data with Drizzle ORM, PostgreSQL, and the repository pattern.
 sidebar:
   order: 1
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+VibeonRails uses **Drizzle ORM** with **PostgreSQL** for type-safe database access. Every query is type-checked at compile time, and the schema is defined in TypeScript.
 
-## Overview
+## Architecture
 
-{/* TODO: Write comprehensive content for this page */}
+The database layer follows a layered architecture:
 
-## See Also
+```
+Schema  -->  Repository  -->  Controller (tRPC procedure)
+  |              |                  |
+  |  Defines     |  Encapsulates    |  Calls repository
+  |  tables      |  queries         |  methods
+```
 
-{/* TODO: Add cross-references to related pages */}
+| Layer | Purpose | Location |
+|-------|---------|----------|
+| **Schema** | Table definitions, column types, constraints | `src/database/schema/` |
+| **Relations** | Foreign keys, one-to-many, many-to-many | `src/database/schema/relations.ts` |
+| **Repository** | CRUD operations, business queries | `src/database/repositories/` |
+| **Seeds** | Dev/test data generation | `src/database/seeds/` |
+| **Migrations** | Schema changes over time | `drizzle/migrations/` |
+| **Client** | Connection management | `src/database/client.ts` |
+
+## Quick Example
+
+```typescript
+import { createDatabase } from '@vibeonrails/core/database';
+import { createUserRepository } from '@vibeonrails/core/database';
+
+const db = createDatabase();
+const users = createUserRepository(db);
+
+// Type-safe queries
+const user = await users.findByEmail('admin@example.com');
+const allUsers = await users.list();
+```
+
+## Key Concepts
+
+### Type Safety from Schema to Query
+
+Drizzle infers TypeScript types directly from your schema definitions:
+
+```typescript
+import { users } from './schema/user';
+
+// These types are auto-generated from the schema
+type User = typeof users.$inferSelect;    // { id: string, email: string, ... }
+type NewUser = typeof users.$inferInsert; // { email: string, name: string, ... }
+```
+
+No manual type definitions, no code generation step, no drift between schema and types.
+
+### Repository Pattern
+
+Repositories encapsulate all database queries for a table. This keeps your controllers thin and your queries testable:
+
+```typescript
+const userRepo = createUserRepository(db);
+const postRepo = createPostRepository(db);
+
+// Clean API in your controllers
+const user = await userRepo.findById(id);
+const posts = await postRepo.findByAuthor(user.id);
+```
+
+### Convention Over Configuration
+
+- Tables use **snake_case** column names, mapped to **camelCase** in TypeScript
+- Primary keys are **UUIDs** (`uuid().primaryKey().defaultRandom()`)
+- Every table has `createdAt` and `updatedAt` timestamps
+- Soft deletes are optional; hard deletes are the default
+
+## What's Next
+
+- [Client & Connections](/guides/database/client/) -- Set up your database connection
+- [Schema Definitions](/guides/database/schema/) -- Define tables and columns
+- [Migrations](/guides/database/migrations/) -- Manage schema changes
+- [Repositories](/guides/database/repositories/) -- Write type-safe queries
+- [Seeds](/guides/database/seeds/) -- Generate development data
+- [Relations](/guides/database/relations/) -- Define table relationships
+- [Query Patterns](/guides/database/queries/) -- Advanced query techniques
+- [Transactions](/guides/database/transactions/) -- Atomic operations

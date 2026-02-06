@@ -1,21 +1,141 @@
 ---
-title: "Relations"
-description: "Defining and querying table relationships."
+title: Relations
+description: How to define relationships between tables for Drizzle relational queries.
 sidebar:
   order: 7
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+Relations tell Drizzle how your tables are connected. They enable the relational query API (`db.query`) that lets you fetch related records in a single query.
 
-## Overview
+## Defining Relations
 
-{/* TODO: Write comprehensive content for this page */}
+Relations are defined in a separate file using the `relations()` function from Drizzle:
 
-## See Also
+```typescript
+// src/database/schema/relations.ts
+import { relations } from 'drizzle-orm';
+import { users } from './user';
+import { posts } from './post';
 
-{/* TODO: Add cross-references to related pages */}
+export const usersRelations = relations(users, ({ many }) => ({
+  posts: many(posts),
+}));
+
+export const postsRelations = relations(posts, ({ one }) => ({
+  author: one(users, {
+    fields: [posts.authorId],
+    references: [users.id],
+  }),
+}));
+```
+
+## Relation Types
+
+### One-to-Many
+
+A user has many posts:
+
+```typescript
+export const usersRelations = relations(users, ({ many }) => ({
+  posts: many(posts),
+}));
+```
+
+### Many-to-One
+
+A post belongs to one user:
+
+```typescript
+export const postsRelations = relations(posts, ({ one }) => ({
+  author: one(users, {
+    fields: [posts.authorId],
+    references: [users.id],
+  }),
+}));
+```
+
+### One-to-One
+
+A user has one profile:
+
+```typescript
+export const usersRelations = relations(users, ({ one }) => ({
+  profile: one(profiles, {
+    fields: [users.id],
+    references: [profiles.userId],
+  }),
+}));
+```
+
+## Using Relational Queries
+
+Once relations are defined, you can use Drizzle's relational query API:
+
+```typescript
+// Fetch user with all their posts
+const userWithPosts = await db.query.users.findFirst({
+  where: eq(users.id, userId),
+  with: {
+    posts: true,
+  },
+});
+// Returns: { id, email, name, ..., posts: [{ id, title, body, ... }] }
+
+// Fetch post with author
+const postWithAuthor = await db.query.posts.findFirst({
+  where: eq(posts.id, postId),
+  with: {
+    author: true,
+  },
+});
+// Returns: { id, title, body, ..., author: { id, email, name, ... } }
+```
+
+### Nested Relations
+
+You can nest relations to any depth:
+
+```typescript
+const userWithPostsAndComments = await db.query.users.findFirst({
+  where: eq(users.id, userId),
+  with: {
+    posts: {
+      with: {
+        comments: true,
+      },
+    },
+  },
+});
+```
+
+### Selecting Specific Columns
+
+```typescript
+const userWithPosts = await db.query.users.findFirst({
+  columns: { id: true, name: true, email: true },
+  with: {
+    posts: {
+      columns: { id: true, title: true, published: true },
+    },
+  },
+});
+```
+
+## Relations vs. Foreign Keys
+
+| Feature | Foreign Key (`.references()`) | Relation (`relations()`) |
+|---------|-------------------------------|--------------------------|
+| Enforced in DB | Yes | No (app-level only) |
+| Required for joins | No | Yes (for `db.query`) |
+| Type inference | Column type only | Full nested types |
+| Migration generated | Yes | No |
+
+You need **both**: foreign keys for database integrity, relations for the query API.
+
+## Best Practices
+
+- **Keep relations in a dedicated file** (`relations.ts`) for clarity
+- **Define both sides** of every relationship (user -> posts AND post -> author)
+- **Export from the schema barrel** so relations are loaded with the client
+- **Use `with`** for eager loading related data in a single query
+- **Use `columns`** to select only the fields you need

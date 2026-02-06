@@ -1,21 +1,134 @@
 ---
-title: "createDatabase()"
-description: "API reference for the createDatabase function."
+title: createDatabase()
+description: API reference for the createDatabase function that creates a Drizzle ORM connection.
 sidebar:
   order: 1
-  badge:
-    text: Reference
-    variant: danger
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+Creates a new database connection using Drizzle ORM with PostgreSQL.
 
-## Overview
+## Import
 
-{/* TODO: Write comprehensive content for this page */}
+```typescript
+import { createDatabase } from '@vibeonrails/core/database';
+```
+
+## Signature
+
+```typescript
+function createDatabase(connectionString?: string): Database
+```
+
+## Parameters
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `connectionString` | `string` | No | `process.env.DATABASE_URL` | PostgreSQL connection URL |
+
+## Returns
+
+A **Drizzle ORM** database instance (`Database`) with all schema tables and relations loaded.
+
+The `Database` type is:
+
+```typescript
+type Database = ReturnType<typeof createDatabase>;
+```
+
+## Description
+
+`createDatabase()` performs the following:
+
+1. Reads the connection string from the parameter or `DATABASE_URL` environment variable
+2. Creates a `postgres` driver connection with connection pooling
+3. Returns a Drizzle instance with your full schema bound
+
+If no connection string is available, it throws with a helpful error message.
+
+## Examples
+
+### Using Environment Variable
+
+```typescript
+// Uses DATABASE_URL from .env
+const db = createDatabase();
+```
+
+### Explicit Connection String
+
+```typescript
+const db = createDatabase('postgresql://user:pass@localhost:5432/myapp');
+```
+
+### In Application Entry Point
+
+```typescript
+// src/main.ts
+import { createDatabase } from '@vibeonrails/core/database';
+import { createServer } from '@vibeonrails/core/api';
+import { appRouter } from './router';
+
+export const db = createDatabase();
+
+const app = createServer({ router: appRouter });
+export default app;
+```
+
+### Multiple Databases
+
+```typescript
+const mainDb = createDatabase(process.env.DATABASE_URL);
+const analyticsDb = createDatabase(process.env.ANALYTICS_DATABASE_URL);
+```
+
+### With Repositories
+
+```typescript
+import { createDatabase, createUserRepository, createPostRepository } from '@vibeonrails/core/database';
+
+const db = createDatabase();
+const users = createUserRepository(db);
+const posts = createPostRepository(db);
+
+const user = await users.findByEmail('admin@example.com');
+```
+
+## Errors
+
+### Missing DATABASE_URL
+
+If no connection string is provided and `DATABASE_URL` is not set:
+
+```
+[AOR] DATABASE_URL environment variable is required.
+  Fix: Add DATABASE_URL to your .env file.
+  Example: DATABASE_URL=postgresql://user:pass@localhost:5432/myapp
+  Docs: https://vibeonrails.dev/errors/DATABASE_URL_MISSING
+```
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DATABASE_URL` | Yes (unless passed explicitly) | PostgreSQL connection URL |
+
+## Connection String Format
+
+```
+postgresql://user:password@host:port/database?param=value
+```
+
+Examples:
+- Local: `postgresql://postgres:postgres@localhost:5432/myapp`
+- Docker: `postgresql://postgres:postgres@db:5432/myapp`
+- Remote: `postgresql://user:pass@db.example.com:5432/myapp?sslmode=require`
+
+## Source
+
+`packages/core/src/database/client.ts`
 
 ## See Also
 
-{/* TODO: Add cross-references to related pages */}
+- [Client & Connections Guide](/guides/database/client/) -- Detailed connection guide
+- [runMigrations()](/reference/database/run-migrations/) -- Apply migrations
+- [Schema Definitions](/guides/database/schema/) -- Define tables

@@ -1,21 +1,114 @@
 ---
-title: "Rate Limiting"
-description: "Protecting your API with rate limiting."
+title: Rate Limiting
+description: How to protect your API endpoints from abuse with rate limiting.
 sidebar:
   order: 8
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+VibeonRails includes an in-memory rate limiter that limits requests per IP address within a time window. For production, you can replace it with a Redis-backed implementation.
 
-## Overview
+## Basic Usage
 
-{/* TODO: Write comprehensive content for this page */}
+```typescript
+import { rateLimit } from '@vibeonrails/core/api';
 
-## See Also
+const app = createServer({ router: appRouter });
 
-{/* TODO: Add cross-references to related pages */}
+// Limit all routes: 100 requests per minute per IP
+app.use('*', rateLimit({ max: 100 }));
+```
+
+## Options
+
+```typescript
+interface RateLimitOptions {
+  /** Maximum requests allowed within the window */
+  max: number;
+  /** Time window in milliseconds (default: 60000 = 1 minute) */
+  windowMs?: number;
+}
+```
+
+## Examples
+
+### Global Rate Limit
+
+```typescript
+// 100 requests per minute for all endpoints
+app.use('*', rateLimit({ max: 100, windowMs: 60_000 }));
+```
+
+### Per-Route Rate Limit
+
+```typescript
+// Strict limit for login endpoint
+app.use('/trpc/user.login', rateLimit({ max: 5, windowMs: 60_000 }));
+
+// Relaxed limit for public reads
+app.use('/trpc/post.list', rateLimit({ max: 200, windowMs: 60_000 }));
+```
+
+### Different Windows
+
+```typescript
+// 10 requests per 15 minutes (for sensitive operations)
+app.use('/trpc/user.register', rateLimit({ max: 10, windowMs: 15 * 60_000 }));
+
+// 1000 requests per hour (for general API usage)
+app.use('/trpc/*', rateLimit({ max: 1000, windowMs: 60 * 60_000 }));
+```
+
+## Response Headers
+
+The rate limiter sets standard headers on every response:
+
+| Header | Description | Example |
+|--------|-------------|---------|
+| `X-RateLimit-Limit` | Maximum requests allowed | `100` |
+| `X-RateLimit-Remaining` | Requests remaining in window | `87` |
+| `Retry-After` | Seconds until rate limit resets (only on 429) | `45` |
+
+## Rate Limit Exceeded
+
+When a client exceeds the limit, they receive a `429 Too Many Requests`:
+
+```json
+{
+  "code": "E6001",
+  "message": "Rate limit exceeded. Try again in 45 seconds.",
+  "docs": "https://vibeonrails.dev/errors/E6001"
+}
+```
+
+## IP Detection
+
+The rate limiter identifies clients by IP address using these headers (in order):
+
+1. `X-Forwarded-For` -- set by reverse proxies
+2. `X-Real-IP` -- set by Nginx
+3. Falls back to `'unknown'`
+
+## Production Considerations
+
+The built-in rate limiter uses an in-memory `Map`, which means:
+
+- Limits are **per-process** (not shared across instances)
+- Limits **reset on restart**
+- Memory grows with unique IPs (cleaned periodically)
+
+For production deployments with multiple instances, use Redis:
+
+```typescript
+import { createCache } from '@vibeonrails/infra/cache';
+
+// Custom Redis-backed rate limiter
+// (See @vibeonrails/infra/cache for Redis integration)
+```
+
+## Best Practices
+
+- **Always rate limit** auth endpoints (login, register, password reset)
+- **Use stricter limits** for write operations than read operations
+- **Set appropriate windows** -- 1 minute for API, 15 minutes for auth
+- **Return `Retry-After`** so clients know when to retry
+- **Use Redis** in production for shared state across instances

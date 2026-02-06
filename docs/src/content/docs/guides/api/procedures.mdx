@@ -1,21 +1,184 @@
 ---
-title: "Procedures"
-description: "Public vs protected procedures and how to use them."
+title: Procedures
+description: How to define API endpoints using tRPC procedures with Zod validation.
 sidebar:
   order: 4
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+Procedures are the individual API endpoints in your application. VibeonRails provides two built-in procedure types: **public** (no auth) and **protected** (requires authentication).
 
-## Overview
+## Public Procedures
 
-{/* TODO: Write comprehensive content for this page */}
+Use `publicProcedure` for endpoints accessible to anyone:
 
-## See Also
+```typescript
+import { publicProcedure, router } from '@vibeonrails/core/api';
 
-{/* TODO: Add cross-references to related pages */}
+export const postRouter = router({
+  list: publicProcedure.query(async () => {
+    return postRepo.findAll();
+  }),
+
+  getById: publicProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .query(async ({ input }) => {
+      return postRepo.findById(input.id);
+    }),
+});
+```
+
+## Protected Procedures
+
+Use `protectedProcedure` for endpoints that require authentication. If no valid JWT is present, tRPC automatically returns `UNAUTHORIZED`:
+
+```typescript
+import { protectedProcedure, router } from '@vibeonrails/core/api';
+import { z } from 'zod';
+
+export const postRouter = router({
+  create: protectedProcedure
+    .input(z.object({
+      title: z.string().min(1).max(255),
+      body: z.string().min(1),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      // ctx.user is guaranteed to exist (never null)
+      return postRepo.create({
+        title: input.title,
+        body: input.body,
+        authorId: ctx.user.id,
+      });
+    }),
+
+  myPosts: protectedProcedure.query(async ({ ctx }) => {
+    return postRepo.findByAuthor(ctx.user.id);
+  }),
+});
+```
+
+## Input Validation with Zod
+
+Every procedure can define its input schema using Zod. Invalid inputs are automatically rejected with a `400` error:
+
+```typescript
+import { z } from 'zod';
+
+const createPostInput = z.object({
+  title: z.string().min(1, 'Title is required').max(255),
+  body: z.string().min(1, 'Body is required'),
+  published: z.boolean().default(false),
+  tags: z.array(z.string()).optional(),
+});
+
+export const postRouter = router({
+  create: protectedProcedure
+    .input(createPostInput)
+    .mutation(async ({ ctx, input }) => {
+      // `input` is fully typed: { title: string, body: string, published: boolean, tags?: string[] }
+      return postRepo.create({ ...input, authorId: ctx.user.id });
+    }),
+});
+```
+
+## Queries vs. Mutations
+
+| Type | HTTP Method | Use For |
+|------|------------|---------|
+| `.query()` | GET | Reading data (lists, single record, search) |
+| `.mutation()` | POST | Writing data (create, update, delete) |
+
+```typescript
+export const userRouter = router({
+  // Query: read-only operations
+  me: protectedProcedure.query(async ({ ctx }) => {
+    return userRepo.findById(ctx.user.id);
+  }),
+
+  // Mutation: write operations
+  updateProfile: protectedProcedure
+    .input(z.object({ name: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      return userRepo.update(ctx.user.id, { name: input.name });
+    }),
+});
+```
+
+## Context
+
+Every procedure receives `ctx` -- the request context:
+
+```typescript
+// In publicProcedure:
+ctx.user  // null | { id: string, email: string, role: string }
+
+// In protectedProcedure:
+ctx.user  // { id: string, email: string, role: string } (guaranteed non-null)
+```
+
+## Custom Middleware on Procedures
+
+You can add middleware to specific procedures:
+
+```typescript
+import { middleware, protectedProcedure } from '@vibeonrails/core/api';
+import { TRPCError } from '@trpc/server';
+
+// Admin-only middleware
+const isAdmin = middleware(({ ctx, next }) => {
+  if (ctx.user?.role !== 'admin') {
+    throw new TRPCError({ code: 'FORBIDDEN', message: 'Admin access required' });
+  }
+  return next({ ctx });
+});
+
+const adminProcedure = protectedProcedure.use(isAdmin);
+
+export const adminRouter = router({
+  listAllUsers: adminProcedure.query(async () => {
+    return userRepo.list();
+  }),
+
+  deleteUser: adminProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .mutation(async ({ input }) => {
+      return userRepo.remove(input.id);
+    }),
+});
+```
+
+## Full Controller Example
+
+```typescript
+// src/modules/user/user.controller.ts
+import { z } from 'zod';
+import { router, publicProcedure, protectedProcedure } from '@vibeonrails/core/api';
+import { createUserRepository } from '@vibeonrails/core/database';
+import { hashPassword } from '@vibeonrails/core/security';
+import { signAccessToken } from '@vibeonrails/core/security';
+import { db } from '../../main';
+
+const userRepo = createUserRepository(db);
+
+export const userRouter = router({
+  register: publicProcedure
+    .input(z.object({
+      email: z.string().email(),
+      name: z.string().min(1),
+      password: z.string().min(8),
+    }))
+    .mutation(async ({ input }) => {
+      const passwordHash = await hashPassword(input.password);
+      const user = await userRepo.create({
+        email: input.email,
+        name: input.name,
+        passwordHash,
+      });
+      const token = await signAccessToken(user);
+      return { user: { id: user.id, email: user.email, name: user.name }, token };
+    }),
+
+  me: protectedProcedure.query(async ({ ctx }) => {
+    return userRepo.findById(ctx.user.id);
+  }),
+});
+```

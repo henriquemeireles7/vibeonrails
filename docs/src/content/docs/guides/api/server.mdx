@@ -1,21 +1,122 @@
 ---
-title: "Hono Server"
-description: "Understanding the Hono HTTP server in VibeonRails."
+title: Hono Server
+description: How to create and configure the HTTP server with Hono.
 sidebar:
   order: 2
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+The Hono server is the HTTP foundation of your VibeonRails application. `createServer()` gives you a fully configured server with middleware, tRPC integration, and a health endpoint out of the box.
 
-## Overview
+## Creating a Server
 
-{/* TODO: Write comprehensive content for this page */}
+```typescript
+import { createServer } from '@vibeonrails/core/api';
+import { appRouter } from './router';
 
-## See Also
+const app = createServer({
+  router: appRouter,
+});
 
-{/* TODO: Add cross-references to related pages */}
+export default app;
+```
+
+That single call sets up:
+- **CORS** -- Cross-origin requests enabled
+- **Secure headers** -- Security headers via `hono/secure-headers`
+- **Request logging** -- Logs every request to stdout
+- **Error handling** -- Catches unhandled errors, returns structured JSON
+- **tRPC integration** -- Mounts the tRPC router at `/trpc`
+- **Health endpoint** -- `GET /health` always available
+
+## Server Options
+
+```typescript
+interface ServerOptions {
+  /** The tRPC router to serve */
+  router: AnyRouter;
+  /** Base path for tRPC endpoints (default: '/trpc') */
+  trpcPath?: string;
+  /** CORS origin (default: allow all origins) */
+  corsOrigin?: string | string[];
+}
+```
+
+### Custom tRPC Path
+
+```typescript
+const app = createServer({
+  router: appRouter,
+  trpcPath: '/api',  // tRPC endpoints at /api/* instead of /trpc/*
+});
+```
+
+### Restrict CORS
+
+```typescript
+const app = createServer({
+  router: appRouter,
+  corsOrigin: 'https://myapp.com',  // Only allow this origin
+});
+
+// Or multiple origins
+const app = createServer({
+  router: appRouter,
+  corsOrigin: ['https://myapp.com', 'https://admin.myapp.com'],
+});
+```
+
+## Health Endpoint
+
+Every server gets a health check at `GET /health`:
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2026-02-05T12:00:00.000Z",
+  "version": "0.1.0"
+}
+```
+
+This is useful for load balancers, Kubernetes probes, and monitoring.
+
+## Adding Custom Routes
+
+Since the server is a standard Hono instance, you can add custom routes:
+
+```typescript
+const app = createServer({ router: appRouter });
+
+// Add a custom webhook endpoint
+app.post('/webhooks/stripe', async (c) => {
+  const body = await c.req.text();
+  // Handle webhook...
+  return c.json({ received: true });
+});
+
+// Add a redirect
+app.get('/docs', (c) => c.redirect('https://docs.myapp.com'));
+
+export default app;
+```
+
+## Running the Server
+
+In development:
+
+```bash
+vibe dev
+# or
+vibe dev --port 4000
+```
+
+In production, the server is exported as the default module and can be served by any Hono-compatible runtime (Node.js, Bun, Deno, Cloudflare Workers).
+
+## Built-in Middleware Stack
+
+The middleware is applied in this order:
+
+1. **Error handler** -- Catches and formats errors
+2. **Logger** -- Logs requests (`GET /health 200 3ms`)
+3. **Secure headers** -- Sets `X-Content-Type-Options`, `X-Frame-Options`, etc.
+4. **CORS** -- Handles preflight requests and origin validation
+5. **tRPC** -- Routes tRPC calls to procedures

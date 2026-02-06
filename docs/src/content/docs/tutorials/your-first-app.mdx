@@ -1,6 +1,6 @@
 ---
-title: "Your First App"
-description: "Build a complete todo application from scratch."
+title: "Tutorial: Build a Todo App"
+description: Build a complete todo app with VibeonRails from scratch -- database, API, and authentication.
 sidebar:
   order: 2
   badge:
@@ -8,14 +8,242 @@ sidebar:
     variant: tip
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+In this tutorial, you'll build a complete todo application with:
+- PostgreSQL database with Drizzle ORM
+- Type-safe API with tRPC
+- User authentication with JWT
+- CRUD operations (create, read, update, delete)
 
-## Overview
+**Prerequisites:** Node.js 22+, PostgreSQL running locally, pnpm installed.
 
-{/* TODO: Write comprehensive content for this page */}
+## Step 1: Create the Project
 
-## See Also
+```bash
+pnpm dlx create-vibe my-todo-app
+cd my-todo-app
+pnpm install
+```
 
-{/* TODO: Add cross-references to related pages */}
+Set up your environment:
+
+```bash
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/todoapp
+JWT_SECRET=my-super-secret-key-for-development-only
+```
+
+## Step 2: Define the Schema
+
+Create a `todos` table. Open `src/database/schema/todo.ts`:
+
+```typescript
+import { pgTable, uuid, varchar, boolean, timestamp } from 'drizzle-orm/pg-core';
+import { users } from './user';
+
+export const todos = pgTable('todos', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: varchar('title', { length: 255 }).notNull(),
+  completed: boolean('completed').notNull().default(false),
+  userId: uuid('user_id').references(() => users.id).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export type Todo = typeof todos.$inferSelect;
+export type NewTodo = typeof todos.$inferInsert;
+```
+
+Add the export to `src/database/schema/index.ts`:
+
+```typescript
+export * from './user';
+export * from './post';
+export * from './todo';   // Add this
+export * from './relations';
+```
+
+## Step 3: Add Relations
+
+Update `src/database/schema/relations.ts`:
+
+```typescript
+import { relations } from 'drizzle-orm';
+import { users } from './user';
+import { posts } from './post';
+import { todos } from './todo';
+
+export const usersRelations = relations(users, ({ many }) => ({
+  posts: many(posts),
+  todos: many(todos),
+}));
+
+export const postsRelations = relations(posts, ({ one }) => ({
+  author: one(users, { fields: [posts.authorId], references: [users.id] }),
+}));
+
+export const todosRelations = relations(todos, ({ one }) => ({
+  user: one(users, { fields: [todos.userId], references: [users.id] }),
+}));
+```
+
+## Step 4: Run the Migration
+
+```bash
+vibe db migrate
+```
+
+This creates the `todos` table in your database.
+
+## Step 5: Create the Repository
+
+Create `src/modules/todo/todo.repository.ts`:
+
+```typescript
+import { eq, and } from 'drizzle-orm';
+import type { Database } from '@vibeonrails/core/database';
+import { todos, type Todo, type NewTodo } from '../../database/schema/todo';
+
+export function createTodoRepository(db: Database) {
+  return {
+    async findByUser(userId: string): Promise<Todo[]> {
+      return db.select().from(todos).where(eq(todos.userId, userId));
+    },
+
+    async create(data: NewTodo): Promise<Todo> {
+      const result = await db.insert(todos).values(data).returning();
+      return result[0]!;
+    },
+
+    async toggle(id: string, userId: string): Promise<Todo | undefined> {
+      // First get the current state
+      const [current] = await db.select().from(todos)
+        .where(and(eq(todos.id, id), eq(todos.userId, userId)))
+        .limit(1);
+
+      if (!current) return undefined;
+
+      const [updated] = await db.update(todos)
+        .set({ completed: !current.completed, updatedAt: new Date() })
+        .where(eq(todos.id, id))
+        .returning();
+
+      return updated;
+    },
+
+    async remove(id: string, userId: string): Promise<boolean> {
+      const result = await db.delete(todos)
+        .where(and(eq(todos.id, id), eq(todos.userId, userId)))
+        .returning();
+      return result.length > 0;
+    },
+  };
+}
+```
+
+## Step 6: Create the Controller
+
+Create `src/modules/todo/todo.controller.ts`:
+
+```typescript
+import { z } from 'zod';
+import { router, protectedProcedure } from '@vibeonrails/core/api';
+import { createTodoRepository } from './todo.repository';
+import { db } from '../../main';
+
+const todoRepo = createTodoRepository(db);
+
+export const todoRouter = router({
+  list: protectedProcedure.query(async ({ ctx }) => {
+    return todoRepo.findByUser(ctx.user.id);
+  }),
+
+  create: protectedProcedure
+    .input(z.object({
+      title: z.string().min(1, 'Title is required').max(255),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      return todoRepo.create({
+        title: input.title,
+        userId: ctx.user.id,
+      });
+    }),
+
+  toggle: protectedProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      return todoRepo.toggle(input.id, ctx.user.id);
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      return todoRepo.remove(input.id, ctx.user.id);
+    }),
+});
+```
+
+## Step 7: Register the Router
+
+Update `src/router.ts`:
+
+```typescript
+import { createAppRouter } from '@vibeonrails/core/api';
+import { userRouter } from './modules/user/user.controller';
+import { postRouter } from './modules/post/post.controller';
+import { todoRouter } from './modules/todo/todo.controller';
+
+export const appRouter = createAppRouter({
+  user: userRouter,
+  post: postRouter,
+  todo: todoRouter,
+});
+
+export type AppRouter = typeof appRouter;
+```
+
+## Step 8: Test It
+
+Start the dev server:
+
+```bash
+vibe dev
+```
+
+### Register a user
+
+```bash
+curl -X POST http://localhost:3000/trpc/user.register \
+  -H "Content-Type: application/json" \
+  -d '{"json":{"email":"me@example.com","name":"Me","password":"mypassword"}}'
+```
+
+Save the `accessToken` from the response.
+
+### Create a todo
+
+```bash
+curl -X POST http://localhost:3000/trpc/todo.create \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{"json":{"title":"Buy groceries"}}'
+```
+
+### List todos
+
+```bash
+curl http://localhost:3000/trpc/todo.list \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+## What You Built
+
+- A PostgreSQL table with UUID primary key and foreign key to users
+- A repository with type-safe CRUD operations
+- Protected tRPC endpoints with JWT authentication
+- Input validation with Zod
+- Owner-scoped queries (users can only see/modify their own todos)
+
+## Next Steps
+
+- [Adding Authentication](/tutorials/authentication/) -- Build a complete auth flow
+- [Database CRUD](/tutorials/database-crud/) -- More advanced query patterns
+- [Frontend Pages](/tutorials/frontend-pages/) -- Build the React UI

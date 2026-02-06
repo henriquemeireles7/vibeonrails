@@ -1,6 +1,6 @@
 ---
-title: "Adding Authentication"
-description: "Add JWT, sessions, and OAuth to your application."
+title: "Tutorial: Add Authentication"
+description: Implement complete user authentication with registration, login, JWT tokens, and protected routes.
 sidebar:
   order: 3
   badge:
@@ -8,14 +8,262 @@ sidebar:
     variant: tip
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+This tutorial builds a complete authentication system with registration, login, token refresh, and profile management. You'll learn how VibeonRails handles passwords, JWT tokens, and protected procedures.
 
-## Overview
+**Prerequisites:** A VibeonRails project with the database set up. See [Your First App](/tutorials/your-first-app/) if starting fresh.
 
-{/* TODO: Write comprehensive content for this page */}
+## What You'll Build
 
-## See Also
+- User registration with email/password
+- Login with JWT token issuance
+- Token refresh for session continuity
+- Protected "me" endpoint for profile data
+- Password change mutation
 
-{/* TODO: Add cross-references to related pages */}
+## Step 1: The Auth Controller
+
+Create `src/modules/auth/auth.controller.ts`:
+
+```typescript
+import { z } from 'zod';
+import { router, publicProcedure, protectedProcedure } from '@vibeonrails/core/api';
+import {
+  hashPassword,
+  verifyPassword,
+  signAccessToken,
+  signRefreshToken,
+  verifyToken,
+} from '@vibeonrails/core/security';
+import { AppError, AuthenticationError, NotFoundError } from '@vibeonrails/core';
+import { createUserRepository } from '@vibeonrails/core/database';
+import { db } from '../../main';
+
+const userRepo = createUserRepository(db);
+
+export const authRouter = router({
+  /**
+   * Register a new user account.
+   * Returns the user profile and both tokens.
+   */
+  register: publicProcedure
+    .input(z.object({
+      email: z.string().email('Invalid email address'),
+      name: z.string().min(1, 'Name is required').max(255),
+      password: z.string().min(8, 'Password must be at least 8 characters'),
+    }))
+    .mutation(async ({ input }) => {
+      // Check for existing user
+      const existing = await userRepo.findByEmail(input.email);
+      if (existing) {
+        throw new AppError('E2002', 'An account with this email already exists', 409);
+      }
+
+      // Hash password with Argon2id
+      const passwordHash = await hashPassword(input.password);
+
+      // Create user
+      const user = await userRepo.create({
+        email: input.email,
+        name: input.name,
+        passwordHash,
+      });
+
+      // Issue tokens
+      const accessToken = await signAccessToken(user);
+      const refreshToken = await signRefreshToken(user.id);
+
+      return {
+        user: { id: user.id, email: user.email, name: user.name, role: user.role },
+        accessToken,
+        refreshToken,
+      };
+    }),
+
+  /**
+   * Login with email and password.
+   * Returns the user profile and both tokens.
+   */
+  login: publicProcedure
+    .input(z.object({
+      email: z.string().email(),
+      password: z.string(),
+    }))
+    .mutation(async ({ input }) => {
+      const user = await userRepo.findByEmail(input.email);
+      if (!user) {
+        // Same error as wrong password to prevent user enumeration
+        throw new AuthenticationError('Invalid email or password');
+      }
+
+      const isValid = await verifyPassword(user.passwordHash, input.password);
+      if (!isValid) {
+        throw new AuthenticationError('Invalid email or password');
+      }
+
+      const accessToken = await signAccessToken(user);
+      const refreshToken = await signRefreshToken(user.id);
+
+      return {
+        user: { id: user.id, email: user.email, name: user.name, role: user.role },
+        accessToken,
+        refreshToken,
+      };
+    }),
+
+  /**
+   * Refresh an access token using a valid refresh token.
+   */
+  refresh: publicProcedure
+    .input(z.object({
+      refreshToken: z.string(),
+    }))
+    .mutation(async ({ input }) => {
+      let payload;
+      try {
+        payload = await verifyToken(input.refreshToken);
+      } catch {
+        throw new AuthenticationError('Invalid or expired refresh token');
+      }
+
+      const user = await userRepo.findById(payload.sub);
+      if (!user) {
+        throw new NotFoundError('User');
+      }
+
+      const accessToken = await signAccessToken(user);
+      return { accessToken };
+    }),
+
+  /**
+   * Get the authenticated user's profile.
+   */
+  me: protectedProcedure.query(async ({ ctx }) => {
+    const user = await userRepo.findById(ctx.user.id);
+    if (!user) {
+      throw new NotFoundError('User', ctx.user.id);
+    }
+    return { id: user.id, email: user.email, name: user.name, role: user.role };
+  }),
+
+  /**
+   * Change password for the authenticated user.
+   */
+  changePassword: protectedProcedure
+    .input(z.object({
+      currentPassword: z.string(),
+      newPassword: z.string().min(8, 'New password must be at least 8 characters'),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const user = await userRepo.findById(ctx.user.id);
+      if (!user) {
+        throw new NotFoundError('User', ctx.user.id);
+      }
+
+      const isValid = await verifyPassword(user.passwordHash, input.currentPassword);
+      if (!isValid) {
+        throw new AuthenticationError('Current password is incorrect');
+      }
+
+      const newHash = await hashPassword(input.newPassword);
+      await userRepo.update(ctx.user.id, { passwordHash: newHash });
+
+      return { success: true };
+    }),
+});
+```
+
+## Step 2: Register the Router
+
+```typescript
+// src/router.ts
+import { createAppRouter } from '@vibeonrails/core/api';
+import { authRouter } from './modules/auth/auth.controller';
+import { postRouter } from './modules/post/post.controller';
+
+export const appRouter = createAppRouter({
+  auth: authRouter,
+  post: postRouter,
+});
+
+export type AppRouter = typeof appRouter;
+```
+
+## Step 3: Rate Limit Auth Endpoints
+
+Protect against brute force attacks:
+
+```typescript
+// src/main.ts
+import { createServer, rateLimit } from '@vibeonrails/core/api';
+
+const app = createServer({ router: appRouter });
+
+// Strict rate limit for auth endpoints
+app.use('/trpc/auth.login', rateLimit({ max: 5, windowMs: 60_000 }));
+app.use('/trpc/auth.register', rateLimit({ max: 3, windowMs: 60_000 }));
+app.use('/trpc/auth.refresh', rateLimit({ max: 10, windowMs: 60_000 }));
+
+export default app;
+```
+
+## Step 4: Test the Auth Flow
+
+```bash
+vibe dev
+```
+
+### Register
+
+```bash
+curl -X POST http://localhost:3000/trpc/auth.register \
+  -H "Content-Type: application/json" \
+  -d '{"json":{"email":"alice@example.com","name":"Alice","password":"securepass123"}}'
+```
+
+### Login
+
+```bash
+curl -X POST http://localhost:3000/trpc/auth.login \
+  -H "Content-Type: application/json" \
+  -d '{"json":{"email":"alice@example.com","password":"securepass123"}}'
+```
+
+### Get Profile
+
+```bash
+curl http://localhost:3000/trpc/auth.me \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+### Refresh Token
+
+```bash
+curl -X POST http://localhost:3000/trpc/auth.refresh \
+  -H "Content-Type: application/json" \
+  -d '{"json":{"refreshToken":"YOUR_REFRESH_TOKEN"}}'
+```
+
+## What You Built
+
+| Endpoint | Auth | Description |
+|----------|------|------------|
+| `auth.register` | Public | Create account, get tokens |
+| `auth.login` | Public | Verify credentials, get tokens |
+| `auth.refresh` | Public | Exchange refresh token for new access token |
+| `auth.me` | Protected | Get current user profile |
+| `auth.changePassword` | Protected | Update password |
+
+## Security Checklist
+
+- Passwords hashed with Argon2id (OWASP recommended)
+- Same error message for "user not found" and "wrong password"
+- Short access tokens (15 min), long refresh tokens (7 days)
+- Rate limiting on auth endpoints
+- Input validation with Zod on all endpoints
+- No sensitive data leaked in error responses
+
+## Next Steps
+
+- [Database CRUD](/tutorials/database-crud/) -- Build full CRUD modules
+- [API Endpoints](/tutorials/api-endpoints/) -- Advanced endpoint patterns
+- [Frontend Pages](/tutorials/frontend-pages/) -- Build the React UI

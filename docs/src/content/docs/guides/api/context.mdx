@@ -1,21 +1,119 @@
 ---
-title: "Request Context"
-description: "How request context carries authentication and metadata."
+title: Request Context
+description: How the tRPC context extracts user identity from JWT tokens.
 sidebar:
   order: 5
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+The request context is created for every tRPC request. It extracts the user's identity from the JWT token in the `Authorization` header and makes it available to all procedures.
 
-## Overview
+## How Context Works
 
-{/* TODO: Write comprehensive content for this page */}
+1. Client sends a request with `Authorization: Bearer <token>`
+2. `createContext()` extracts the token from the header
+3. The token is verified using `verifyToken()` from the security module
+4. If valid, the user's `id`, `email`, and `role` are added to the context
+5. If invalid or missing, `user` is set to `null`
 
-## See Also
+## The Context Type
 
-{/* TODO: Add cross-references to related pages */}
+```typescript
+interface Context {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+  } | null;
+}
+```
+
+In `publicProcedure`, `ctx.user` may be `null`.
+In `protectedProcedure`, `ctx.user` is guaranteed to be non-null (the middleware rejects unauthenticated requests).
+
+## Implementation
+
+```typescript
+// This is what @vibeonrails/core/api does internally:
+import { verifyToken } from '@vibeonrails/core/security';
+
+export async function createContext(opts: { req: Request }): Promise<Context> {
+  const authHeader = opts.req.headers.get('authorization');
+
+  if (!authHeader?.startsWith('Bearer ')) {
+    return { user: null };
+  }
+
+  try {
+    const token = authHeader.slice(7);
+    const payload = await verifyToken(token);
+
+    return {
+      user: {
+        id: payload.sub,
+        email: payload.email,
+        role: payload.role,
+      },
+    };
+  } catch {
+    // Invalid or expired token
+    return { user: null };
+  }
+}
+```
+
+## Using Context in Procedures
+
+```typescript
+// Public procedure: check if user is logged in
+export const postRouter = router({
+  list: publicProcedure.query(async ({ ctx }) => {
+    if (ctx.user) {
+      // Show all posts including drafts for the current user
+      return postRepo.findAllForUser(ctx.user.id);
+    }
+    // Show only published posts for anonymous users
+    return postRepo.findPublished();
+  }),
+});
+
+// Protected procedure: user is always available
+export const userRouter = router({
+  me: protectedProcedure.query(async ({ ctx }) => {
+    // ctx.user is guaranteed non-null here
+    return userRepo.findById(ctx.user.id);
+  }),
+});
+```
+
+## Token Payload
+
+The JWT token contains:
+
+```typescript
+interface TokenPayload {
+  sub: string;   // User ID
+  email: string; // User email
+  role: string;  // User role (e.g., 'user', 'admin')
+  iat: number;   // Issued at (Unix timestamp)
+  exp: number;   // Expires at (Unix timestamp)
+}
+```
+
+## Client-Side Authentication
+
+When making API calls, include the JWT in the Authorization header:
+
+```typescript
+// Using tRPC client
+const client = createTRPCProxyClient<AppRouter>({
+  links: [
+    httpBatchLink({
+      url: '/trpc',
+      headers() {
+        const token = localStorage.getItem('token');
+        return token ? { Authorization: `Bearer ${token}` } : {};
+      },
+    }),
+  ],
+});
+```

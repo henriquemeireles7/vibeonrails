@@ -1,21 +1,135 @@
 ---
-title: "Transactions"
-description: "Using database transactions for data integrity."
+title: Transactions
+description: How to use database transactions for atomic operations in Drizzle ORM.
 sidebar:
   order: 9
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+Transactions group multiple database operations into a single atomic unit. Either all operations succeed, or none of them do. Use transactions when you need to ensure data consistency across multiple queries.
 
-## Overview
+## Basic Transaction
 
-{/* TODO: Write comprehensive content for this page */}
+```typescript
+import { db } from './client';
+import { users } from './schema/user';
+import { posts } from './schema/post';
 
-## See Also
+await db.transaction(async (tx) => {
+  // All queries inside this callback use the same transaction
+  const [user] = await tx.insert(users).values({
+    email: 'new@example.com',
+    name: 'New User',
+    passwordHash: hashedPassword,
+  }).returning();
 
-{/* TODO: Add cross-references to related pages */}
+  await tx.insert(posts).values({
+    title: 'Welcome Post',
+    body: 'Auto-generated welcome post.',
+    authorId: user!.id,
+    published: true,
+  });
+
+  // If any query fails, everything is rolled back
+});
+```
+
+## Transaction with Return Value
+
+Transactions return whatever the callback returns:
+
+```typescript
+const result = await db.transaction(async (tx) => {
+  const [user] = await tx.insert(users).values(userData).returning();
+  const [post] = await tx.insert(posts).values({
+    ...postData,
+    authorId: user!.id,
+  }).returning();
+
+  return { user: user!, post: post! };
+});
+
+console.log(result.user.id, result.post.id);
+```
+
+## Error Handling
+
+If any query in the transaction throws an error, the entire transaction is rolled back:
+
+```typescript
+try {
+  await db.transaction(async (tx) => {
+    await tx.insert(users).values(userData);
+
+    // This will fail if the email already exists (unique constraint)
+    await tx.insert(users).values(duplicateData);
+
+    // This line never executes - transaction is rolled back
+    await tx.insert(posts).values(postData);
+  });
+} catch (error) {
+  // Both inserts are rolled back
+  console.error('Transaction failed:', error);
+}
+```
+
+## Manual Rollback
+
+You can manually trigger a rollback by calling `tx.rollback()`:
+
+```typescript
+await db.transaction(async (tx) => {
+  const [user] = await tx.insert(users).values(userData).returning();
+
+  const postCount = await getPostCountForUser(tx, user!.id);
+
+  if (postCount > 100) {
+    tx.rollback(); // Abort the entire transaction
+    return;
+  }
+
+  await tx.insert(posts).values({ ...postData, authorId: user!.id });
+});
+```
+
+## When to Use Transactions
+
+**Use transactions when:**
+- Creating related records (user + profile, order + order items)
+- Transferring data between records (move balance from account A to B)
+- Any operation where partial failure would leave data inconsistent
+
+**Don't use transactions for:**
+- Single read queries
+- Single insert/update/delete operations (already atomic)
+- Independent operations that don't need to be consistent
+
+## Transaction in a Repository
+
+```typescript
+export function createOrderRepository(db: Database) {
+  return {
+    async createWithItems(
+      orderData: NewOrder,
+      items: NewOrderItem[],
+    ): Promise<{ order: Order; items: OrderItem[] }> {
+      return db.transaction(async (tx) => {
+        const [order] = await tx.insert(orders).values(orderData).returning();
+
+        const orderItems = await tx.insert(orderItems).values(
+          items.map((item) => ({ ...item, orderId: order!.id }))
+        ).returning();
+
+        return { order: order!, items: orderItems };
+      });
+    },
+  };
+}
+```
+
+## Best Practices
+
+- **Keep transactions short** -- long transactions hold locks and reduce concurrency
+- **Don't do I/O inside transactions** -- avoid HTTP calls, file reads, etc. inside `tx`
+- **Use the `tx` parameter** for all queries within the callback (not the outer `db`)
+- **Handle errors** at the caller level, not inside the transaction
+- **Return results** from the transaction callback instead of mutating external state

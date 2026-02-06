@@ -1,21 +1,117 @@
 ---
-title: "tRPC Integration"
-description: "How tRPC provides end-to-end type safety."
+title: tRPC Integration
+description: How VibeonRails integrates tRPC for end-to-end type-safe API communication.
 sidebar:
   order: 3
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+tRPC gives you end-to-end type safety between your server and client. When you change a procedure's input or output, TypeScript catches mismatches immediately -- no code generation, no API schema files.
 
-## Overview
+## How It Works
 
-{/* TODO: Write comprehensive content for this page */}
+1. You define **procedures** (endpoints) with typed inputs and outputs
+2. Procedures are grouped into **routers** (one per feature module)
+3. Routers are merged into a single **app router**
+4. The app router is mounted on the Hono server at `/trpc`
+5. The client imports the `AppRouter` type for fully typed calls
 
-## See Also
+## Setup
 
-{/* TODO: Add cross-references to related pages */}
+tRPC is configured in `@vibeonrails/core/api` and exported for your use:
+
+```typescript
+import {
+  router,             // Create routers
+  publicProcedure,    // Public endpoints
+  protectedProcedure, // Auth-required endpoints
+  middleware,          // Custom middleware builder
+} from '@vibeonrails/core/api';
+```
+
+Under the hood, tRPC is initialized with:
+- A typed **Context** (includes `user` from JWT)
+- A custom **error formatter** that adds documentation links
+- **Public** and **protected** procedure builders
+
+## Creating a Router
+
+Each feature module exports a router:
+
+```typescript
+// src/modules/post/post.controller.ts
+import { z } from 'zod';
+import { router, publicProcedure, protectedProcedure } from '@vibeonrails/core/api';
+
+export const postRouter = router({
+  list: publicProcedure.query(async ({ ctx }) => {
+    // Anyone can list posts
+    return postRepo.findAll();
+  }),
+
+  create: protectedProcedure
+    .input(z.object({
+      title: z.string().min(1).max(255),
+      body: z.string().min(1),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      // Only authenticated users can create posts
+      return postRepo.create({
+        ...input,
+        authorId: ctx.user.id,
+      });
+    }),
+});
+```
+
+## Merging Routers
+
+All feature routers are merged into a single app router:
+
+```typescript
+// src/router.ts
+import { createAppRouter } from '@vibeonrails/core/api';
+import { userRouter } from './modules/user/user.controller';
+import { postRouter } from './modules/post/post.controller';
+
+export const appRouter = createAppRouter({
+  user: userRouter,
+  post: postRouter,
+});
+
+// Export the type for the client
+export type AppRouter = typeof appRouter;
+```
+
+## Error Formatting
+
+tRPC errors automatically include a documentation link:
+
+```json
+{
+  "error": {
+    "message": "Authentication required.",
+    "code": -32001,
+    "data": {
+      "code": "UNAUTHORIZED",
+      "docs": "https://vibeonrails.dev/errors/UNAUTHORIZED"
+    }
+  }
+}
+```
+
+## Client Integration
+
+On the frontend, import the `AppRouter` type for full type safety:
+
+```typescript
+import { createTRPCProxyClient, httpBatchLink } from '@trpc/client';
+import type { AppRouter } from '../../../src/router';
+
+const client = createTRPCProxyClient<AppRouter>({
+  links: [httpBatchLink({ url: '/trpc' })],
+});
+
+// Fully typed - TypeScript knows the return type
+const posts = await client.post.list.query();
+const newPost = await client.post.create.mutate({ title: 'Hello', body: 'World' });
+```

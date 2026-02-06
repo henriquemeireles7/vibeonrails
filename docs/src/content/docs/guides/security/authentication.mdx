@@ -1,21 +1,176 @@
 ---
-title: "Authentication"
-description: "Understanding authentication concepts in VibeonRails."
+title: Authentication
+description: How to implement user registration, login, and token-based authentication.
 sidebar:
   order: 2
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+VibeonRails uses JWT-based authentication. Users register with email/password, receive access and refresh tokens on login, and include the access token in API requests.
 
-## Overview
+## Authentication Flow
 
-{/* TODO: Write comprehensive content for this page */}
+```
+1. Register: email + password -> hash password -> store user -> return tokens
+2. Login:    email + password -> verify password -> return tokens
+3. API Call: Bearer token -> verify JWT -> extract user -> set context
+4. Refresh:  refresh token -> verify -> issue new access token
+```
 
-## See Also
+## Registration
 
-{/* TODO: Add cross-references to related pages */}
+```typescript
+import { z } from 'zod';
+import { router, publicProcedure } from '@vibeonrails/core/api';
+import { hashPassword, signAccessToken, signRefreshToken } from '@vibeonrails/core/security';
+
+export const authRouter = router({
+  register: publicProcedure
+    .input(z.object({
+      email: z.string().email(),
+      name: z.string().min(1).max(255),
+      password: z.string().min(8, 'Password must be at least 8 characters'),
+    }))
+    .mutation(async ({ input }) => {
+      // Check if user already exists
+      const existing = await userRepo.findByEmail(input.email);
+      if (existing) {
+        throw new AppError('E2002', 'User already exists', 409);
+      }
+
+      // Hash password with Argon2id
+      const passwordHash = await hashPassword(input.password);
+
+      // Create user
+      const user = await userRepo.create({
+        email: input.email,
+        name: input.name,
+        passwordHash,
+      });
+
+      // Issue tokens
+      const accessToken = await signAccessToken(user);
+      const refreshToken = await signRefreshToken(user.id);
+
+      return {
+        user: { id: user.id, email: user.email, name: user.name },
+        accessToken,
+        refreshToken,
+      };
+    }),
+});
+```
+
+## Login
+
+```typescript
+export const authRouter = router({
+  login: publicProcedure
+    .input(z.object({
+      email: z.string().email(),
+      password: z.string(),
+    }))
+    .mutation(async ({ input }) => {
+      // Find user
+      const user = await userRepo.findByEmail(input.email);
+      if (!user) {
+        throw new AuthenticationError('Invalid credentials');
+      }
+
+      // Verify password
+      const isValid = await verifyPassword(user.passwordHash, input.password);
+      if (!isValid) {
+        throw new AuthenticationError('Invalid credentials');
+      }
+
+      // Issue tokens
+      const accessToken = await signAccessToken(user);
+      const refreshToken = await signRefreshToken(user.id);
+
+      return {
+        user: { id: user.id, email: user.email, name: user.name },
+        accessToken,
+        refreshToken,
+      };
+    }),
+});
+```
+
+## Protected Endpoints
+
+Use `protectedProcedure` for endpoints that require authentication:
+
+```typescript
+import { protectedProcedure } from '@vibeonrails/core/api';
+
+export const userRouter = router({
+  me: protectedProcedure.query(async ({ ctx }) => {
+    // ctx.user is guaranteed to exist
+    return userRepo.findById(ctx.user.id);
+  }),
+
+  updateProfile: protectedProcedure
+    .input(z.object({ name: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      return userRepo.update(ctx.user.id, { name: input.name });
+    }),
+});
+```
+
+## Token Refresh
+
+Access tokens expire after 15 minutes. Use the refresh token to get a new access token:
+
+```typescript
+export const authRouter = router({
+  refresh: publicProcedure
+    .input(z.object({ refreshToken: z.string() }))
+    .mutation(async ({ input }) => {
+      // Verify the refresh token
+      const payload = await verifyToken(input.refreshToken);
+
+      // Find the user
+      const user = await userRepo.findById(payload.sub);
+      if (!user) {
+        throw new UnauthorizedError('User not found');
+      }
+
+      // Issue a new access token
+      const accessToken = await signAccessToken(user);
+
+      return { accessToken };
+    }),
+});
+```
+
+## Client-Side Integration
+
+```typescript
+// Store tokens after login
+const { accessToken, refreshToken } = await client.auth.login.mutate({
+  email: 'user@example.com',
+  password: 'password',
+});
+localStorage.setItem('accessToken', accessToken);
+localStorage.setItem('refreshToken', refreshToken);
+
+// Include token in API calls (configured in tRPC client)
+const trpcClient = createTRPCProxyClient<AppRouter>({
+  links: [
+    httpBatchLink({
+      url: '/trpc',
+      headers() {
+        const token = localStorage.getItem('accessToken');
+        return token ? { Authorization: `Bearer ${token}` } : {};
+      },
+    }),
+  ],
+});
+```
+
+## Security Best Practices
+
+- **Never store passwords in plain text** -- always use `hashPassword()`
+- **Use the same error message** for "user not found" and "wrong password" (prevents user enumeration)
+- **Set short access token lifetimes** (15 minutes default) with longer refresh tokens (7 days)
+- **Validate all inputs** with Zod schemas before processing
+- **Rate limit auth endpoints** to prevent brute force attacks

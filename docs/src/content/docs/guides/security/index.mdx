@@ -1,21 +1,104 @@
 ---
-title: "Security Overview"
-description: "The VibeonRails security architecture."
+title: Security Overview
+description: How VibeonRails handles authentication, authorization, encryption, and security best practices.
 sidebar:
   order: 1
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+VibeonRails provides a comprehensive security module covering authentication, authorization, encryption, and audit logging. Every security feature follows industry best practices (OWASP) and uses battle-tested libraries.
 
-## Overview
+## Security Architecture
 
-{/* TODO: Write comprehensive content for this page */}
+```
+Request -> JWT Verification -> Context Creation -> Authorization Guards -> Procedure
+              |                     |                    |
+         jose (HS256)          User identity         Role-based
+                               in context            access control
+```
 
-## See Also
+| Feature | Library | Purpose |
+|---------|---------|---------|
+| **JWT Tokens** | jose | Access & refresh token signing/verification |
+| **Password Hashing** | @node-rs/argon2 | Argon2id hashing (OWASP recommended) |
+| **Sessions** | Custom | Server-side session management |
+| **OAuth** | Custom | Google, GitHub, Discord provider configs |
+| **CSRF** | Custom | Cross-site request forgery protection |
+| **Encryption** | Node.js crypto | AES-256-GCM for sensitive data |
+| **Audit Logging** | Custom | Security event tracking |
 
-{/* TODO: Add cross-references to related pages */}
+## Quick Example
+
+```typescript
+import {
+  hashPassword,
+  verifyPassword,
+  signAccessToken,
+  signRefreshToken,
+  verifyToken,
+} from '@vibeonrails/core/security';
+
+// Register: hash the password
+const hash = await hashPassword('my-secure-password');
+
+// Login: verify the password, then issue tokens
+const isValid = await verifyPassword(hash, 'my-secure-password');
+if (isValid) {
+  const accessToken = await signAccessToken({ id: user.id, email: user.email, role: user.role });
+  const refreshToken = await signRefreshToken(user.id);
+}
+
+// API: verify the token
+const payload = await verifyToken(accessToken);
+// { sub: 'user-id', email: 'user@example.com', role: 'user' }
+```
+
+## Key Exports
+
+```typescript
+import {
+  // Authentication
+  hashPassword, verifyPassword,
+  signAccessToken, signRefreshToken, verifyToken,
+
+  // Sessions
+  createSessionManager, createMemorySessionStore,
+
+  // OAuth
+  defineGoogleProvider, defineGitHubProvider, defineDiscordProvider,
+  buildAuthorizeUrl, exchangeCode,
+
+  // Authorization
+  requireRole,
+
+  // CSRF
+  csrfProtection,
+
+  // Crypto
+  encrypt, decrypt, generateSecureToken,
+
+  // Audit
+  createAuditLogger,
+} from '@vibeonrails/core/security';
+```
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `JWT_SECRET` | Yes | Secret key for JWT signing (min. 32 characters) |
+| `GOOGLE_CLIENT_ID` | For Google OAuth | Google OAuth client ID |
+| `GOOGLE_CLIENT_SECRET` | For Google OAuth | Google OAuth client secret |
+| `GITHUB_CLIENT_ID` | For GitHub OAuth | GitHub OAuth client ID |
+| `GITHUB_CLIENT_SECRET` | For GitHub OAuth | GitHub OAuth client secret |
+
+## What's Next
+
+- [Authentication](/guides/security/authentication/) -- Login, register, token management
+- [JWT Tokens](/guides/security/jwt/) -- How tokens work, configuration, refresh flow
+- [Authorization](/guides/security/authorization/) -- Role-based access control
+- [Password Hashing](/guides/security/passwords/) -- Argon2id configuration
+- [Sessions](/guides/security/sessions/) -- Server-side session management
+- [OAuth](/guides/security/oauth/) -- Social login providers
+- [CSRF Protection](/guides/security/csrf/) -- Cross-site request forgery
+- [Encryption](/guides/security/crypto/) -- AES-256-GCM encryption
+- [Audit Logging](/guides/security/audit/) -- Security event tracking

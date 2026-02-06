@@ -1,21 +1,134 @@
 ---
-title: "createServer()"
-description: "API reference for the createServer function."
+title: createServer()
+description: API reference for the createServer function that creates a configured Hono HTTP server.
 sidebar:
   order: 1
-  badge:
-    text: Reference
-    variant: danger
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+Creates a fully configured Hono HTTP server with built-in middleware, tRPC integration, and a health endpoint.
 
-## Overview
+## Import
 
-{/* TODO: Write comprehensive content for this page */}
+```typescript
+import { createServer } from '@vibeonrails/core/api';
+```
+
+## Signature
+
+```typescript
+function createServer(options: ServerOptions): HonoApp
+```
+
+## Parameters
+
+### ServerOptions
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `router` | `AnyRouter` | Yes | -- | The tRPC router to serve |
+| `trpcPath` | `string` | No | `'/trpc'` | Base path for tRPC endpoints |
+| `corsOrigin` | `string \| string[]` | No | All origins | Allowed CORS origins |
+
+## Returns
+
+A configured **Hono** application instance (`HonoApp`).
+
+## Description
+
+`createServer()` creates an HTTP server with the following built-in middleware applied in order:
+
+1. **Error handler** -- Catches unhandled errors, returns structured JSON
+2. **Logger** -- Logs all requests to stdout (`GET /health 200 3ms`)
+3. **Secure headers** -- Sets `X-Content-Type-Options`, `X-Frame-Options`, etc.
+4. **CORS** -- Handles preflight requests, validates origins
+
+It also mounts:
+- **Health endpoint** at `GET /health`
+- **tRPC router** at `{trpcPath}/*` (default: `/trpc/*`)
+
+## Examples
+
+### Basic Usage
+
+```typescript
+import { createServer } from '@vibeonrails/core/api';
+import { appRouter } from './router';
+
+const app = createServer({ router: appRouter });
+
+export default app;
+```
+
+### Custom tRPC Path
+
+```typescript
+const app = createServer({
+  router: appRouter,
+  trpcPath: '/api/v1',
+});
+// tRPC endpoints at /api/v1/*
+```
+
+### Restricted CORS
+
+```typescript
+const app = createServer({
+  router: appRouter,
+  corsOrigin: 'https://myapp.com',
+});
+```
+
+### Multiple CORS Origins
+
+```typescript
+const app = createServer({
+  router: appRouter,
+  corsOrigin: ['https://myapp.com', 'https://admin.myapp.com'],
+});
+```
+
+### Adding Custom Routes
+
+```typescript
+const app = createServer({ router: appRouter });
+
+// Custom webhook endpoint (bypasses tRPC)
+app.post('/webhooks/stripe', async (c) => {
+  const body = await c.req.text();
+  return c.json({ received: true });
+});
+
+// Custom redirect
+app.get('/docs', (c) => c.redirect('https://docs.myapp.com'));
+```
+
+### Adding Custom Middleware
+
+```typescript
+const app = createServer({ router: appRouter });
+
+// Rate limit all tRPC endpoints
+app.use('/trpc/*', rateLimit({ max: 100 }));
+```
+
+## Health Endpoint
+
+`GET /health` returns:
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2026-02-05T12:00:00.000Z",
+  "version": "0.1.0"
+}
+```
+
+## Source
+
+`packages/core/src/api/server.ts`
 
 ## See Also
 
-{/* TODO: Add cross-references to related pages */}
+- [createAppRouter()](/reference/api/create-app-router/) -- Merge feature routers
+- [Hono Server Guide](/guides/api/server/) -- Detailed server guide
+- [Middleware Guide](/guides/api/middleware/) -- Custom middleware patterns

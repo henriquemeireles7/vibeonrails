@@ -1,21 +1,193 @@
 ---
-title: "Query Patterns"
-description: "Common query patterns with Drizzle ORM."
+title: Query Patterns
+description: Common Drizzle ORM query patterns for filtering, sorting, pagination, and more.
 sidebar:
   order: 8
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+VibeonRails uses Drizzle ORM's query builder for type-safe SQL. This guide covers the most common query patterns you'll use in your repositories and services.
 
-## Overview
+## Basic Queries
 
-{/* TODO: Write comprehensive content for this page */}
+### Select All
 
-## See Also
+```typescript
+import { db } from './client';
+import { users } from './schema/user';
 
-{/* TODO: Add cross-references to related pages */}
+const allUsers = await db.select().from(users);
+```
+
+### Select with Filter
+
+```typescript
+import { eq, and, or, like, gt, lt } from 'drizzle-orm';
+
+// Exact match
+const user = await db.select().from(users).where(eq(users.email, 'admin@example.com'));
+
+// Multiple conditions (AND)
+const activeAdmins = await db.select().from(users).where(
+  and(eq(users.role, 'admin'), eq(users.emailVerified, true))
+);
+
+// OR conditions
+const results = await db.select().from(users).where(
+  or(eq(users.role, 'admin'), eq(users.role, 'moderator'))
+);
+
+// Pattern matching
+const matching = await db.select().from(users).where(
+  like(users.name, '%John%')
+);
+```
+
+### Select Specific Columns
+
+```typescript
+const emails = await db.select({ id: users.id, email: users.email }).from(users);
+// Returns: [{ id: '...', email: '...' }]
+```
+
+## Sorting and Limits
+
+```typescript
+import { desc, asc } from 'drizzle-orm';
+
+// Order by newest first
+const recent = await db.select().from(posts).orderBy(desc(posts.createdAt));
+
+// Limit results
+const topFive = await db.select().from(posts).orderBy(desc(posts.createdAt)).limit(5);
+
+// Find first match
+const first = await db.select().from(users).where(eq(users.email, email)).limit(1);
+```
+
+## Insert
+
+```typescript
+// Single insert with returning
+const [newUser] = await db.insert(users).values({
+  email: 'new@example.com',
+  name: 'New User',
+  passwordHash: hashedPassword,
+}).returning();
+
+// Batch insert
+const newPosts = await db.insert(posts).values([
+  { title: 'Post 1', body: 'Content 1', authorId: userId },
+  { title: 'Post 2', body: 'Content 2', authorId: userId },
+]).returning();
+```
+
+## Update
+
+```typescript
+// Update by ID
+const [updated] = await db
+  .update(users)
+  .set({ name: 'Updated Name', updatedAt: new Date() })
+  .where(eq(users.id, userId))
+  .returning();
+
+// Conditional update
+await db
+  .update(posts)
+  .set({ published: true })
+  .where(and(eq(posts.authorId, userId), eq(posts.published, false)));
+```
+
+## Delete
+
+```typescript
+// Delete by ID
+const [deleted] = await db
+  .delete(posts)
+  .where(eq(posts.id, postId))
+  .returning();
+
+// Conditional delete
+await db
+  .delete(posts)
+  .where(and(eq(posts.authorId, userId), eq(posts.published, false)));
+```
+
+## Pagination
+
+A common pagination pattern:
+
+```typescript
+import { sql, count } from 'drizzle-orm';
+
+async function paginateUsers(page = 1, limit = 20) {
+  const offset = (page - 1) * limit;
+
+  const [data, [{ total }]] = await Promise.all([
+    db.select().from(users).limit(limit).offset(offset).orderBy(desc(users.createdAt)),
+    db.select({ total: count() }).from(users),
+  ]);
+
+  return {
+    data,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  };
+}
+```
+
+## Joins
+
+```typescript
+import { eq } from 'drizzle-orm';
+
+// Inner join
+const postsWithAuthors = await db
+  .select({
+    postId: posts.id,
+    title: posts.title,
+    authorName: users.name,
+    authorEmail: users.email,
+  })
+  .from(posts)
+  .innerJoin(users, eq(posts.authorId, users.id));
+
+// Left join
+const usersWithPosts = await db
+  .select()
+  .from(users)
+  .leftJoin(posts, eq(users.id, posts.authorId));
+```
+
+## Aggregations
+
+```typescript
+import { count, avg, sum } from 'drizzle-orm';
+
+// Count records
+const [{ userCount }] = await db.select({ userCount: count() }).from(users);
+
+// Count by group
+const postsByUser = await db
+  .select({ authorId: posts.authorId, postCount: count() })
+  .from(posts)
+  .groupBy(posts.authorId);
+```
+
+## Drizzle Operators Reference
+
+| Operator | Import | Usage |
+|----------|--------|-------|
+| `eq` | `drizzle-orm` | Equals: `eq(col, value)` |
+| `ne` | `drizzle-orm` | Not equals |
+| `gt` / `gte` | `drizzle-orm` | Greater than / Greater or equal |
+| `lt` / `lte` | `drizzle-orm` | Less than / Less or equal |
+| `like` / `ilike` | `drizzle-orm` | Pattern matching |
+| `and` / `or` | `drizzle-orm` | Combine conditions |
+| `not` | `drizzle-orm` | Negate a condition |
+| `isNull` / `isNotNull` | `drizzle-orm` | Null checks |
+| `inArray` | `drizzle-orm` | IN clause |
+| `desc` / `asc` | `drizzle-orm` | Order direction |
+| `count` / `sum` / `avg` | `drizzle-orm` | Aggregations |

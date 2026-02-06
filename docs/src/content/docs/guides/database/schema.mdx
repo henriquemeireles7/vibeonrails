@@ -1,21 +1,129 @@
 ---
-title: "Schema Definitions"
-description: "Defining tables and columns with Drizzle ORM."
+title: Schema Definitions
+description: How to define database tables, columns, and constraints with Drizzle ORM.
 sidebar:
   order: 3
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+Schemas are TypeScript files that define your database tables. Drizzle ORM uses a declarative API where each table is a constant, and types are inferred automatically.
 
-## Overview
+## Defining a Table
 
-{/* TODO: Write comprehensive content for this page */}
+```typescript
+// src/database/schema/user.ts
+import { pgTable, uuid, varchar, timestamp, boolean } from 'drizzle-orm/pg-core';
 
-## See Also
+export const users = pgTable('users', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  name: varchar('name', { length: 255 }).notNull(),
+  passwordHash: varchar('password_hash', { length: 255 }).notNull(),
+  role: varchar('role', { length: 50 }).notNull().default('user'),
+  emailVerified: boolean('email_verified').notNull().default(false),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
 
-{/* TODO: Add cross-references to related pages */}
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
+```
+
+## Column Types
+
+Common column types from `drizzle-orm/pg-core`:
+
+| TypeScript | PostgreSQL | Usage |
+|-----------|------------|-------|
+| `uuid('col')` | `UUID` | Primary keys, foreign keys |
+| `varchar('col', { length: 255 })` | `VARCHAR(255)` | Short strings |
+| `text('col')` | `TEXT` | Long text content |
+| `boolean('col')` | `BOOLEAN` | True/false flags |
+| `integer('col')` | `INTEGER` | Whole numbers |
+| `timestamp('col', { withTimezone: true })` | `TIMESTAMPTZ` | Date/time values |
+| `json('col')` | `JSON` | Structured data |
+| `jsonb('col')` | `JSONB` | Indexed structured data |
+
+## Constraints and Modifiers
+
+```typescript
+// Required field
+email: varchar('email', { length: 255 }).notNull()
+
+// Unique constraint
+email: varchar('email', { length: 255 }).notNull().unique()
+
+// Default value
+role: varchar('role', { length: 50 }).notNull().default('user')
+
+// Auto-generated UUID
+id: uuid('id').primaryKey().defaultRandom()
+
+// Auto-generated timestamp
+createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow()
+
+// Foreign key reference
+authorId: uuid('author_id').references(() => users.id).notNull()
+```
+
+## Type Inference
+
+Drizzle automatically infers two types from every table:
+
+```typescript
+// Select type: what you get when reading from the database
+type User = typeof users.$inferSelect;
+// { id: string, email: string, name: string, passwordHash: string, ... }
+
+// Insert type: what you provide when writing to the database
+type NewUser = typeof users.$inferInsert;
+// { email: string, name: string, passwordHash: string, role?: string, ... }
+// Note: fields with defaults become optional in the insert type
+```
+
+## Foreign Keys
+
+Reference other tables using `.references()`:
+
+```typescript
+// src/database/schema/post.ts
+import { pgTable, uuid, varchar, text, boolean, timestamp } from 'drizzle-orm/pg-core';
+import { users } from './user';
+
+export const posts = pgTable('posts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  title: varchar('title', { length: 255 }).notNull(),
+  body: text('body').notNull(),
+  published: boolean('published').notNull().default(false),
+  authorId: uuid('author_id').references(() => users.id).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+});
+
+export type Post = typeof posts.$inferSelect;
+export type NewPost = typeof posts.$inferInsert;
+```
+
+## Barrel Export
+
+All schemas should be exported from a single index file:
+
+```typescript
+// src/database/schema/index.ts
+export * from './user';
+export * from './post';
+export * from './relations';
+```
+
+This file is imported by the database client to bind all tables to the Drizzle instance.
+
+## VibeonRails Conventions
+
+| Convention | Example |
+|-----------|---------|
+| Table names | Plural, snake_case: `users`, `blog_posts` |
+| Column names | snake_case in DB: `created_at`, `password_hash` |
+| TypeScript properties | camelCase: `createdAt`, `passwordHash` |
+| Primary key | `uuid('id').primaryKey().defaultRandom()` |
+| Timestamps | Always include `createdAt` and `updatedAt` |
+| Type exports | `type User = typeof users.$inferSelect` |
+| File naming | `user.ts`, `post.ts`, `comment.ts` (singular) |

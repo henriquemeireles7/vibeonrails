@@ -1,21 +1,127 @@
 ---
-title: "Middleware"
-description: "The middleware pipeline and how to extend it."
+title: Middleware
+description: How to create and use middleware in Hono and tRPC.
 sidebar:
   order: 6
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+VibeonRails uses middleware at two levels: **Hono middleware** (HTTP-level, applied to all requests) and **tRPC middleware** (procedure-level, applied to specific endpoints).
 
-## Overview
+## Built-in Hono Middleware
 
-{/* TODO: Write comprehensive content for this page */}
+`createServer()` automatically applies these middleware in order:
 
-## See Also
+| Middleware | Purpose |
+|-----------|---------|
+| `errorHandler()` | Catches errors, returns structured JSON |
+| `logger()` | Logs requests to stdout |
+| `secureHeaders()` | Sets security headers (CSP, X-Frame-Options, etc.) |
+| `cors()` | Handles CORS preflight and origin validation |
 
-{/* TODO: Add cross-references to related pages */}
+## Adding Custom Hono Middleware
+
+Since the server is a standard Hono instance, you can add middleware after creation:
+
+```typescript
+import { createServer } from '@vibeonrails/core/api';
+
+const app = createServer({ router: appRouter });
+
+// Add custom middleware
+app.use('/api/*', async (c, next) => {
+  const start = Date.now();
+  await next();
+  const duration = Date.now() - start;
+  c.header('X-Response-Time', `${duration}ms`);
+});
+```
+
+## tRPC Middleware
+
+tRPC middleware runs inside the procedure chain. Use the `middleware` builder:
+
+```typescript
+import { middleware, protectedProcedure } from '@vibeonrails/core/api';
+import { TRPCError } from '@trpc/server';
+
+// Create a middleware that checks admin role
+const isAdmin = middleware(({ ctx, next }) => {
+  if (ctx.user?.role !== 'admin') {
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'Admin access required',
+    });
+  }
+  return next({ ctx });
+});
+
+// Create a procedure that uses the middleware
+const adminProcedure = protectedProcedure.use(isAdmin);
+```
+
+### Using tRPC Middleware
+
+```typescript
+export const adminRouter = router({
+  listUsers: adminProcedure.query(async () => {
+    return userRepo.list();
+  }),
+
+  deleteUser: adminProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .mutation(async ({ input }) => {
+      return userRepo.remove(input.id);
+    }),
+});
+```
+
+### Logging Middleware
+
+```typescript
+const logProcedure = middleware(async ({ ctx, next, path, type }) => {
+  const start = Date.now();
+  const result = await next({ ctx });
+  const duration = Date.now() - start;
+  console.log(`[tRPC] ${type} ${path} ${duration}ms`);
+  return result;
+});
+
+const loggedProcedure = publicProcedure.use(logProcedure);
+```
+
+### Extending Context
+
+Middleware can add data to the context:
+
+```typescript
+const withDatabase = middleware(({ ctx, next }) => {
+  return next({
+    ctx: {
+      ...ctx,
+      db: createDatabase(),
+      userRepo: createUserRepository(db),
+    },
+  });
+});
+```
+
+## Middleware Execution Order
+
+```
+Request
+  -> Hono Middleware (errorHandler, logger, secureHeaders, cors)
+    -> tRPC Context Creation (createContext)
+      -> tRPC Procedure Middleware (isAdmin, logProcedure, etc.)
+        -> Procedure Handler (your business logic)
+      <- Return result
+    <- Format response
+  <- Send HTTP response
+```
+
+## Best Practices
+
+- **Keep middleware focused** -- each middleware should do one thing
+- **Use Hono middleware** for HTTP-level concerns (logging, headers, CORS)
+- **Use tRPC middleware** for business-level concerns (authorization, audit)
+- **Chain middleware** using `.use()` to build specialized procedure types
+- **Don't duplicate** -- if middleware is needed everywhere, add it to Hono, not tRPC

@@ -1,21 +1,175 @@
 ---
-title: "Seeds"
-description: "Seeding the database with development and test data."
+title: Seeds
+description: How to populate your database with development and test data.
 sidebar:
   order: 6
-  badge:
-    text: Guide
-    variant: note
 ---
 
-:::note[Work in Progress]
-This page is being written. Check back soon for complete documentation.
-:::
+Seeds populate your database with sample data for development and testing. VibeonRails supports environment-specific seeds so your dev database has realistic data and your test database has predictable fixtures.
 
-## Overview
+## Running Seeds
 
-{/* TODO: Write comprehensive content for this page */}
+```bash
+vibe db seed
+```
 
-## See Also
+This runs the seed function for the current `NODE_ENV` (defaults to `development`).
 
-{/* TODO: Add cross-references to related pages */}
+## Programmatic Seeding
+
+```typescript
+import { createDatabase, runSeeds } from '@vibeonrails/core/database';
+
+const db = createDatabase();
+
+// Seeds based on NODE_ENV
+await runSeeds(db);
+
+// Or explicitly specify environment
+await runSeeds(db, 'development');
+await runSeeds(db, 'test');
+```
+
+## Seed Structure
+
+Seeds are organized by environment:
+
+```
+src/database/seeds/
+  index.ts          # Seed runner (routes to correct env)
+  development.ts    # Dev data (realistic sample data)
+  test.ts           # Test data (minimal, predictable)
+```
+
+### Development Seeds
+
+Development seeds create realistic sample data for local development:
+
+```typescript
+// src/database/seeds/development.ts
+import type { Database } from '../client';
+import { users } from '../schema/user';
+import { posts } from '../schema/post';
+import { hashPassword } from '@vibeonrails/core/security';
+
+export async function seedDevelopment(db: Database): Promise<void> {
+  const adminHash = await hashPassword('admin123456');
+  const userHash = await hashPassword('user123456');
+
+  const [admin, user] = await db
+    .insert(users)
+    .values([
+      {
+        email: 'admin@example.com',
+        name: 'Admin User',
+        passwordHash: adminHash,
+        role: 'admin',
+        emailVerified: true,
+      },
+      {
+        email: 'user@example.com',
+        name: 'Regular User',
+        passwordHash: userHash,
+        role: 'user',
+        emailVerified: true,
+      },
+    ])
+    .returning();
+
+  await db.insert(posts).values([
+    {
+      title: 'Welcome to Vibe on Rails',
+      body: 'This is your first post.',
+      published: true,
+      authorId: admin!.id,
+    },
+    {
+      title: 'Getting Started Guide',
+      body: 'Learn how to build apps with VibeonRails.',
+      published: true,
+      authorId: admin!.id,
+    },
+    {
+      title: 'My Draft Post',
+      body: 'This post is not published yet.',
+      published: false,
+      authorId: user!.id,
+    },
+  ]);
+
+  console.log('  Seeded 2 users and 3 posts (development)');
+}
+```
+
+### Test Seeds
+
+Test seeds create minimal, predictable data for automated tests:
+
+```typescript
+// src/database/seeds/test.ts
+import type { Database } from '../client';
+import { users } from '../schema/user';
+import { hashPassword } from '@vibeonrails/core/security';
+
+export async function seedTest(db: Database): Promise<void> {
+  const hash = await hashPassword('test123456');
+
+  await db.insert(users).values({
+    email: 'test@example.com',
+    name: 'Test User',
+    passwordHash: hash,
+    role: 'user',
+    emailVerified: true,
+  });
+
+  console.log('  Seeded 1 test user');
+}
+```
+
+### Seed Index
+
+The seed runner routes to the correct environment:
+
+```typescript
+// src/database/seeds/index.ts
+import type { Database } from '../client';
+import { seedDevelopment } from './development';
+import { seedTest } from './test';
+
+export type SeedEnvironment = 'development' | 'test';
+
+export async function runSeeds(db: Database, env?: SeedEnvironment): Promise<void> {
+  const target = env ?? (process.env.NODE_ENV as SeedEnvironment) ?? 'development';
+
+  console.log(`Running ${target} seeds...`);
+
+  switch (target) {
+    case 'test':
+      await seedTest(db);
+      break;
+    case 'development':
+    default:
+      await seedDevelopment(db);
+      break;
+  }
+
+  console.log('Seeds complete.');
+}
+```
+
+## Default Dev Credentials
+
+After running development seeds:
+
+| Email | Password | Role |
+|-------|----------|------|
+| `admin@example.com` | `admin123456` | admin |
+| `user@example.com` | `user123456` | user |
+
+## Best Practices
+
+- **Use `hashPassword()`** for password seeds (never store plain text)
+- **Use `.returning()`** on inserts to get generated IDs for related records
+- **Keep test seeds minimal** -- just enough to run your test suite
+- **Make dev seeds realistic** -- use real-looking names, emails, content
+- **Run `vibe db reset`** to wipe and re-seed cleanly
