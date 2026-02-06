@@ -1,4 +1,4 @@
-# Agent on Rails: Implementation Guide
+# Vibe on Rails: Implementation Guide
 
 ## A Technical Roadmap for Building the Framework
 
@@ -8,7 +8,7 @@
 
 ## Chapter 1: What We're Building
 
-Agent on Rails is a TypeScript framework consisting of:
+Vibe on Rails is a TypeScript framework consisting of:
 
 1. **Framework Packages** (npm packages we publish)
 2. **CLI Tool** (scaffolding and code generation)
@@ -20,17 +20,17 @@ Agent on Rails is a TypeScript framework consisting of:
 ```
 agent-on-rails/                    # Framework monorepo
 ├── packages/
-│   ├── core/                      # @aor/core
-│   ├── infra/                     # @aor/infra
-│   ├── web/                       # @aor/web
-│   ├── mobile/                    # @aor/mobile
-│   ├── cli/                       # @aor/cli (create-aor)
+│   ├── core/                      # @vibeonrails/core
+│   ├── infra/                     # @vibeonrails/infra
+│   ├── web/                       # @vibeonrails/web
+│   ├── mobile/                    # @vibeonrails/mobile
+│   ├── cli/                       # @vibeonrails/cli (create-vibe)
 │   └── features/
-│       ├── payments/              # @aor/payments
-│       ├── support/               # @aor/support
-│       ├── admin/                 # @aor/admin
-│       ├── sales/                 # @aor/sales
-│       └── marketing/             # @aor/marketing
+│       ├── payments/              # @vibeonrails/payments
+│       ├── support/               # @vibeonrails/support
+│       ├── admin/                 # @vibeonrails/admin
+│       ├── sales/                 # @vibeonrails/sales
+│       └── marketing/             # @vibeonrails/marketing
 ├── templates/
 │   ├── app/                       # Full app template
 │   ├── module/                    # API module template
@@ -60,7 +60,7 @@ agent-on-rails/                    # Framework monorepo
 
 # Part II: Core Package Implementation
 
-## Chapter 3: @aor/core Package
+## Chapter 3: @vibeonrails/core Package
 
 ### 3.1 Structure
 
@@ -217,7 +217,7 @@ export class AppError extends Error {
       code: this.code,
       message: this.message,
       details: this.details,
-      docs: `https://aor.dev/errors/${this.code}`,
+      docs: `https://vibeonrails.dev/errors/${this.code}`,
     };
   }
 }
@@ -231,7 +231,7 @@ export class NotFoundError extends AppError {
 
 ---
 
-## Chapter 4: @aor/infra Package
+## Chapter 4: @vibeonrails/infra Package
 
 ### 4.1 Structure
 
@@ -362,7 +362,7 @@ export const logger = new Logger();
 
 ---
 
-## Chapter 5: @aor/web Package
+## Chapter 5: @vibeonrails/web Package
 
 ### 5.1 Structure
 
@@ -537,7 +537,7 @@ export const useAuth = create<AuthState>()(
 
 ---
 
-## Chapter 6: @aor/cli Package
+## Chapter 6: @vibeonrails/cli Package
 
 ### 6.1 Structure
 
@@ -570,7 +570,7 @@ import chalk from 'chalk';
 export const createCommand = new Command('create')
   .argument('<name>', 'Project name')
   .action(async (name) => {
-    console.log(chalk.bold('\n🚂 Agent on Rails\n'));
+    console.log(chalk.bold('\n🚂 Vibe on Rails\n'));
 
     const answers = await inquirer.prompt([
       {
@@ -591,7 +591,7 @@ export const createCommand = new Command('create')
 
     console.log(chalk.green('\n✅ Done!\n'));
     console.log(`  cd ${name}`);
-    console.log('  npx aor dev\n');
+    console.log('  npx vibe dev\n');
   });
 ```
 
@@ -613,7 +613,7 @@ export const Create{{pascalName}}Schema = z.object({
 export type Create{{pascalName}}Input = z.infer<typeof Create{{pascalName}}Schema>;
 `,
 
-  service: `import { db } from '@aor/core/database';
+  service: `import { db } from '@vibeonrails/core/database';
 import { {{camelName}}s } from '../../database/schema';
 import { eq } from 'drizzle-orm';
 import type { Create{{pascalName}}Input } from './{{name}}.types';
@@ -671,7 +671,7 @@ export async function generateModule(name: string) {
 
 # Part III: Feature Packages
 
-## Chapter 7: @aor/payments
+## Chapter 7: @vibeonrails/payments
 
 ```typescript
 // packages/features/payments/src/checkout.ts
@@ -712,11 +712,11 @@ export async function handleWebhook(body: string, signature: string) {
 }
 ```
 
-## Chapter 8: @aor/admin
+## Chapter 8: @vibeonrails/admin
 
 ```tsx
 // packages/features/admin/src/components/ResourceList.tsx
-import { DataTable, Button, Input } from '@aor/web/components';
+import { DataTable, Button, Input } from '@vibeonrails/web/components';
 
 interface Column<T> {
   key: keyof T;
@@ -752,14 +752,14 @@ export function ResourceList<T extends { id: string }>({
 ## Phase 1: Foundation (Weeks 1-4)
 
 - [ ] Set up monorepo (pnpm + Turborepo)
-- [ ] Implement @aor/core (API, DB, Auth)
-- [ ] Implement @aor/infra (Health, Logging, Queue, Email)
-- [ ] Implement @aor/cli (create, generate commands)
+- [ ] Implement @vibeonrails/core (API, DB, Auth)
+- [ ] Implement @vibeonrails/infra (Health, Logging, Queue, Email)
+- [ ] Implement @vibeonrails/cli (create, generate commands)
 - [ ] Create base app template
 
 ## Phase 2: Frontend (Weeks 5-8)
 
-- [ ] Implement @aor/web (CSS system, components)
+- [ ] Implement @vibeonrails/web (CSS system, components)
 - [ ] Set up Vite + React
 - [ ] Implement routing
 - [ ] Implement tRPC client
@@ -767,9 +767,9 @@ export function ResourceList<T extends { id: string }>({
 
 ## Phase 3: Features (Weeks 9-12)
 
-- [ ] Implement @aor/admin
-- [ ] Implement @aor/payments
-- [ ] Implement @aor/support (basic)
+- [ ] Implement @vibeonrails/admin
+- [ ] Implement @vibeonrails/payments
+- [ ] Implement @vibeonrails/support (basic)
 - [ ] Auto-generate admin from schema
 
 ## Phase 4: Polish (Weeks 13-16)
@@ -793,37 +793,37 @@ export function ResourceList<T extends { id: string }>({
 
 ```bash
 # Project
-npx create-aor <name>           # Create new project
+npx create-vibe <name>          # Create new project
 
 # Generate
-npx aor generate module <name>  # Generate API module
-npx aor generate component <name>  # Generate component
-npx aor g m <name>              # Shorthand
+npx vibe generate module <name>  # Generate API module
+npx vibe generate component <name>  # Generate component
+npx vibe g m <name>              # Shorthand
 
 # Database
-npx aor db:migrate              # Run migrations
-npx aor db:seed                 # Run seeds
-npx aor db:reset                # Reset database
+npx vibe db:migrate              # Run migrations
+npx vibe db:seed                 # Run seeds
+npx vibe db:reset                # Reset database
 
 # Development
-npx aor dev                     # Start dev server
-npx aor dev:api                 # API only
-npx aor dev:web                 # Web only
+npx vibe dev                     # Start dev server
+npx vibe dev:api                 # API only
+npx vibe dev:web                 # Web only
 
 # Production
-npx aor build                   # Build
-npx aor start                   # Start production
+npx vibe build                   # Build
+npx vibe start                   # Start production
 
 # Deploy
-npx aor deploy railway          # Deploy to Railway
-npx aor deploy fly              # Deploy to Fly.io
+npx vibe deploy railway          # Deploy to Railway
+npx vibe deploy fly              # Deploy to Fly.io
 ```
 
 ---
 
 # Part VI: Package Dependencies
 
-## @aor/core
+## @vibeonrails/core
 
 ```json
 {
@@ -839,7 +839,7 @@ npx aor deploy fly              # Deploy to Fly.io
 }
 ```
 
-## @aor/infra
+## @vibeonrails/infra
 
 ```json
 {
@@ -851,7 +851,7 @@ npx aor deploy fly              # Deploy to Fly.io
 }
 ```
 
-## @aor/web
+## @vibeonrails/web
 
 ```json
 {
@@ -864,7 +864,7 @@ npx aor deploy fly              # Deploy to Fly.io
 }
 ```
 
-## @aor/cli
+## @vibeonrails/cli
 
 ```json
 {
@@ -909,4 +909,4 @@ STRIPE_WEBHOOK_SECRET=whsec_xxxxx
 
 ---
 
-*This implementation guide provides the technical foundation for building Agent on Rails. Each section can be expanded as development progresses.*
+*This implementation guide provides the technical foundation for building Vibe on Rails. Each section can be expanded as development progresses.*

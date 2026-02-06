@@ -62,7 +62,7 @@ export function rateLimit(options: RateLimitOptions): MiddlewareHandler {
         {
           code: 'E6001',
           message: `Rate limit exceeded. Try again in ${Math.ceil((entry.resetAt - now) / 1000)} seconds.`,
-          docs: 'https://aor.dev/errors/E6001',
+          docs: 'https://vibeonrails.dev/errors/E6001',
         },
         429,
       );

@@ -17,7 +17,7 @@ const t = initTRPC.context<Context>().create({
       ...shape,
       data: {
         ...shape.data,
-        docs: `https://aor.dev/errors/${error.code}`,
+        docs: `https://vibeonrails.dev/errors/${error.code}`,
       },
     };
   },

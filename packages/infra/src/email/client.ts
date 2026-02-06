@@ -26,7 +26,7 @@ function getClient(): Resend {
     throw new Error(
       '[AOR] RESEND_API_KEY environment variable is required.\n' +
       '  Fix: Add RESEND_API_KEY to your .env file.\n' +
-      '  Docs: https://aor.dev/errors/RESEND_API_KEY_MISSING',
+      '  Docs: https://vibeonrails.dev/errors/RESEND_API_KEY_MISSING',
     );
   }
 

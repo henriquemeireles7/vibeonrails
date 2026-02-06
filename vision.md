@@ -1,4 +1,4 @@
-# Agent on Rails: The TypeScript Framework AI Agents Understand
+# Vibe on Rails: The TypeScript Framework for Vibe Coding
 
 ## A Vision Document for the Next Generation of Web Development
 
@@ -128,7 +128,7 @@ Given a Rails project, an AI can answer these questions without reading any code
 
 **The AI doesn't need to "figure out" your project structure. Rails tells it.**
 
-This is the insight that launched Agent on Rails:
+This is the insight that launched Vibe on Rails:
 
 > **What if we designed a framework specifically for AI agents to understand?**
 
@@ -205,8 +205,8 @@ FrameworkError: [USER_NOT_FOUND]
   Fix: Either:
     1. Check if user exists before calling: if (await userService.exists(id))
     2. Use findByIdOrFail() and handle UserNotFoundException
-    3. Seed test data: npx aor db:seed
-  Docs: https://aor.dev/errors/USER_NOT_FOUND
+    3. Seed test data: npx vibe db:seed
+  Docs: https://vibeonrails.dev/errors/USER_NOT_FOUND
 ```
 
 ### Reading vs. Writing
@@ -254,9 +254,9 @@ FrameworkError: [USER_NOT_FOUND]
 
 ## Chapter 5: The SKILL.md System
 
-The most important innovation in Agent on Rails is the **SKILL.md** system.
+The most important innovation in Vibe on Rails is the **SKILL.md** system.
 
-Every folder in an AoR project contains a SKILL.md file that teaches AI agents how to work with that folder. This is not just documentation—it's a **training manual for AI**.
+Every folder in a VoR project contains a SKILL.md file that teaches AI agents how to work with that folder. This is not just documentation—it's a **training manual for AI**.
 
 ```
 packages/
@@ -343,7 +343,7 @@ export type CreateCommentInput = z.infer<typeof CreateCommentSchema>;
 ### Step 3: Create service
 ```typescript
 // comment.service.ts
-import { db } from '@aor/core/database';
+import { db } from '@vibeonrails/core/database';
 import { CreateCommentInput } from './comment.types';
 
 export const commentService = {
@@ -357,7 +357,7 @@ export const commentService = {
 ### Step 4: Create controller
 ```typescript
 // comment.controller.ts
-import { router, protectedProcedure } from '@aor/core/api';
+import { router, protectedProcedure } from '@vibeonrails/core/api';
 import { commentService } from './comment.service';
 import { CreateCommentSchema } from './comment.types';
 
@@ -390,7 +390,7 @@ export const appRouter = router({
 
 ## Chapter 6: Parallel Coding Architecture
 
-A revolutionary feature of Agent on Rails is its support for **parallel agentic coding**.
+A revolutionary feature of Vibe on Rails is its support for **parallel agentic coding**.
 
 The insight: If every folder has a dedicated skill, and skills are independent, then **multiple AI agents can work on different folders simultaneously**.
 
@@ -452,11 +452,11 @@ This architecture enables AI teams to work on features that would take a human t
 
 ---
 
-# Part III: The Agent on Rails Architecture
+# Part III: The Vibe on Rails Architecture
 
 ## Chapter 7: Project Structure Overview
 
-An Agent on Rails project has a clear, predictable structure:
+A Vibe on Rails project has a clear, predictable structure:
 
 ```
 my-app/
@@ -883,8 +883,8 @@ export const healthChecks = {
 
 ```typescript
 // jobs/send-welcome-email.job.ts
-import { defineJob } from '@aor/infra/queue';
-import { email } from '@aor/infra/email';
+import { defineJob } from '@vibeonrails/infra/queue';
+import { email } from '@vibeonrails/infra/email';
 
 export const sendWelcomeEmail = defineJob({
   name: 'send-welcome-email',
@@ -966,7 +966,7 @@ The {{appName}} Team
 
 **Usage:**
 ```typescript
-import { email } from '@aor/infra/email';
+import { email } from '@vibeonrails/infra/email';
 
 await email.send('welcome', {
   to: user.email,
@@ -1197,7 +1197,7 @@ payments.on('customer.subscription.deleted', async (event) => {
 
 ```typescript
 // Embed chat widget
-import { ChatWidget } from '@aor/features/support';
+import { ChatWidget } from '@vibeonrails/features/support';
 
 <ChatWidget 
   position="bottom-right"
@@ -1412,7 +1412,7 @@ Auth, payments, email, storage—all included. No more gluing together 47 packag
 # Context for AI Agents
 
 ## Codebase Overview
-This is an Agent on Rails project.
+This is a Vibe on Rails project.
 - src/core/ = Business logic
 - src/infra/ = Infrastructure
 - src/web/ = Web frontend
@@ -1474,7 +1474,7 @@ Users can comment on posts.
 
 ## Chapter 14: One-Command Deploy
 
-**Philosophy:** Deployment should be as simple as `npx aor deploy`.
+**Philosophy:** Deployment should be as simple as `npx vibe deploy`.
 
 **Build Output:**
 ```
@@ -1492,13 +1492,13 @@ dist/
 
 ```bash
 # Railway (recommended for simplicity)
-npx aor deploy railway
+npx vibe deploy railway
 
 # Fly.io (recommended for global)
-npx aor deploy fly
+npx vibe deploy fly
 
 # Docker (self-hosted)
-npx aor build:docker
+npx vibe build:docker
 docker push registry.example.com/my-app
 ```
 
@@ -1537,7 +1537,7 @@ docker push registry.example.com/my-app
 
 ## The Vision
 
-Agent on Rails is not just another TypeScript framework. It's a fundamental rethinking of how software should be built in the age of AI.
+Vibe on Rails is not just another TypeScript framework. It's a fundamental rethinking of how software should be built in the age of AI.
 
 **For AI Agents:**
 - Every folder has a SKILL.md teaching how to work with it
@@ -1556,12 +1556,12 @@ Agent on Rails is not just another TypeScript framework. It's a fundamental reth
 
 ## The Promise
 
-With Agent on Rails, a solo founder with an AI agent can build what used to require a team of ten. The framework handles the infrastructure; you focus on your product.
+With Vibe on Rails, a solo founder with an AI agent can build what used to require a team of ten. The framework handles the infrastructure; you focus on your product.
 
 ```bash
-npx create-aor my-startup
+npx create-vibe my-startup
 cd my-startup
-npx aor dev
+npx vibe dev
 
 # Your AI agent can now:
 # - Add features by reading SKILL.md files
@@ -1570,12 +1570,12 @@ npx aor dev
 # - Write tests that actually test things
 # - Deploy with one command
 
-npx aor deploy
+npx vibe deploy
 ```
 
 **This is the future of software development.**
 
-**This is Agent on Rails.**
+**This is Vibe on Rails.**
 
 ---
 

@@ -15,7 +15,7 @@ function getSecret(): Uint8Array {
     throw new Error(
       '[AOR] JWT_SECRET environment variable is required.\n' +
       '  Fix: Add JWT_SECRET to your .env file (minimum 32 characters).\n' +
-      '  Docs: https://aor.dev/errors/JWT_SECRET_MISSING',
+      '  Docs: https://vibeonrails.dev/errors/JWT_SECRET_MISSING',
     );
   }
 

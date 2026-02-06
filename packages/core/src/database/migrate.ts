@@ -2,7 +2,7 @@
  * Database Migration Runner
  *
  * Runs Drizzle migrations against the database.
- * Usage: npx aor db:migrate
+ * Usage: npx vibe db:migrate
  */
 
 import { migrate } from 'drizzle-orm/postgres-js/migrator';

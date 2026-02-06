@@ -28,7 +28,7 @@ describe('AppError', () => {
       code: 'E1001',
       message: 'Test error',
       details: undefined,
-      docs: 'https://aor.dev/errors/E1001',
+      docs: 'https://vibeonrails.dev/errors/E1001',
     });
   });
 
