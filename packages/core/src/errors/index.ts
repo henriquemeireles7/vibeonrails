@@ -15,3 +15,13 @@ export {
 
 // CatalogError
 export { CatalogError } from './app-error.js';
+
+// Error Reporter
+export {
+  ErrorReporter,
+  createErrorReporter,
+  type ErrorReport,
+  type ErrorContext,
+  type ErrorQueryOptions,
+  type ErrorReporterOptions,
+} from './reporter.js';

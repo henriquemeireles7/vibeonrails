@@ -1,12 +1,14 @@
 {
   "name": "vibe-basic-example",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
+  "description": "Minimal Vibe on Rails example with auth, posts, content index, and analytics",
   "scripts": {
     "dev": "tsx watch src/main.ts",
     "build": "tsup src/main.ts --format esm --dts",
-    "start": "node dist/main.js"
+    "start": "node dist/main.js",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@vibeonrails/core": "workspace:*",

@@ -1,16 +1,16 @@
 {
   "name": "{{projectName}}",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/main.ts",
-    "build": "tsup src/main.ts --format esm --dts --clean",
+    "dev": "npx vibe dev",
+    "build": "npx vibe build",
     "start": "node dist/main.js",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src/",
-    "validate": "tsc --noEmit && eslint src/ && vitest run && tsup src/main.ts --format esm --dts --clean",
+    "validate": "tsc --noEmit && eslint src/ && vitest run && npx vibe build",
     "db:migrate": "drizzle-kit push",
     "db:seed": "tsx src/database/seeds/index.ts",
     "db:studio": "drizzle-kit studio"
@@ -18,6 +18,7 @@
   "dependencies": {
     "@vibeonrails/core": "workspace:*",
     "@vibeonrails/infra": "workspace:*",
+    "@vibeonrails/cli": "workspace:*",
     "hono": "^4.0.0",
     "drizzle-orm": "^0.29.0",
     "postgres": "^3.4.0",

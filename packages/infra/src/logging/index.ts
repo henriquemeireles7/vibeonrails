@@ -2,4 +2,11 @@
  * Logging module barrel export
  */
 
-export { Logger, logger, type LogLevel } from './logger.js';
+export {
+  Logger,
+  createLogger,
+  logger,
+  type LogLevel,
+  type LogEntry,
+  type LoggerOptions,
+} from './logger.js';

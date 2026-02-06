@@ -1,12 +1,14 @@
 {
   "name": "vibe-saas-example",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
+  "description": "Full SaaS example with auth, users, posts, admin, marketing, support, finance",
   "scripts": {
     "dev": "tsx watch src/main.ts",
     "build": "tsup src/main.ts --format esm --dts",
-    "start": "node dist/main.js"
+    "start": "node dist/main.js",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@vibeonrails/core": "workspace:*",

@@ -49,6 +49,15 @@ export {
 // Re-export retry utilities
 export { withRetry, isRetryableError, calculateDelay } from './retry.js';
 
+// Re-export AI call logging
+export {
+  AICallLogger,
+  createAILogger,
+  estimateCost,
+  type AICallLogEntry,
+  type AILoggerOptions,
+} from './logging.js';
+
 // ---------------------------------------------------------------------------
 // Factory
 // ---------------------------------------------------------------------------

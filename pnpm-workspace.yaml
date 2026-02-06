@@ -1,4 +1,8 @@
 packages:
   - "packages/*"
   - "packages/features/*"
+  - "packages/ops/*"
+  - "packages/sites/*"
+  - "packages/companion"
+  - "packages/test-utils"
   - "docs"
