@@ -1,0 +1,217 @@
+/* ---------------------------------------------------------------------------
+ * Accessibility Styles
+ * Import: @vibeonrails/web/styles/a11y.css
+ * --------------------------------------------------------------------------- */
+
+/* --- Screen Reader Only ---
+ * Visually hidden but accessible to screen readers.
+ * Use class="sr-only" on elements that should be read but not seen.
+ * --------------------------------------------------------------------------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Allow sr-only elements to become visible on focus (e.g., skip links) */
+.sr-only-focusable:focus,
+.sr-only-focusable:focus-within {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* --- Focus Visible Styles ---
+ * Visible focus ring for keyboard navigation.
+ * Hidden for mouse clicks (via :focus-visible).
+ * --------------------------------------------------------------------------- */
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Remove default outline for mouse clicks */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Custom focus ring utility */
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--color-primary-light);
+  border-radius: var(--radius-sm);
+}
+
+/* --- Skip Link Styles ---
+ * Hidden until focused, then appears at top of page.
+ * --------------------------------------------------------------------------- */
+
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: var(--space-4);
+  z-index: var(--z-toast);
+  padding: var(--space-2) var(--space-4);
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  font-size: var(--text-sm);
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  transition: top var(--duration-fast) var(--ease-default);
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* --- Reduced Motion ---
+ * Respect user's motion preference. Disables all animations and transitions.
+ * --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- High Contrast Mode ---
+ * Additional styles for Windows High Contrast Mode.
+ * --------------------------------------------------------------------------- */
+
+@media (forced-colors: active) {
+  .btn,
+  .input,
+  .select {
+    border: 1px solid ButtonText;
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid Highlight;
+  }
+}
+
+/* --- Live Region ---
+ * Default styles for live regions (no visual impact unless sr-only).
+ * --------------------------------------------------------------------------- */
+
+.live-region {
+  /* No visual styles by default — content is read by screen readers */
+}
+
+/* --- Focus Guard ---
+ * Container for focus trapping.
+ * --------------------------------------------------------------------------- */
+
+.focus-guard {
+  /* No visual styles by default — purely functional */
+}
+
+/* --- Keyboard Shortcuts Palette ---
+ * Cmd+K command palette overlay styles.
+ * --------------------------------------------------------------------------- */
+
+.keyboard-shortcuts-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal-backdrop);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 20vh;
+  background-color: var(--color-overlay);
+}
+
+.keyboard-shortcuts-palette {
+  width: 100%;
+  max-width: 32rem;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+
+.keyboard-shortcuts-search {
+  width: 100%;
+  padding: var(--space-4);
+  font-size: var(--text-lg);
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  outline: none;
+  font-family: var(--font-sans);
+}
+
+.keyboard-shortcuts-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+.keyboard-shortcuts-list {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-2);
+  max-height: 20rem;
+  overflow-y: auto;
+}
+
+.keyboard-shortcuts-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  transition: background-color var(--duration-fast) var(--ease-default);
+}
+
+.keyboard-shortcuts-item:hover,
+.keyboard-shortcuts-item:focus-visible {
+  background-color: var(--color-bg-muted);
+}
+
+.keyboard-shortcuts-label {
+  font-weight: var(--font-medium);
+}
+
+.keyboard-shortcuts-keys {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-subtle);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.keyboard-shortcuts-empty {
+  padding: var(--space-4);
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}

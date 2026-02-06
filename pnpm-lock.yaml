@@ -102,6 +102,28 @@ importers:
         specifier: ^2.0.0
         version: 2.1.9(@types/node@22.19.9)(jsdom@25.0.1)
 
+  packages/companion:
+    dependencies:
+      '@vibeonrails/core':
+        specifier: workspace:*
+        version: link:../core
+      zod:
+        specifier: ^3.22.0
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^25.2.1
+        version: 25.2.1
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@25.2.1)(jsdom@25.0.1)
+
   packages/core:
     dependencies:
       '@hono/trpc-server':
@@ -219,57 +241,12 @@ importers:
         specifier: ^2.0.0
         version: 2.1.9(@types/node@25.2.1)(jsdom@25.0.1)
 
-  packages/features/marketing:
-    devDependencies:
-      tsup:
-        specifier: ^8.0.0
-        version: 8.5.1(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
-      typescript:
-        specifier: ^5.5.0
-        version: 5.9.3
-      vitest:
-        specifier: ^2.0.0
-        version: 2.1.9(@types/node@25.2.1)(jsdom@25.0.1)
-
   packages/features/payments:
     dependencies:
       stripe:
         specifier: ^17.0.0
         version: 17.7.0
     devDependencies:
-      tsup:
-        specifier: ^8.0.0
-        version: 8.5.1(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
-      typescript:
-        specifier: ^5.5.0
-        version: 5.9.3
-      vitest:
-        specifier: ^2.0.0
-        version: 2.1.9(@types/node@25.2.1)(jsdom@25.0.1)
-
-  packages/features/sales:
-    devDependencies:
-      tsup:
-        specifier: ^8.0.0
-        version: 8.5.1(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
-      typescript:
-        specifier: ^5.5.0
-        version: 5.9.3
-      vitest:
-        specifier: ^2.0.0
-        version: 2.1.9(@types/node@25.2.1)(jsdom@25.0.1)
-
-  packages/features/support:
-    devDependencies:
-      '@types/react':
-        specifier: ^19.0.0
-        version: 19.2.13
-      react:
-        specifier: ^19.0.0
-        version: 19.2.4
-      react-dom:
-        specifier: ^19.0.0
-        version: 19.2.4(react@19.2.4)
       tsup:
         specifier: ^8.0.0
         version: 8.5.1(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
@@ -297,6 +274,227 @@ importers:
       resend:
         specifier: ^2.0.0
         version: 2.1.0
+      zod:
+        specifier: ^3.22.0
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^25.2.1
+        version: 25.2.1
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@25.2.1)(jsdom@25.0.1)
+
+  packages/ops:
+    dependencies:
+      '@vibeonrails/finance':
+        specifier: workspace:*
+        version: link:finance
+      '@vibeonrails/marketing':
+        specifier: workspace:*
+        version: link:marketing
+      '@vibeonrails/notifications':
+        specifier: workspace:*
+        version: link:notifications
+      '@vibeonrails/sales':
+        specifier: workspace:*
+        version: link:sales
+      '@vibeonrails/support-chat':
+        specifier: workspace:*
+        version: link:support-chat
+      '@vibeonrails/support-feedback':
+        specifier: workspace:*
+        version: link:support-feedback
+    devDependencies:
+      '@types/node':
+        specifier: ^25.2.1
+        version: 25.2.1
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+
+  packages/ops/finance:
+    dependencies:
+      '@vibeonrails/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@vibeonrails/infra':
+        specifier: workspace:*
+        version: link:../../infra
+      zod:
+        specifier: ^3.22.0
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^25.2.1
+        version: 25.2.1
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@25.2.1)(jsdom@25.0.1)
+
+  packages/ops/marketing:
+    dependencies:
+      '@vibeonrails/ai':
+        specifier: workspace:*
+        version: link:../../ai
+      '@vibeonrails/core':
+        specifier: workspace:*
+        version: link:../../core
+      zod:
+        specifier: ^3.22.0
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^25.2.1
+        version: 25.2.1
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@25.2.1)(jsdom@25.0.1)
+
+  packages/ops/notifications:
+    dependencies:
+      '@vibeonrails/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@vibeonrails/infra':
+        specifier: workspace:*
+        version: link:../../infra
+      zod:
+        specifier: ^3.22.0
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^25.2.1
+        version: 25.2.1
+      drizzle-orm:
+        specifier: ^0.29.0
+        version: 0.29.5(@types/react@19.2.13)(postgres@3.4.8)(react@19.2.4)
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@25.2.1)(jsdom@25.0.1)
+
+  packages/ops/sales:
+    dependencies:
+      '@vibeonrails/ai':
+        specifier: workspace:*
+        version: link:../../ai
+      '@vibeonrails/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@vibeonrails/marketing':
+        specifier: workspace:*
+        version: link:../marketing
+      zod:
+        specifier: ^3.22.0
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^25.2.1
+        version: 25.2.1
+      drizzle-orm:
+        specifier: ^0.36.0
+        version: 0.36.4(@types/react@19.2.13)(postgres@3.4.8)(react@19.2.4)
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@25.2.1)(jsdom@25.0.1)
+
+  packages/ops/support-chat:
+    dependencies:
+      '@vibeonrails/ai':
+        specifier: workspace:*
+        version: link:../../ai
+      '@vibeonrails/core':
+        specifier: workspace:*
+        version: link:../../core
+      zod:
+        specifier: ^3.22.0
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^25.2.1
+        version: 25.2.1
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.13
+      drizzle-orm:
+        specifier: ^0.29.0
+        version: 0.29.5(@types/react@19.2.13)(postgres@3.4.8)(react@19.2.4)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.4(react@19.2.4)
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@25.2.1)(jsdom@25.0.1)
+
+  packages/ops/support-feedback:
+    dependencies:
+      '@vibeonrails/ai':
+        specifier: workspace:*
+        version: link:../../ai
+      '@vibeonrails/core':
+        specifier: workspace:*
+        version: link:../../core
+      zod:
+        specifier: ^3.22.0
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^25.2.1
+        version: 25.2.1
+      tsup:
+        specifier: ^8.0.0
+        version: 8.5.1(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.2)
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@25.2.1)(jsdom@25.0.1)
+
+  packages/test-utils:
+    dependencies:
       zod:
         specifier: ^3.22.0
         version: 3.25.76
@@ -2748,6 +2946,98 @@ packages:
       pg:
         optional: true
       postgres:
+        optional: true
+      react:
+        optional: true
+      sql.js:
+        optional: true
+      sqlite3:
+        optional: true
+
+  drizzle-orm@0.36.4:
+    resolution: {integrity: sha512-1OZY3PXD7BR00Gl61UUOFihslDldfH4NFRH2MbP54Yxi0G/PKn4HfO65JYZ7c16DeP3SpM3Aw+VXVG9j6CRSXA==}
+    peerDependencies:
+      '@aws-sdk/client-rds-data': '>=3'
+      '@cloudflare/workers-types': '>=3'
+      '@electric-sql/pglite': '>=0.2.0'
+      '@libsql/client': '>=0.10.0'
+      '@libsql/client-wasm': '>=0.10.0'
+      '@neondatabase/serverless': '>=0.10.0'
+      '@op-engineering/op-sqlite': '>=2'
+      '@opentelemetry/api': ^1.4.1
+      '@planetscale/database': '>=1'
+      '@prisma/client': '*'
+      '@tidbcloud/serverless': '*'
+      '@types/better-sqlite3': '*'
+      '@types/pg': '*'
+      '@types/react': '>=18'
+      '@types/sql.js': '*'
+      '@vercel/postgres': '>=0.8.0'
+      '@xata.io/client': '*'
+      better-sqlite3: '>=7'
+      bun-types: '*'
+      expo-sqlite: '>=14.0.0'
+      knex: '*'
+      kysely: '*'
+      mysql2: '>=2'
+      pg: '>=8'
+      postgres: '>=3'
+      prisma: '*'
+      react: '>=18'
+      sql.js: '>=1'
+      sqlite3: '>=5'
+    peerDependenciesMeta:
+      '@aws-sdk/client-rds-data':
+        optional: true
+      '@cloudflare/workers-types':
+        optional: true
+      '@electric-sql/pglite':
+        optional: true
+      '@libsql/client':
+        optional: true
+      '@libsql/client-wasm':
+        optional: true
+      '@neondatabase/serverless':
+        optional: true
+      '@op-engineering/op-sqlite':
+        optional: true
+      '@opentelemetry/api':
+        optional: true
+      '@planetscale/database':
+        optional: true
+      '@prisma/client':
+        optional: true
+      '@tidbcloud/serverless':
+        optional: true
+      '@types/better-sqlite3':
+        optional: true
+      '@types/pg':
+        optional: true
+      '@types/react':
+        optional: true
+      '@types/sql.js':
+        optional: true
+      '@vercel/postgres':
+        optional: true
+      '@xata.io/client':
+        optional: true
+      better-sqlite3:
+        optional: true
+      bun-types:
+        optional: true
+      expo-sqlite:
+        optional: true
+      knex:
+        optional: true
+      kysely:
+        optional: true
+      mysql2:
+        optional: true
+      pg:
+        optional: true
+      postgres:
+        optional: true
+      prisma:
         optional: true
       react:
         optional: true
@@ -7153,6 +7443,12 @@ snapshots:
       react: 18.2.0
 
   drizzle-orm@0.29.5(@types/react@19.2.13)(postgres@3.4.8)(react@19.2.4):
+    optionalDependencies:
+      '@types/react': 19.2.13
+      postgres: 3.4.8
+      react: 19.2.4
+
+  drizzle-orm@0.36.4(@types/react@19.2.13)(postgres@3.4.8)(react@19.2.4):
     optionalDependencies:
       '@types/react': 19.2.13
       postgres: 3.4.8

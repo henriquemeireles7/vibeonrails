@@ -29,3 +29,35 @@ export { Header } from "./layout/Header.js";
 export type { HeaderProps } from "./layout/Header.js";
 export { Sidebar } from "./layout/Sidebar.js";
 export type { SidebarProps, SidebarItem } from "./layout/Sidebar.js";
+
+// Pricing Components
+export { PricingTable } from "./pricing/pricing-table.js";
+export type {
+  PricingTableProps,
+  PricingPlan,
+} from "./pricing/pricing-table.js";
+
+// A11y Components
+export { SkipLink } from "./a11y/skip-link.js";
+export type { SkipLinkProps } from "./a11y/skip-link.js";
+export { LiveRegion } from "./a11y/live-region.js";
+export type { LiveRegionProps } from "./a11y/live-region.js";
+export { FocusGuard } from "./a11y/focus-guard.js";
+export type { FocusGuardProps } from "./a11y/focus-guard.js";
+export {
+  KeyboardShortcuts,
+  useShortcutRegistry,
+} from "./a11y/keyboard-shortcuts.js";
+export type {
+  KeyboardShortcutsProps,
+  Shortcut,
+  ShortcutConflict,
+} from "./a11y/keyboard-shortcuts.js";
+
+// Welcome Components
+export { WelcomePage, getDefaultQuickLinks } from "./welcome/welcome-page.js";
+export type {
+  WelcomePageProps,
+  InstalledModule,
+  QuickLink,
+} from "./welcome/welcome-page.js";

@@ -1,7 +1,9 @@
 import React from "react";
+import { SkipLink } from "../a11y/skip-link.js";
 
 // ---------------------------------------------------------------------------
 // PageLayout — Page layout with optional header + sidebar + content area
+// Auto-includes SkipLink for keyboard accessibility.
 // ---------------------------------------------------------------------------
 
 export interface PageLayoutProps {
@@ -9,6 +11,10 @@ export interface PageLayoutProps {
   sidebar?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
+  /** Disable the auto-included skip link */
+  skipLink?: boolean;
+  /** Custom skip link target (default: #main-content) */
+  skipLinkTarget?: string;
 }
 
 export function PageLayout({
@@ -16,6 +22,8 @@ export function PageLayout({
   sidebar,
   children,
   className,
+  skipLink = true,
+  skipLinkTarget,
 }: PageLayoutProps) {
   return (
     <div
@@ -29,10 +37,13 @@ export function PageLayout({
         fontFamily: "var(--font-sans)",
       }}
     >
+      {skipLink && <SkipLink target={skipLinkTarget} />}
       {header}
       <div style={{ display: "flex", flex: 1 }}>
         {sidebar}
         <main
+          id="main-content"
+          tabIndex={-1}
           style={{
             flex: 1,
             padding: "var(--space-6)",
