@@ -4,10 +4,20 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "echo 'Docs dev server — run astro dev when configured'",
-    "build": "echo 'Docs build — run astro build when configured'",
-    "typecheck": "echo 'Docs typecheck skipped'",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "typecheck": "astro check",
     "lint": "echo 'Docs lint skipped'",
     "test": "echo 'Docs test skipped'"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.32.0",
+    "astro": "^5.1.0",
+    "sharp": "^0.33.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.0",
+    "typescript": "^5.5.0"
   }
 }

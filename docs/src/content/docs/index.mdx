@@ -1,0 +1,91 @@
+---
+title: VibeonRails
+description: The TypeScript Framework for Vibe Coding - Full-stack, type-safe, AI-friendly.
+template: splash
+hero:
+  tagline: The TypeScript framework designed for AI-assisted development. Predictable conventions, end-to-end type safety, zero ambiguity.
+  image:
+    alt: VibeonRails Logo
+    file: ../../assets/logo-light.svg
+  actions:
+    - text: Get Started
+      link: /getting-started/quick-start/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/vibeonrails/vibeonrails
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Why VibeonRails?
+
+<CardGrid stagger>
+  <Card title="End-to-End Type Safety" icon="approve-check">
+    From database schema to API endpoints to frontend components. TypeScript everywhere, no `any` allowed.
+  </Card>
+  <Card title="Convention over Configuration" icon="setting">
+    Predictable file structure, naming conventions, and patterns. Every folder has a SKILL.md that teaches you (and AI agents) how to use it.
+  </Card>
+  <Card title="AI-Native" icon="rocket">
+    Built for AI-assisted development. Clear patterns, zero ambiguity, SKILL.md documentation in every package.
+  </Card>
+  <Card title="Full-Stack" icon="laptop">
+    API (Hono + tRPC), Database (Drizzle ORM), Security (JWT + Argon2), Frontend (React), Infrastructure (queues, email, cache, storage).
+  </Card>
+</CardGrid>
+
+## The Stack
+
+| Layer | Technology | Why |
+|-------|-----------|-----|
+| **HTTP Server** | Hono | Fast, edge-ready, middleware support |
+| **API Layer** | tRPC | End-to-end type safety, no code generation |
+| **Database** | Drizzle ORM | Type-safe SQL, migrations, zero overhead |
+| **Validation** | Zod | Schema validation, type inference |
+| **Auth** | jose + Argon2 | JWT tokens, secure password hashing |
+| **Queue** | BullMQ | Redis-based background jobs |
+| **Email** | Resend | Transactional email delivery |
+| **Frontend** | React | Component library, hooks, CSS system |
+| **Testing** | Vitest | Fast, TypeScript-native test runner |
+| **CLI** | Custom | Project scaffolding, code generators |
+
+## Quick Example
+
+```typescript
+// Create a type-safe API endpoint in 30 seconds
+import { createServer, createRouter, publicProcedure } from '@vibeonrails/core/api';
+import { z } from 'zod';
+
+const appRouter = createRouter({
+  hello: publicProcedure
+    .input(z.object({ name: z.string() }))
+    .query(({ input }) => {
+      return { message: `Hello, ${input.name}!` };
+    }),
+});
+
+const server = createServer({ router: appRouter });
+export default server;
+```
+
+## Documentation Structure
+
+This documentation follows the [Diataxis framework](https://diataxis.fr/) with four types of content:
+
+<CardGrid>
+  <Card title="Tutorials" icon="open-book">
+    **Learning-oriented.** Step-by-step guides that teach you by building real things. Start with [Your First App](/tutorials/your-first-app/).
+  </Card>
+  <Card title="Guides" icon="information">
+    **Understanding-oriented.** Explain concepts, architecture, and why things work the way they do. Start with [Architecture](/guides/architecture/).
+  </Card>
+  <Card title="How-To Recipes" icon="list-format">
+    **Task-oriented.** Solve specific problems quickly. "How do I add authentication?" "How do I deploy?" Find recipes in [How-To](/how-to/).
+  </Card>
+  <Card title="Reference" icon="document">
+    **Information-oriented.** Complete API documentation with function signatures, parameters, and return types. Browse the [Reference](/reference/).
+  </Card>
+</CardGrid>

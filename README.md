@@ -21,7 +21,7 @@ packages/
     ├── sales/         @vibeonrails/sales      — AI sales agent, multi-channel
     └── marketing/     @vibeonrails/marketing  — Content, social scheduling, email sequences
 templates/             — App, module, and component templates
-docs/                  — Documentation site (14 pages)
+docs/                  — Documentation site (179 pages, Astro Starlight)
 examples/              — basic + SaaS example applications
 ```
 
@@ -241,6 +241,26 @@ pnpm run lint
 # Full validation (typecheck + lint + test + build)
 pnpm run validate
 ```
+
+## Documentation
+
+The documentation site is built with [Astro Starlight](https://starlight.astro.build/) and follows the [Diataxis framework](https://diataxis.fr/) for technical documentation:
+
+- **Tutorials** - Step-by-step learning guides (10 pages)
+- **Guides** - Conceptual understanding of each feature (50+ pages)
+- **How-To Recipes** - Task-oriented solutions (35+ pages)
+- **Reference** - Complete API documentation (30+ pages)
+- **Features** - Feature package documentation (20+ pages)
+
+```bash
+# Run docs dev server
+cd docs && pnpm dev
+
+# Build docs for production
+cd docs && pnpm build
+```
+
+See [docs/DOCS_STRATEGY.md](docs/DOCS_STRATEGY.md) for the complete documentation strategy.
 
 ## License
 

@@ -1,0 +1,88 @@
+---
+title: Quick Start
+description: Create your first VibeonRails app in 5 minutes.
+sidebar:
+  order: 3
+---
+
+This guide gets you from zero to a running VibeonRails application in under 5 minutes. For a more detailed walkthrough, see the [Your First App](/tutorials/your-first-app/) tutorial.
+
+## 1. Create the Project
+
+```bash
+npx create-vibe my-app
+cd my-app
+pnpm install
+```
+
+## 2. Start the Database
+
+```bash
+# Using Docker (simplest)
+docker run -d --name my-app-db \
+  -e POSTGRES_DB=my_app \
+  -e POSTGRES_PASSWORD=postgres \
+  -p 5432:5432 postgres:16
+
+# Run migrations and seed data
+pnpm vibe db migrate
+pnpm vibe db seed
+```
+
+## 3. Start the Dev Server
+
+```bash
+pnpm dev
+```
+
+Your API is now running at `http://localhost:3000`.
+
+## 4. Try It Out
+
+```bash
+# Health check
+curl http://localhost:3000/health
+
+# Register a user
+curl -X POST http://localhost:3000/trpc/auth.register \
+  -H "Content-Type: application/json" \
+  -d '{"json": {"email": "hello@example.com", "password": "securepassword123", "name": "Alice"}}'
+
+# Login
+curl -X POST http://localhost:3000/trpc/auth.login \
+  -H "Content-Type: application/json" \
+  -d '{"json": {"email": "hello@example.com", "password": "securepassword123"}}'
+```
+
+## 5. Generate a Module
+
+```bash
+pnpm vibe generate module todo
+```
+
+This creates a complete module with types, service, controller, tests, and barrel export. Register it in your router:
+
+```typescript
+// src/router.ts
+import { todoRouter } from './modules/todo';
+
+export const appRouter = createAppRouter({
+  // ... existing routes
+  todo: todoRouter,
+});
+```
+
+## 6. Run Tests
+
+```bash
+pnpm test
+```
+
+## What is Next?
+
+You now have a running VibeonRails application with authentication, database, and a custom module. Here is what to explore next:
+
+- [Project Structure](/getting-started/project-structure/) - Understand what each file does
+- [Your First App Tutorial](/tutorials/your-first-app/) - Complete walkthrough
+- [Database Guide](/guides/database/) - Schema, migrations, repositories
+- [API Guide](/guides/api/) - Endpoints, middleware, error handling

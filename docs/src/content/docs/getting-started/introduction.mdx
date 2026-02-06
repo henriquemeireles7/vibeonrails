@@ -1,0 +1,79 @@
+---
+title: Introduction
+description: What is VibeonRails and why should you use it?
+sidebar:
+  order: 1
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## What is VibeonRails?
+
+VibeonRails is a **full-stack TypeScript framework** designed for AI-assisted development. It combines the best tools in the TypeScript ecosystem into a cohesive, convention-driven experience that is predictable for both humans and AI agents.
+
+Think of it as **Rails for TypeScript** — opinionated defaults, clear conventions, and everything you need to ship production applications fast.
+
+## Core Principles
+
+<CardGrid>
+  <Card title="Convention over Configuration" icon="setting">
+    Sensible defaults for everything. Override when you need to, but the defaults work out of the box. Every project follows the same structure.
+  </Card>
+  <Card title="End-to-End Type Safety" icon="approve-check">
+    From your database schema through your API layer to your frontend components, everything is fully typed. No `any`, no runtime surprises.
+  </Card>
+  <Card title="AI-Agent Friendly" icon="rocket">
+    Every folder has a `SKILL.md` file that teaches AI agents (and developers) how to use it. Predictable patterns mean predictable AI assistance.
+  </Card>
+  <Card title="Modular Architecture" icon="puzzle">
+    Use only what you need. Every package is independent and tree-shakeable. Start minimal, add features as you grow.
+  </Card>
+</CardGrid>
+
+## The Technology Stack
+
+VibeonRails is not a new framework from scratch. It is a carefully curated integration of proven, production-ready tools:
+
+| Layer | Tool | Why This Tool |
+|-------|------|---------------|
+| **HTTP Server** | [Hono](https://hono.dev) | Fastest TypeScript server, runs on edge, Node.js, Bun, Deno |
+| **API Layer** | [tRPC](https://trpc.io) | End-to-end type safety without code generation or schemas |
+| **Database** | [Drizzle ORM](https://orm.drizzle.team) | Type-safe SQL with zero runtime overhead, great migrations |
+| **Validation** | [Zod](https://zod.dev) | Schema validation with automatic TypeScript type inference |
+| **Authentication** | [jose](https://github.com/panva/jose) + [Argon2](https://github.com/ranisalt/node-argon2) | JWT token management + secure password hashing |
+| **Queue** | [BullMQ](https://bullmq.io) | Redis-based background jobs with retries, scheduling, priorities |
+| **Email** | [Resend](https://resend.com) | Modern email API for transactional emails |
+| **Frontend** | [React](https://react.dev) | Component library with hooks, CSS system, tRPC client |
+| **Testing** | [Vitest](https://vitest.dev) | Fast, TypeScript-native test runner with great DX |
+| **Build** | [tsup](https://tsup.egoist.dev) | Zero-config TypeScript bundler |
+
+## Who is VibeonRails For?
+
+- **Solo developers** who want to ship fast without making architectural decisions
+- **Teams** who want consistency across projects and developers
+- **AI-assisted development** workflows where predictability matters
+- **TypeScript developers** who want a full-stack framework, not a collection of libraries
+- **Startups** building MVPs and SaaS products
+
+## Package Overview
+
+VibeonRails is organized as a monorepo with focused packages:
+
+| Package | What It Does |
+|---------|-------------|
+| `@vibeonrails/core` | API server (Hono + tRPC), Database (Drizzle ORM), Security (JWT, sessions, OAuth) |
+| `@vibeonrails/infra` | Health checks, logging, queues, email, caching, file storage, real-time, monitoring |
+| `@vibeonrails/web` | CSS design system, React components, hooks, client-side routing |
+| `@vibeonrails/cli` | Project scaffolding, code generators, dev server, database tools |
+| `@vibeonrails/payments` | Stripe integration: checkout, subscriptions, webhooks |
+| `@vibeonrails/admin` | Auto-generated CRUD admin panel |
+| `@vibeonrails/support` | Ticket system, knowledge base, live chat |
+| `@vibeonrails/sales` | AI sales agent, multi-channel communication |
+| `@vibeonrails/marketing` | Content generation, social scheduling, email sequences |
+
+## Next Steps
+
+- **Ready to code?** Jump to [Quick Start](/getting-started/quick-start/) to create your first app in 5 minutes
+- **Want to understand the setup?** Read [Installation](/getting-started/installation/) for manual setup options
+- **Curious about the architecture?** See [Project Structure](/getting-started/project-structure/)
+- **Want to understand our philosophy?** Read [Philosophy](/getting-started/philosophy/)

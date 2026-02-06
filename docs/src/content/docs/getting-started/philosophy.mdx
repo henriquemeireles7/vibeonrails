@@ -1,0 +1,65 @@
+---
+title: Philosophy
+description: The design principles behind VibeonRails and why they matter.
+sidebar:
+  order: 5
+---
+
+VibeonRails is not just a collection of libraries. It is an opinionated framework with a clear philosophy about how TypeScript applications should be built. Understanding these principles helps you work with the framework instead of against it.
+
+## Convention over Configuration
+
+The single most important principle. Inspired by Ruby on Rails, VibeonRails provides sensible defaults for everything:
+
+- **File naming**: `user.service.ts`, `user.controller.ts`, `user.types.ts`
+- **Folder structure**: `src/modules/<name>/` for every feature
+- **Database patterns**: Repository pattern, migrations in `drizzle/`, seeds in `seeds/`
+- **Testing**: Colocated tests (`feature.test.ts` next to `feature.ts`)
+- **Exports**: Barrel pattern (`index.ts` in every folder)
+
+You do not need to configure these conventions. They are the framework. When you follow them, everything works. When you need to break a convention, you can, but the defaults handle 95% of cases.
+
+## End-to-End Type Safety
+
+Types flow through your entire application:
+
+1. **Database schema** (Drizzle) defines the shape of your data
+2. **Zod schemas** validate input at the API boundary
+3. **tRPC procedures** carry types from server to client
+4. **React components** receive typed props from tRPC queries
+
+A change to your database schema creates TypeScript errors everywhere that needs updating. No runtime surprises, no `any` types, no manual type synchronization.
+
+## AI-Agent Friendly
+
+VibeonRails is designed to be used with AI coding assistants. This means:
+
+- **Predictable patterns**: AI agents can predict where code lives and how it should look
+- **SKILL.md everywhere**: Every package and folder has documentation that AI agents can read
+- **Clear boundaries**: Services handle logic, controllers handle HTTP, types handle schemas
+- **No magic**: No decorators, no reflection, no runtime code generation. What you see is what runs.
+
+## Modular by Default
+
+Every feature is a self-contained module. Modules:
+
+- Have their own types, logic, endpoints, and tests
+- Export a clean public API through `index.ts`
+- Can be generated with `vibe generate module <name>`
+- Can be removed by deleting the folder and removing the router registration
+
+## Test-Driven Development
+
+VibeonRails encourages TDD:
+
+1. **Write a failing test** (RED)
+2. **Write the minimal implementation** (GREEN)
+3. **Refactor** (IMPROVE)
+
+The CLI generates test files alongside source files. The validate script runs tests as part of the CI pipeline. When tests fail, fix the implementation, not the tests (unless the test is wrong).
+
+## Next Steps
+
+- [Architecture Guide](/guides/architecture/) - How the pieces fit together
+- [Quick Start](/getting-started/quick-start/) - Start building
+- [Contributing](/contributing/) - Help shape the framework

@@ -1,0 +1,167 @@
+---
+title: Installation
+description: How to install VibeonRails and set up your development environment.
+sidebar:
+  order: 2
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+## Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| **Node.js** | 22+ | JavaScript runtime |
+| **pnpm** | 9+ | Package manager (recommended) |
+| **PostgreSQL** | 15+ | Primary database |
+| **Redis** | 7+ | Queue and cache (optional for basic apps) |
+
+### Install pnpm
+
+If you do not have pnpm installed:
+
+```bash
+corepack enable
+corepack prepare pnpm@latest --activate
+```
+
+### Install PostgreSQL
+
+<Tabs>
+  <TabItem label="macOS">
+    ```bash
+    brew install postgresql@16
+    brew services start postgresql@16
+    ```
+  </TabItem>
+  <TabItem label="Docker">
+    ```bash
+    docker run -d \
+      --name vibeonrails-db \
+      -e POSTGRES_DB=my_app \
+      -e POSTGRES_PASSWORD=postgres \
+      -p 5432:5432 \
+      postgres:16
+    ```
+  </TabItem>
+  <TabItem label="Linux">
+    ```bash
+    sudo apt install postgresql-16
+    sudo systemctl start postgresql
+    ```
+  </TabItem>
+</Tabs>
+
+## Option 1: Create a New Project (Recommended)
+
+The fastest way to get started is with the `create-vibe` CLI:
+
+```bash
+npx create-vibe my-app
+```
+
+You will be prompted to choose a template:
+
+- **basic** - Minimal API server with authentication and posts
+- **saas** - Full SaaS starter with payments, admin panel, email, and queue
+
+```bash
+# Create a SaaS starter directly
+npx create-vibe my-app --template saas
+```
+
+Then install dependencies and start:
+
+```bash
+cd my-app
+pnpm install
+```
+
+## Option 2: Add to an Existing Project
+
+If you have an existing TypeScript project, install the packages you need:
+
+```bash
+# Core (API + Database + Security)
+pnpm add @vibeonrails/core
+
+# Infrastructure (logging, queue, email, cache, etc.)
+pnpm add @vibeonrails/infra
+
+# Frontend (components, hooks, CSS)
+pnpm add @vibeonrails/web
+
+# CLI tools
+pnpm add -D @vibeonrails/cli
+```
+
+## Environment Setup
+
+Create a `.env` file in your project root:
+
+```bash
+# Server
+PORT=3000
+NODE_ENV=development
+
+# Database
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/my_app
+
+# Security
+JWT_SECRET=your-secret-key-change-this-in-production-at-least-32-chars
+JWT_ISSUER=my-app
+
+# Redis (optional - for queue and cache)
+REDIS_URL=redis://localhost:6379
+```
+
+:::caution
+Never commit your `.env` file to git. Make sure it is in your `.gitignore`.
+:::
+
+## Database Setup
+
+Create your database and run migrations:
+
+```bash
+# Create the database
+createdb my_app
+
+# Run migrations
+pnpm vibe db migrate
+
+# Seed development data
+pnpm vibe db seed
+```
+
+## Verify Installation
+
+Start the development server:
+
+```bash
+pnpm dev
+```
+
+Test that everything is working:
+
+```bash
+curl http://localhost:3000/health
+```
+
+You should see:
+
+```json
+{
+  "status": "ok",
+  "timestamp": "2026-02-05T12:00:00.000Z",
+  "version": "0.1.0"
+}
+```
+
+## Next Steps
+
+- [Quick Start](/getting-started/quick-start/) - Build your first feature
+- [Project Structure](/getting-started/project-structure/) - Understand the file layout
+- [Your First App Tutorial](/tutorials/your-first-app/) - Full step-by-step tutorial

@@ -1,0 +1,132 @@
+---
+title: Project Structure
+description: Understand the file and folder layout of a VibeonRails project.
+sidebar:
+  order: 4
+---
+
+When you scaffold a new VibeonRails project, you get a well-organized structure that follows the convention-over-configuration philosophy. Every file has a purpose, every folder has a pattern.
+
+## Top-Level Structure
+
+```
+my-app/
+├── src/                    # Application source code
+│   ├── config/             # Configuration files
+│   ├── modules/            # Feature modules (your business logic)
+│   ├── router.ts           # Merges all module routers
+│   └── main.ts             # Entry point — creates and starts the server
+├── drizzle/                # Database migration files (auto-generated)
+├── seeds/                  # Database seed data
+├── .env                    # Environment variables (not committed)
+├── .env.example            # Example environment file (committed)
+├── drizzle.config.ts       # Drizzle Kit configuration
+├── package.json            # Dependencies and scripts
+├── tsconfig.json           # TypeScript configuration
+├── vitest.config.ts        # Test runner configuration
+├── SKILL.md                # AI agent documentation for this project
+└── .plan/                  # Planning documents (optional)
+    └── SKILL.md            # How to use the planning system
+```
+
+## The `src/` Directory
+
+### `src/config/`
+
+Application configuration files. These read from environment variables and export typed configuration objects.
+
+```typescript
+// src/config/app.config.ts
+export const appConfig = {
+  port: Number(process.env.PORT) || 3000,
+  env: process.env.NODE_ENV || 'development',
+  name: 'my-app',
+};
+```
+
+### `src/modules/`
+
+This is where your application code lives. Each feature is a **module** — a self-contained folder with a consistent file structure.
+
+```
+src/modules/
+├── auth/                   # Authentication module
+│   ├── auth.types.ts       # Zod schemas and TypeScript types
+│   ├── auth.service.ts     # Business logic
+│   ├── auth.controller.ts  # tRPC procedures (API endpoints)
+│   ├── auth.test.ts        # Tests
+│   └── index.ts            # Barrel export
+├── user/                   # User management module
+│   ├── user.types.ts
+│   ├── user.service.ts
+│   ├── user.controller.ts
+│   ├── user.test.ts
+│   └── index.ts
+└── post/                   # Blog post module
+    ├── post.types.ts
+    ├── post.service.ts
+    ├── post.controller.ts
+    ├── post.test.ts
+    └── index.ts
+```
+
+### Module File Conventions
+
+Every module follows the same 5-file pattern:
+
+| File | Purpose | Contains |
+|------|---------|----------|
+| `*.types.ts` | Data shapes | Zod schemas, TypeScript types, input/output types |
+| `*.service.ts` | Business logic | Database queries, data transformations, validations |
+| `*.controller.ts` | API endpoints | tRPC procedures that call the service |
+| `*.test.ts` | Tests | Unit tests for the service and integration tests for the controller |
+| `index.ts` | Public API | Barrel export of the router and types |
+
+### `src/router.ts`
+
+Merges all module routers into a single tRPC router:
+
+```typescript
+import { createAppRouter } from '@vibeonrails/core/api';
+import { authRouter } from './modules/auth';
+import { userRouter } from './modules/user';
+import { postRouter } from './modules/post';
+
+export const appRouter = createAppRouter({
+  auth: authRouter,
+  user: userRouter,
+  post: postRouter,
+});
+
+export type AppRouter = typeof appRouter;
+```
+
+### `src/main.ts`
+
+The entry point that creates and starts the server:
+
+```typescript
+import { createServer } from '@vibeonrails/core/api';
+import { appRouter } from './router';
+
+const server = createServer({ router: appRouter });
+
+export default server;
+```
+
+## The `SKILL.md` Convention
+
+Every VibeonRails project (and every package in the framework) contains a `SKILL.md` file. This file:
+
+1. Explains what the folder/package does
+2. Shows the file structure and naming conventions
+3. Provides examples of common operations
+4. Lists pitfalls and best practices
+
+This makes the codebase navigable by both humans and AI agents. When an AI agent encounters a folder, it reads `SKILL.md` to understand how to work with it.
+
+## Next Steps
+
+- [Philosophy](/getting-started/philosophy/) - Why VibeonRails is designed this way
+- [Your First App](/tutorials/your-first-app/) - Build something with this structure
+- [CLI Generators](/guides/cli/generators/) - Auto-generate modules and components
