@@ -79,6 +79,7 @@ export async function generate(options: GenerateOptions = {}): Promise<GenerateR
   if (packages.length === 0) {
     return {
       pagesGenerated: [],
+      pagesSkipped: [],
       pagesFailed: [],
       warnings: ['No packages found to document'],
       durationMs: Date.now() - startTime,
@@ -100,6 +101,7 @@ export async function generate(options: GenerateOptions = {}): Promise<GenerateR
   if (pageSpecs.length === 0) {
     return {
       pagesGenerated: [],
+      pagesSkipped: [],
       pagesFailed: [],
       warnings: ['No pages to generate (filters too restrictive?)'],
       durationMs: Date.now() - startTime,
@@ -107,11 +109,25 @@ export async function generate(options: GenerateOptions = {}): Promise<GenerateR
   }
 
   // Phase 3: Generate
-  const client = createAIClient();
+  // Only create the AI client when we actually need it (not for dry runs)
+  const client = options.dryRun ? null : createAIClient();
+  const pagesSkipped: string[] = [];
 
   for (let i = 0; i < pageSpecs.length; i++) {
     const spec = pageSpecs[i]!;
     const outputPath = join(outputDir, spec.outputPath);
+
+    // Skip existing files unless --force is set
+    if (!options.force && existsSync(outputPath)) {
+      pagesSkipped.push(spec.outputPath);
+      onProgress?.({
+        phase: 'generating',
+        current: i + 1,
+        total: pageSpecs.length,
+        message: `${spec.outputPath} (skipped — already exists)`,
+      });
+      continue;
+    }
 
     onProgress?.({
       phase: 'generating',
@@ -130,7 +146,7 @@ export async function generate(options: GenerateOptions = {}): Promise<GenerateR
       const templateContext = buildTemplateContext(spec);
 
       // Generate content via Claude
-      const rawContent = await generatePage(client, {
+      const rawContent = await generatePage(client!, {
         template: spec.template as 'guide-overview' | 'guide-detail' | 'reference' | 'tutorial',
         context: templateContext,
         model: options.model,
@@ -181,8 +197,13 @@ export async function generate(options: GenerateOptions = {}): Promise<GenerateR
     }
   }
 
+  if (pagesSkipped.length > 0) {
+    allWarnings.push(`Skipped ${pagesSkipped.length} existing page(s). Use --force to overwrite.`);
+  }
+
   return {
     pagesGenerated,
+    pagesSkipped,
     pagesFailed,
     warnings: allWarnings,
     durationMs: Date.now() - startTime,

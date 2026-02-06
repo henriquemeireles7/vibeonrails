@@ -77,6 +77,8 @@ export interface GenerateOptions {
   page?: string;
   /** Preview what would be generated without writing files */
   dryRun?: boolean;
+  /** Overwrite existing files (default: false — skip files that already exist) */
+  force?: boolean;
   /** Output directory for generated MDX files */
   outputDir?: string;
   /** Anthropic model to use */
@@ -123,6 +125,8 @@ export interface ValidationResult {
 export interface GenerateResult {
   /** Pages that were successfully generated */
   pagesGenerated: string[];
+  /** Pages that were skipped (already exist, no --force) */
+  pagesSkipped: string[];
   /** Pages that failed */
   pagesFailed: string[];
   /** All validation warnings across all pages */

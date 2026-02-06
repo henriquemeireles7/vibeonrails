@@ -136,6 +136,7 @@ export function docsCommand(): Command {
     .option("--type <type>", "Generate only a specific doc type (guide, reference, tutorial)")
     .option("--page <path>", "Regenerate a single page (e.g., guides/database/schema)")
     .option("--dry-run", "Preview what would be generated without writing files")
+    .option("--force", "Overwrite existing files (default: skip existing)")
     .option("--model <model>", "Anthropic model to use (default: claude-sonnet-4-20250514)")
     .action(
       async (options: {
@@ -143,6 +144,7 @@ export function docsCommand(): Command {
         type?: string;
         page?: string;
         dryRun?: boolean;
+        force?: boolean;
         model?: string;
       }) => {
         const rootDir = process.cwd();
@@ -172,6 +174,7 @@ export function docsCommand(): Command {
         }
         interface GenerateResult {
           pagesGenerated: string[];
+          pagesSkipped: string[];
           pagesFailed: string[];
           warnings: string[];
           durationMs: number;
@@ -190,6 +193,7 @@ export function docsCommand(): Command {
             types: options.type ? [options.type] : undefined,
             page: options.page,
             dryRun: options.dryRun,
+            force: options.force,
             model: options.model,
             onProgress: (event: ProgressEvent) => {
               switch (event.phase) {
@@ -225,6 +229,10 @@ export function docsCommand(): Command {
             }
           } else {
             spinner.warn("No pages generated.");
+          }
+
+          if (result.pagesSkipped.length > 0) {
+            console.log(chalk.dim(`\n  Skipped ${result.pagesSkipped.length} existing page(s). Use --force to overwrite.\n`));
           }
 
           if (result.pagesFailed.length > 0) {
