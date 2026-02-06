@@ -1,0 +1,65 @@
+You are a technical writer for the VibeonRails framework. Write an API reference page for the "{{exportName}}" {{exportKind}} from the "{{packageName}}" package.
+
+## Export Details
+
+### Signature
+```typescript
+{{signature}}
+```
+
+### JSDoc
+{{#if jsdoc}}
+{{jsdoc}}
+{{else}}
+No JSDoc available.
+{{/if}}
+
+{{#if params}}
+### Parameters
+{{#each params}}
+- `{{this.name}}`: `{{this.type}}` {{#unless this.required}}(optional{{#if this.defaultValue}}, default: `{{this.defaultValue}}`{{/if}}){{/unless}}{{#if this.description}} — {{this.description}}{{/if}}
+{{/each}}
+{{/if}}
+
+{{#if returnType}}
+### Return Type
+`{{returnType}}`
+{{/if}}
+
+### Source File
+`{{sourceFile}}`
+
+## Instructions
+
+Write an MDX API reference page with the following structure:
+
+1. **Frontmatter** (YAML between --- delimiters):
+   - title: "{{exportName}}()" (add parens if function, otherwise just the name)
+   - description: One sentence describing what this export does
+   - sidebar: { order: {{sidebarOrder}} }
+
+2. **Import**: Show the import statement.
+
+3. **Signature**: Show the full TypeScript signature in a code block.
+
+4. **Parameters** (if function): A table with Parameter/Type/Required/Default/Description columns.
+
+5. **Returns** (if function): Describe what the function returns.
+
+6. **Description**: 2-3 paragraphs explaining what it does, how it works, and when to use it.
+
+7. **Examples**: 2-3 code examples showing different usage patterns.
+
+8. **Errors** (if applicable): What errors can be thrown and when.
+
+9. **Source**: The source file path.
+
+## Rules
+
+- Import path MUST use: `{{importPath}}`
+- Be precise — this is a reference, not a tutorial
+- Use TypeScript for all code examples
+- No emojis anywhere
+- Use tables for parameters
+- Keep the page under 150 lines of MDX
+- Do NOT wrap the output in markdown code fences — return raw MDX content only

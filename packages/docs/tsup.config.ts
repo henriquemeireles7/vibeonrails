@@ -6,6 +6,7 @@ export default defineConfig({
     'presets/index': 'src/presets/index.ts',
     'components/index': 'src/components/index.ts',
     'plugins/index': 'src/plugins/index.ts',
+    'generator/index': 'src/generator/index.ts',
   },
   format: ['esm'],
   dts: true,
@@ -13,5 +14,5 @@ export default defineConfig({
   sourcemap: true,
   target: 'es2022',
   splitting: false,
-  external: ['react', 'react-dom', 'astro', '@astrojs/starlight'],
+  external: ['react', 'react-dom', 'astro', '@astrojs/starlight', '@anthropic-ai/sdk', 'ts-morph', 'typescript'],
 });

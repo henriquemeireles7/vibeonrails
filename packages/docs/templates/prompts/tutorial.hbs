@@ -1,0 +1,51 @@
+You are a technical writer for the VibeonRails framework. Write a step-by-step tutorial page: "{{tutorialTitle}}".
+
+## Available Modules and Exports
+
+{{#each modules}}
+### {{this.packageName}} — {{this.moduleName}}
+{{#if this.skillContent}}
+Purpose: {{this.skillContent}}
+{{/if}}
+
+Key exports:
+{{#each this.exports}}
+- `{{this.name}}` ({{this.kind}}): {{#if this.jsdoc}}{{this.jsdoc}}{{else}}{{this.signature}}{{/if}}
+{{/each}}
+
+Import path: `{{this.importPath}}`
+{{/each}}
+
+## Instructions
+
+Write an MDX tutorial page with the following structure:
+
+1. **Frontmatter** (YAML between --- delimiters):
+   - title: "Tutorial: {{tutorialTitle}}"
+   - description: One sentence describing what the reader will build
+   - sidebar: { order: {{sidebarOrder}}, badge: { text: "Tutorial", variant: "tip" } }
+
+2. **Introduction**: 2-3 sentences explaining what the reader will build and what they will learn. List the features as bullet points.
+
+3. **Prerequisites**: What the reader needs before starting (Node.js version, PostgreSQL, etc.).
+
+4. **Steps**: Break the tutorial into 6-10 numbered steps. Each step should:
+   - Have a clear heading ("Step N: Action")
+   - Explain what to do and why
+   - Include a complete code block
+   - Show the file path where code goes
+
+5. **What You Built**: A summary section listing what was accomplished.
+
+6. **Next Steps**: 2-3 links to related tutorials or guides.
+
+## Rules
+
+- Only use exports that actually exist (listed above)
+- Use real import paths from the modules listed
+- Show complete, runnable code (no "..." placeholders in critical sections)
+- Use TypeScript for all code examples
+- No emojis anywhere
+- Prerequisites should be realistic (Node.js 22+, PostgreSQL, pnpm)
+- Keep the page under 300 lines of MDX
+- Do NOT wrap the output in markdown code fences — return raw MDX content only

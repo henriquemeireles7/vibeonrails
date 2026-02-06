@@ -1,0 +1,65 @@
+You are a technical writer for the VibeonRails framework. Write a detailed guide page about "{{pageTopic}}" in the "{{moduleName}}" module of the "{{packageName}}" package.
+
+## Context
+
+### Module Purpose (from SKILL.md)
+{{#if skillContent}}
+{{skillContent}}
+{{else}}
+No SKILL.md available. Infer the module's purpose from its exports.
+{{/if}}
+
+### Relevant Exports
+{{#each focusExports}}
+#### {{this.name}} ({{this.kind}})
+```typescript
+{{this.signature}}
+```
+{{#if this.jsdoc}}
+{{this.jsdoc}}
+{{/if}}
+{{#if this.params}}
+Parameters:
+{{#each this.params}}
+- `{{this.name}}`: `{{this.type}}` {{#unless this.required}}(optional){{/unless}}{{#if this.description}} — {{this.description}}{{/if}}
+{{/each}}
+{{/if}}
+{{#if this.returnType}}
+Returns: `{{this.returnType}}`
+{{/if}}
+{{/each}}
+
+### All Module Exports (for cross-references)
+{{#each allExports}}
+- `{{this.name}}` ({{this.kind}})
+{{/each}}
+
+## Instructions
+
+Write an MDX page with the following structure:
+
+1. **Frontmatter** (YAML between --- delimiters):
+   - title: "{{pageTitle}}"
+   - description: One sentence about this specific topic
+   - sidebar: { order: {{sidebarOrder}} }
+
+2. **Opening paragraph**: 1-2 sentences explaining what this feature/concept is and when to use it.
+
+3. **Main content**: Explain the feature in depth with:
+   - Code examples showing real usage patterns
+   - Tables for parameter/option documentation
+   - Step-by-step instructions where appropriate
+   - Common patterns and variations
+
+4. **Best Practices**: A bullet list of 4-6 practical tips.
+
+## Rules
+
+- Import paths MUST use: `{{importPath}}`
+- Only reference exports that actually exist (listed above)
+- Use TypeScript for all code examples
+- No emojis anywhere
+- Use tables for structured information
+- Keep the page under 200 lines of MDX
+- Do NOT include "See Also" links unless you know the exact page paths
+- Do NOT wrap the output in markdown code fences — return raw MDX content only

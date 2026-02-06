@@ -25,9 +25,22 @@ packages/docs/
       skill-loader.ts # Include SKILL.md content in docs pages
       api-gen.ts      # Auto-generate API reference from TS types
       index.ts        # Barrel export
+    generator/        # AI-powered documentation generator
+      types.ts        # Shared types (PackageContext, ExportInfo, etc.)
+      extractor.ts    # Walk packages, parse TS exports, read SKILL.md
+      templates.ts    # Load and render Handlebars prompt templates
+      validator.ts    # Validate generated MDX content
+      generator.ts    # Anthropic Claude API integration
+      index.ts        # Orchestrator + barrel export
+      generator.test.ts # Tests (Claude API mocked)
     index.ts          # Main barrel export
   templates/
     docs-site/        # Template scaffolded by `vibe docs init`
+    prompts/          # Handlebars prompt templates for AI generation
+      guide-overview.hbs
+      guide-detail.hbs
+      reference.hbs
+      tutorial.hbs
   SKILL.md
   package.json
 ```
@@ -64,6 +77,31 @@ import { PackageInstall, ApiReference, StatusBadge } from '@vibeonrails/docs/com
 />
 ```
 
+### AI Documentation Generator
+
+```bash
+# Generate all docs from codebase
+vibe docs generate
+
+# Generate for a specific package
+vibe docs generate --package core
+
+# Generate only reference pages
+vibe docs generate --type reference
+
+# Preview without writing files
+vibe docs generate --dry-run
+```
+
+Requires `ANTHROPIC_API_KEY` environment variable. Uses Claude to generate MDX pages from SKILL.md files, TypeScript exports, and JSDoc comments.
+
+The generator follows a three-phase pipeline:
+1. **Extract** — ts-morph parses TypeScript AST, reads SKILL.md files
+2. **Generate** — Handlebars templates build prompts, Claude produces MDX
+3. **Validate** — Checks frontmatter, import paths, and export references
+
+Users can override prompt templates by placing `.hbs` files in `docs/templates/prompts/`.
+
 ## Conventions
 
 - Config factory uses "convention over configuration" — sensible defaults, override when needed
@@ -76,3 +114,5 @@ import { PackageInstall, ApiReference, StatusBadge } from '@vibeonrails/docs/com
 - Astro Starlight requires `docsLoader()` in `src/content.config.ts` for Astro 5+
 - MDX does not support HTML comments (`<!-- -->`), use `{/* */}` instead
 - Peer dependencies (astro, @astrojs/starlight) must be installed by the consumer
+- AI generator requires `ANTHROPIC_API_KEY` env var (not bundled, loaded at runtime)
+- ts-morph is a heavy dependency (~50MB) — it is external in the bundle and loaded only when generating

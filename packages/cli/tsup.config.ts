@@ -11,4 +11,8 @@ export default defineConfig({
   banner: {
     js: "#!/usr/bin/env node",
   },
+  external: [
+    // Dynamic import — resolved at runtime, not bundled
+    "@vibeonrails/docs/generator",
+  ],
 });

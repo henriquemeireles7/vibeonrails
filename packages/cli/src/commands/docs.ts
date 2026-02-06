@@ -10,9 +10,10 @@ import { toKebabCase } from "../utils/template.js";
  * `vibe docs` — Documentation site management.
  *
  * Subcommands:
- *   - `vibe docs init [name]` — Scaffold a new docs site
- *   - `vibe docs dev`         — Start docs dev server
- *   - `vibe docs build`       — Build docs for production
+ *   - `vibe docs init [name]`   — Scaffold a new docs site
+ *   - `vibe docs dev`           — Start docs dev server
+ *   - `vibe docs build`         — Build docs for production
+ *   - `vibe docs generate`      — AI-generate documentation from codebase
  */
 export function docsCommand(): Command {
   const docs = new Command("docs").description(
@@ -127,6 +128,130 @@ export function docsCommand(): Command {
         process.exit(1);
       }
     });
+
+  docs
+    .command("generate")
+    .description("AI-generate documentation pages from your codebase")
+    .option("--package <name>", "Generate docs for a specific package (e.g., core, infra)")
+    .option("--type <type>", "Generate only a specific doc type (guide, reference, tutorial)")
+    .option("--page <path>", "Regenerate a single page (e.g., guides/database/schema)")
+    .option("--dry-run", "Preview what would be generated without writing files")
+    .option("--model <model>", "Anthropic model to use (default: claude-sonnet-4-20250514)")
+    .action(
+      async (options: {
+        package?: string;
+        type?: string;
+        page?: string;
+        dryRun?: boolean;
+        model?: string;
+      }) => {
+        const rootDir = process.cwd();
+
+        console.log(chalk.cyan("\n  Vibe Docs Generator (AI-powered)\n"));
+
+        if (!process.env["ANTHROPIC_API_KEY"] && !options.dryRun) {
+          console.error(
+            chalk.red("  Error: ANTHROPIC_API_KEY environment variable is required.\n"),
+          );
+          console.log(
+            chalk.dim("  Set it in your environment or .env file:"),
+          );
+          console.log(
+            chalk.dim("    export ANTHROPIC_API_KEY=sk-ant-...\n"),
+          );
+          process.exit(1);
+        }
+
+        // Dynamic import to avoid loading heavy deps when not needed.
+        // Types are inlined here to avoid a build-time dependency on @vibeonrails/docs.
+        interface ProgressEvent {
+          phase: string;
+          current: number;
+          total: number;
+          message: string;
+        }
+        interface GenerateResult {
+          pagesGenerated: string[];
+          pagesFailed: string[];
+          warnings: string[];
+          durationMs: number;
+        }
+
+        const generatorModule = await import("@vibeonrails/docs/generator" as string) as {
+          generate: (opts: Record<string, unknown>) => Promise<GenerateResult>;
+        };
+
+        const spinner = ora("Extracting codebase context...").start();
+
+        try {
+          const result = await generatorModule.generate({
+            rootDir,
+            packages: options.package ? [options.package] : undefined,
+            types: options.type ? [options.type] : undefined,
+            page: options.page,
+            dryRun: options.dryRun,
+            model: options.model,
+            onProgress: (event: ProgressEvent) => {
+              switch (event.phase) {
+                case "extracting":
+                  spinner.text = event.message;
+                  break;
+                case "generating":
+                  spinner.text = `Generating [${event.current}/${event.total}] ${event.message}`;
+                  break;
+                case "validating":
+                  spinner.text = `Validating [${event.current}/${event.total}] ${event.message}`;
+                  break;
+                case "writing":
+                  spinner.text = `Writing [${event.current}/${event.total}] ${event.message}`;
+                  break;
+              }
+            },
+          });
+
+          if (result.pagesGenerated.length > 0) {
+            spinner.succeed(
+              `Generated ${result.pagesGenerated.length} page(s) in ${(result.durationMs / 1000).toFixed(1)}s`,
+            );
+
+            if (options.dryRun) {
+              console.log(chalk.dim("\n  Dry run — no files written. Pages that would be generated:\n"));
+            } else {
+              console.log(chalk.dim("\n  Generated pages:\n"));
+            }
+
+            for (const page of result.pagesGenerated) {
+              console.log(`    ${chalk.green("+")} ${page}`);
+            }
+          } else {
+            spinner.warn("No pages generated.");
+          }
+
+          if (result.pagesFailed.length > 0) {
+            console.log(chalk.red(`\n  Failed (${result.pagesFailed.length}):\n`));
+            for (const page of result.pagesFailed) {
+              console.log(`    ${chalk.red("x")} ${page}`);
+            }
+          }
+
+          if (result.warnings.length > 0) {
+            console.log(chalk.yellow(`\n  Warnings (${result.warnings.length}):\n`));
+            for (const warning of result.warnings.slice(0, 10)) {
+              console.log(`    ${chalk.yellow("!")} ${warning}`);
+            }
+            if (result.warnings.length > 10) {
+              console.log(chalk.dim(`    ... and ${result.warnings.length - 10} more`));
+            }
+          }
+
+          console.log("");
+        } catch (error) {
+          spinner.fail("Documentation generation failed.");
+          console.error(error);
+          process.exit(1);
+        }
+      },
+    );
 
   return docs;
 }

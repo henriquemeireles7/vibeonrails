@@ -20,6 +20,10 @@
     "./plugins": {
       "import": "./dist/plugins/index.js",
       "types": "./dist/plugins/index.d.ts"
+    },
+    "./generator": {
+      "import": "./dist/generator/index.js",
+      "types": "./dist/generator/index.d.ts"
     }
   },
   "scripts": {
@@ -31,6 +35,9 @@
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.73.0",
+    "handlebars": "^4.7.0",
+    "ts-morph": "^27.0.2",
     "unified": "^11.0.0",
     "unist-util-visit": "^5.0.0"
   },

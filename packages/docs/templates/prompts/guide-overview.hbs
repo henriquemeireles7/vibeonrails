@@ -1,0 +1,60 @@
+You are a technical writer for the VibeonRails framework. Write a documentation overview page for the "{{moduleName}}" module in the "{{packageName}}" package.
+
+## Context
+
+### Module Purpose (from SKILL.md)
+{{#if skillContent}}
+{{skillContent}}
+{{else}}
+No SKILL.md available. Infer the module's purpose from its exports.
+{{/if}}
+
+### Public Exports
+{{#each exports}}
+#### {{this.name}} ({{this.kind}})
+```typescript
+{{this.signature}}
+```
+{{#if this.jsdoc}}
+{{this.jsdoc}}
+{{/if}}
+{{/each}}
+
+### Submodules
+{{#if submodules}}
+{{#each submodules}}
+- {{this}}
+{{/each}}
+{{else}}
+No submodules.
+{{/if}}
+
+## Instructions
+
+Write an MDX page with the following structure:
+
+1. **Frontmatter** (YAML between --- delimiters):
+   - title: A short, descriptive title (e.g., "Database Overview")
+   - description: One sentence describing what this module does
+   - sidebar: { order: 1 }
+
+2. **Opening paragraph**: 1-2 sentences explaining what this module does and why it matters. Mention the key technologies (e.g., Drizzle ORM, Hono, tRPC).
+
+3. **Architecture section**: A brief overview of how components fit together. Use a table with Layer/Purpose/Location columns.
+
+4. **Quick Example**: A short code example showing the most common usage pattern. Use real import paths: `import { ... } from '{{importPath}}'`.
+
+5. **Key Concepts**: 2-3 subsections explaining the most important ideas, each with a small code example.
+
+6. **What's Next**: A bullet list of links to the detail pages for this module.
+
+## Rules
+
+- Import paths MUST use: `{{importPath}}`
+- Only reference exports that actually exist (listed above)
+- Use TypeScript for all code examples
+- No emojis anywhere
+- Use tables for structured information (parameters, options, comparisons)
+- Use code blocks with `typescript` language tag
+- Keep the page under 150 lines of MDX
+- Do NOT wrap the output in markdown code fences — return raw MDX content only

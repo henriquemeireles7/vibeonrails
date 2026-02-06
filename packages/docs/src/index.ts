@@ -5,6 +5,7 @@
  * - Presets: Starlight config factory, sidebar helpers, theme utilities
  * - Components: Custom MDX components for documentation
  * - Plugins: Remark/Rehype plugins for content transformation
+ * - Generator: AI-powered documentation generation from codebase
  *
  * @example
  * ```typescript
@@ -16,6 +17,9 @@
  *
  * // Import plugins for markdown processing
  * import { remarkSkillLoader, remarkApiGen } from '@vibeonrails/docs/plugins';
+ *
+ * // Import generator for AI-powered docs
+ * import { generate, extractAllPackages } from '@vibeonrails/docs/generator';
  * ```
  */
 
