@@ -1,0 +1,13 @@
+{
+  "name": "@vibeonrails/docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Docs dev server — run astro dev when configured'",
+    "build": "echo 'Docs build — run astro build when configured'",
+    "typecheck": "echo 'Docs typecheck skipped'",
+    "lint": "echo 'Docs lint skipped'",
+    "test": "echo 'Docs test skipped'"
+  }
+}
