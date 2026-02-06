@@ -56,6 +56,7 @@ export function generateModule(
     "controller.ts.hbs": `${kebabName}.controller.ts`,
     "service.test.ts.hbs": `${kebabName}.service.test.ts`,
     "index.ts.hbs": "index.ts",
+    "SKILL.md.hbs": "SKILL.md",
   };
 
   for (const templateFile of templateFiles) {

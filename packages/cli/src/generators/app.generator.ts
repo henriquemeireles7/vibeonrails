@@ -40,6 +40,8 @@ export function generateApp(name: string, outDir: string): GenerateAppResult {
     "package.json",
     "README.md",
     ".env.example",
+    "src/main.ts",
+    "src/config/app.ts",
   ];
 
   for (const file of filesToPatch) {

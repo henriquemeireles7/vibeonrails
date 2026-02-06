@@ -32,25 +32,62 @@ pnpm run dev
 ## Project Structure
 
 ```
-src/
-├── main.ts           # Server entry point
-├── router.ts         # Root tRPC router (merges all modules)
-├── database/         # Drizzle config and seeds
-└── modules/          # Feature modules (generate with `vibe generate module <name>`)
-    └── <module>/
-        ├── types.ts              # Zod schemas and TypeScript types
-        ├── <module>.service.ts   # Business logic
-        ├── <module>.controller.ts # tRPC controller
-        ├── <module>.service.test.ts # Tests
-        └── index.ts              # Barrel export
+├── .plan/                # Planning system (project context, roadmap, decisions)
+├── drizzle.config.ts     # Drizzle Kit migration config
+├── src/
+│   ├── config/           # App configuration
+│   │   ├── app.ts        # App name, port, environment flags
+│   │   ├── database.ts   # Database client
+│   │   └── env.ts        # Zod-validated environment variables
+│   ├── modules/          # Feature modules
+│   │   ├── auth/         # Authentication (register, login, refresh, me)
+│   │   ├── user/         # User management (profile, list)
+│   │   └── post/         # Posts example (CRUD with ownership)
+│   ├── database/
+│   │   └── seeds/        # Development and test seed scripts
+│   ├── main.ts           # Server entry point
+│   └── router.ts         # Root tRPC router (merges all modules)
 ```
+
+## Built-in Modules
+
+| Module | Endpoints | Auth |
+|--------|-----------|------|
+| **auth** | register, login, refresh, me | Public (except `me`) |
+| **user** | getProfile, updateProfile, list, getById | Protected |
+| **post** | list, getById, create, update, remove | Mixed |
 
 ## Generating Modules
 
 ```bash
 # Generate a new module
-npx vibe generate module user
+npx vibe generate module order
 npx vibe generate module blog-post
 ```
 
-Each module comes with types, service, controller, test, and barrel export — all wired up and ready to use.
+Each module comes with types, service, controller, test, SKILL.md, and barrel export — all wired up and ready to use.
+
+Then wire it into `src/router.ts`:
+
+```typescript
+import { orderRouter } from "./modules/order/order.controller.js";
+
+export const appRouter = createAppRouter({
+  auth: authRouter,
+  user: userRouter,
+  post: postRouter,
+  order: orderRouter, // ← new module
+});
+```
+
+## Planning System
+
+The `.plan/` directory provides context for AI agents and team members:
+
+| File | Purpose |
+|------|---------|
+| `PROJECT.md` | What this app does |
+| `CONTEXT.md` | Technical constraints and patterns |
+| `ROADMAP.md` | Feature roadmap |
+| `CURRENT.md` | Active sprint / tasks |
+| `DECISIONS.md` | Architecture decision log |

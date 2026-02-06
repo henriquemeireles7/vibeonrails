@@ -10,7 +10,7 @@ const app = createServer({
   },
 });
 
-console.log(`🚀 Server running at http://localhost:${port}`);
+console.log(`🚀 {{projectName}} running at http://localhost:${port}`);
 
 export default {
   port,
