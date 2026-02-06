@@ -556,7 +556,7 @@
 > What exists: Astro Starlight docs site with 179 page stubs, DOCS_STRATEGY.md, Getting Started content
 > What's needed: A `@vibeonrails/docs` package for end users + fill in all documentation content
 
-### Phase 1: @vibeonrails/docs Package (Framework Feature)
+### Phase 1: @vibeonrails/docs Package (Framework Feature) ✅
 
 > A package that wraps Astro Starlight with VibeonRails conventions.
 > Users run `vibe docs init` to scaffold a docs site, `vibe docs dev` to run it.
@@ -564,64 +564,65 @@
 
 #### Package Setup
 
-- [ ] `packages/docs/package.json` — Package config (depends on astro, @astrojs/starlight)
-- [ ] `packages/docs/tsconfig.json` — TypeScript config
-- [ ] `packages/docs/tsup.config.ts` — Build config
-- [ ] `packages/docs/SKILL.md` — Package skill document
-- [ ] `packages/docs/vitest.config.ts` — Test config
+- [x] `packages/docs/package.json` — Package config (depends on astro, @astrojs/starlight)
+- [x] `packages/docs/tsconfig.json` — TypeScript config
+- [x] `packages/docs/tsup.config.ts` — Build config
+- [x] `packages/docs/SKILL.md` — Package skill document
+- [x] `packages/docs/vitest.config.ts` — Test config
 
 #### Starlight Presets (Convention over Configuration)
 
-- [ ] `packages/docs/src/presets/starlight.ts` — Default Starlight config factory (createDocsConfig)
-- [ ] `packages/docs/src/presets/sidebar.ts` — Auto-generate sidebar from file structure conventions
-- [ ] `packages/docs/src/presets/theme.ts` — VibeonRails default theme (colors, fonts, CSS)
-- [ ] `packages/docs/src/presets/index.ts` — Presets barrel export
-- [ ] `packages/docs/src/presets/presets.test.ts` — Preset tests
+- [x] `packages/docs/src/presets/starlight.ts` — Default Starlight config factory (createStarlightConfig)
+- [x] `packages/docs/src/presets/sidebar.ts` — Sidebar helpers (link, group, autogenerate, createDiataxisSidebar)
+- [x] `packages/docs/src/presets/theme.ts` — VibeonRails default theme (generateThemeCSS, defaultThemeCSS)
+- [x] `packages/docs/src/presets/index.ts` — Presets barrel export
+- [x] `packages/docs/src/presets/presets.test.ts` — Preset tests (17 tests)
 
 #### Custom Components (MDX Components for Docs)
 
-- [ ] `packages/docs/src/components/ApiReference.tsx` — Renders function signature + params table from JSDoc
-- [ ] `packages/docs/src/components/CodeExample.tsx` — Tabbed code examples (TypeScript/JavaScript)
-- [ ] `packages/docs/src/components/PackageInstall.tsx` — Install command for pnpm/npm/yarn
-- [ ] `packages/docs/src/components/PropTable.tsx` — Component props table from TypeScript types
-- [ ] `packages/docs/src/components/StatusBadge.tsx` — Feature status badge (stable/beta/experimental)
-- [ ] `packages/docs/src/components/index.ts` — Components barrel export
-- [ ] `packages/docs/src/components/components.test.tsx` — Component tests
+- [x] `packages/docs/src/components/ApiReference.tsx` — Renders function signature + params table
+- [x] `packages/docs/src/components/CodeExample.tsx` — Tabbed code examples (TypeScript/JavaScript)
+- [x] `packages/docs/src/components/PackageInstall.tsx` — Install command for pnpm/npm/yarn
+- [x] `packages/docs/src/components/PropTable.tsx` — Component props table from TypeScript types
+- [x] `packages/docs/src/components/StatusBadge.tsx` — Feature status badge (stable/beta/experimental/deprecated)
+- [x] `packages/docs/src/components/index.ts` — Components barrel export
+- [x] `packages/docs/src/components/components.test.ts` — Component tests (5 tests)
 
 #### Remark/Rehype Plugins
 
-- [ ] `packages/docs/src/plugins/skill-loader.ts` — Remark plugin: include SKILL.md content in docs
-- [ ] `packages/docs/src/plugins/api-gen.ts` — Remark plugin: auto-generate API reference from TypeScript exports
-- [ ] `packages/docs/src/plugins/index.ts` — Plugins barrel export
-- [ ] `packages/docs/src/plugins/plugins.test.ts` — Plugin tests
+- [x] `packages/docs/src/plugins/skill-loader.ts` — Remark plugin: include SKILL.md content in docs
+- [x] `packages/docs/src/plugins/api-gen.ts` — Remark plugin: auto-generate API reference from TS exports
+- [x] `packages/docs/src/plugins/index.ts` — Plugins barrel export
+- [x] `packages/docs/src/plugins/plugins.test.ts` — Plugin tests (8 tests)
 
 #### Docs Site Template (for `vibe docs init`)
 
-- [ ] `packages/docs/templates/docs-site/package.json.hbs` — Template package.json
-- [ ] `packages/docs/templates/docs-site/astro.config.mjs.hbs` — Template Astro config
-- [ ] `packages/docs/templates/docs-site/tsconfig.json` — Template TS config
-- [ ] `packages/docs/templates/docs-site/src/content.config.ts.hbs` — Template content config
-- [ ] `packages/docs/templates/docs-site/src/content/docs/index.mdx.hbs` — Template homepage
-- [ ] `packages/docs/templates/docs-site/src/content/docs/getting-started.mdx.hbs` — Template getting started
+- [x] `packages/docs/templates/docs-site/package.json.hbs` — Template package.json
+- [x] `packages/docs/templates/docs-site/astro.config.mjs.hbs` — Template Astro config
+- [x] `packages/docs/templates/docs-site/tsconfig.json` — Template TS config
+- [x] `packages/docs/templates/docs-site/src/content.config.ts.hbs` — Template content config
+- [x] `packages/docs/templates/docs-site/src/content/docs/index.mdx.hbs` — Template homepage
+- [x] `packages/docs/templates/docs-site/src/content/docs/getting-started.mdx.hbs` — Template getting started
 
 #### CLI Integration
 
-- [ ] `packages/cli/src/commands/docs.ts` — `vibe docs init|dev|build` commands
-- [ ] `packages/cli/src/generators/docs.generator.ts` — Scaffold docs site from template
-- [ ] `packages/cli/src/generators/docs.generator.test.ts` — Docs generator tests
-- [ ] `packages/cli/src/index.ts` — Register docs command
+- [x] `packages/cli/src/commands/docs.ts` — `vibe docs init|dev|build` commands
+- [x] `packages/cli/src/generators/docs.generator.ts` — Scaffold docs site from template
+- [x] `packages/cli/src/generators/docs.generator.test.ts` — Docs generator tests
+- [x] `packages/cli/src/index.ts` — Register docs command
 
 #### Package Entry & Exports
 
-- [ ] `packages/docs/src/index.ts` — Main barrel export (createDocsConfig, components, plugins)
+- [x] `packages/docs/src/index.ts` — Main barrel export (createStarlightConfig, components, plugins)
 
-### Phase 2: Dogfooding (Migrate Our Docs to Use @vibeonrails/docs)
+### Phase 2: Dogfooding (Migrate Our Docs to Use @vibeonrails/docs) ✅
 
 > Replace the manual Astro config in docs/ with our own package.
 
-- [ ] `docs/package.json` — Add @vibeonrails/docs dependency
-- [ ] `docs/astro.config.mjs` — Use createDocsConfig() from @vibeonrails/docs
-- [ ] `docs/src/content.config.ts` — Update to use our package's schema if needed
+- [x] `docs/package.json` — Renamed to @vibeonrails/docs-site, added @vibeonrails/docs dependency
+- [x] `docs/astro.config.mjs` — Uses createStarlightConfig() + link/group/autogenerate helpers
+- [x] `docs/src/styles/custom.css` — Uses default VibeonRails theme from package
+- [x] `turbo.json` — Updated build dependency chain for docs-site
 
 ### Phase 3: Fill Documentation Content (P0 — Core User Journey)
 

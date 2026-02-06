@@ -1,273 +1,162 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import {
+  createStarlightConfig,
+  link,
+  group,
+  autogenerate,
+} from '@vibeonrails/docs/presets';
+
+// Build Starlight config using @vibeonrails/docs presets
+const starlightConfig = createStarlightConfig({
+  title: 'VibeonRails',
+  description: 'The TypeScript Framework for Vibe Coding',
+  social: {
+    github: 'https://github.com/vibeonrails/vibeonrails',
+  },
+  editLinkBaseUrl: 'https://github.com/vibeonrails/vibeonrails/edit/main/docs/',
+  customCss: ['./src/styles/custom.css'],
+  sidebar: [
+    // --- Getting Started ---
+    group('Getting Started', [
+      link('Introduction', 'getting-started/introduction'),
+      link('Installation', 'getting-started/installation'),
+      link('Quick Start', 'getting-started/quick-start'),
+      link('Project Structure', 'getting-started/project-structure'),
+      link('Philosophy', 'getting-started/philosophy'),
+    ], { collapsed: false }),
+
+    // --- Tutorials ---
+    group('Tutorials', [
+      link('Overview', 'tutorials'),
+      link('Your First App', 'tutorials/your-first-app'),
+      link('Adding Authentication', 'tutorials/authentication'),
+      link('Database CRUD', 'tutorials/database-crud'),
+      link('API Endpoints', 'tutorials/api-endpoints'),
+      link('Frontend Pages', 'tutorials/frontend-pages'),
+      link('Writing Tests', 'tutorials/testing'),
+      link('Deploying', 'tutorials/deployment'),
+      link('Full SaaS App', 'tutorials/full-saas'),
+      link('AI Agents', 'tutorials/ai-agents'),
+    ], { badge: { text: 'Learn', variant: 'tip' } }),
+
+    // --- Guides ---
+    group('Guides', [
+      link('Architecture', 'guides/architecture'),
+      group('API', [
+        link('Overview', 'guides/api'),
+        link('Hono Server', 'guides/api/server'),
+        link('tRPC Integration', 'guides/api/trpc'),
+        link('Procedures', 'guides/api/procedures'),
+        link('Request Context', 'guides/api/context'),
+        link('Middleware', 'guides/api/middleware'),
+        link('Error Handling', 'guides/api/error-handling'),
+        link('Rate Limiting', 'guides/api/rate-limiting'),
+      ]),
+      group('Database', [
+        link('Overview', 'guides/database'),
+        link('Client & Connections', 'guides/database/client'),
+        link('Schema Definitions', 'guides/database/schema'),
+        link('Migrations', 'guides/database/migrations'),
+        link('Repository Pattern', 'guides/database/repositories'),
+        link('Seeds', 'guides/database/seeds'),
+        link('Relations', 'guides/database/relations'),
+        link('Query Patterns', 'guides/database/queries'),
+        link('Transactions', 'guides/database/transactions'),
+      ]),
+      group('Security', [
+        link('Overview', 'guides/security'),
+        link('Authentication', 'guides/security/authentication'),
+        link('Authorization', 'guides/security/authorization'),
+        link('Password Hashing', 'guides/security/passwords'),
+        link('JWT Tokens', 'guides/security/jwt'),
+        link('Sessions', 'guides/security/sessions'),
+        link('OAuth', 'guides/security/oauth'),
+        link('CSRF Protection', 'guides/security/csrf'),
+        link('Encryption', 'guides/security/crypto'),
+        link('Audit Logging', 'guides/security/audit'),
+      ]),
+      group('Frontend', [
+        link('Overview', 'guides/web'),
+        link('Components', 'guides/web/components'),
+        link('CSS System', 'guides/web/css-system'),
+        link('React Hooks', 'guides/web/hooks'),
+        link('Routing', 'guides/web/routing'),
+        link('tRPC Client', 'guides/web/trpc-client'),
+      ]),
+      group('Infrastructure', [
+        link('Overview', 'guides/infra'),
+        link('Health Checks', 'guides/infra/health'),
+        link('Logging', 'guides/infra/logging'),
+        link('Background Jobs', 'guides/infra/queue'),
+        link('Scheduled Tasks', 'guides/infra/cron'),
+        link('Email', 'guides/infra/email'),
+        link('Caching', 'guides/infra/cache'),
+        link('File Storage', 'guides/infra/storage'),
+        link('Real-time', 'guides/infra/realtime'),
+        link('Monitoring', 'guides/infra/monitoring'),
+      ]),
+      group('CLI', [
+        link('Overview', 'guides/cli'),
+        link('Project Scaffolding', 'guides/cli/create-project'),
+        link('Code Generators', 'guides/cli/generators'),
+        link('Dev Server', 'guides/cli/dev-server'),
+        link('Database Commands', 'guides/cli/database-commands'),
+        link('Build & Deploy', 'guides/cli/build-deploy'),
+      ]),
+    ], { collapsed: false, badge: { text: 'Understand', variant: 'note' } }),
+
+    // --- How-To Recipes ---
+    group('How-To Recipes', [
+      link('Overview', 'how-to'),
+      autogenerate('API', 'how-to/api'),
+      autogenerate('Database', 'how-to/database'),
+      autogenerate('Security', 'how-to/security'),
+      autogenerate('Frontend', 'how-to/web'),
+      autogenerate('Infrastructure', 'how-to/infra'),
+      autogenerate('Testing', 'how-to/testing'),
+      autogenerate('Deployment', 'how-to/deployment'),
+    ], { badge: { text: 'Recipes', variant: 'caution' } }),
+
+    // --- Features ---
+    group('Features', [
+      autogenerate('Payments (Stripe)', 'features/payments'),
+      autogenerate('Admin Panel', 'features/admin'),
+      autogenerate('Support', 'features/support'),
+      autogenerate('Sales', 'features/sales'),
+      autogenerate('Marketing', 'features/marketing'),
+    ]),
+
+    // --- Reference ---
+    group('Reference', [
+      link('Overview', 'reference'),
+      autogenerate('API', 'reference/api'),
+      autogenerate('Database', 'reference/database'),
+      autogenerate('Security', 'reference/security'),
+      autogenerate('Frontend', 'reference/web'),
+      autogenerate('Infrastructure', 'reference/infra'),
+      autogenerate('CLI', 'reference/cli'),
+      autogenerate('Features', 'reference/features'),
+      link('Error Codes', 'reference/errors'),
+      link('Configuration', 'reference/configuration'),
+    ], { badge: { text: 'API', variant: 'danger' } }),
+
+    // --- Advanced ---
+    autogenerate('Advanced', 'advanced', true),
+
+    // --- Contributing ---
+    autogenerate('Contributing', 'contributing', true),
+
+    // --- More ---
+    group('More', [
+      link('Changelog', 'changelog'),
+      link('FAQ', 'faq'),
+      link('Troubleshooting', 'troubleshooting'),
+      link('Glossary', 'glossary'),
+    ]),
+  ],
+});
 
 export default defineConfig({
-  integrations: [
-    starlight({
-      title: 'VibeonRails',
-      description: 'The TypeScript Framework for Vibe Coding',
-      social: {
-        github: 'https://github.com/vibeonrails/vibeonrails',
-      },
-      editLink: {
-        baseUrl: 'https://github.com/vibeonrails/vibeonrails/edit/main/docs/',
-      },
-      customCss: ['./src/styles/custom.css'],
-      sidebar: [
-        {
-          label: 'Getting Started',
-          items: [
-            { label: 'Introduction', slug: 'getting-started/introduction' },
-            { label: 'Installation', slug: 'getting-started/installation' },
-            { label: 'Quick Start', slug: 'getting-started/quick-start' },
-            { label: 'Project Structure', slug: 'getting-started/project-structure' },
-            { label: 'Philosophy', slug: 'getting-started/philosophy' },
-          ],
-        },
-        {
-          label: 'Tutorials',
-          badge: { text: 'Learn', variant: 'tip' },
-          items: [
-            { label: 'Overview', slug: 'tutorials' },
-            { label: 'Your First App', slug: 'tutorials/your-first-app' },
-            { label: 'Adding Authentication', slug: 'tutorials/authentication' },
-            { label: 'Database CRUD', slug: 'tutorials/database-crud' },
-            { label: 'API Endpoints', slug: 'tutorials/api-endpoints' },
-            { label: 'Frontend Pages', slug: 'tutorials/frontend-pages' },
-            { label: 'Writing Tests', slug: 'tutorials/testing' },
-            { label: 'Deploying', slug: 'tutorials/deployment' },
-            { label: 'Full SaaS App', slug: 'tutorials/full-saas' },
-            { label: 'AI Agents', slug: 'tutorials/ai-agents' },
-          ],
-        },
-        {
-          label: 'Guides',
-          badge: { text: 'Understand', variant: 'note' },
-          items: [
-            { label: 'Architecture', slug: 'guides/architecture' },
-            {
-              label: 'API',
-              collapsed: true,
-              items: [
-                { label: 'Overview', slug: 'guides/api' },
-                { label: 'Hono Server', slug: 'guides/api/server' },
-                { label: 'tRPC Integration', slug: 'guides/api/trpc' },
-                { label: 'Procedures', slug: 'guides/api/procedures' },
-                { label: 'Request Context', slug: 'guides/api/context' },
-                { label: 'Middleware', slug: 'guides/api/middleware' },
-                { label: 'Error Handling', slug: 'guides/api/error-handling' },
-                { label: 'Rate Limiting', slug: 'guides/api/rate-limiting' },
-              ],
-            },
-            {
-              label: 'Database',
-              collapsed: true,
-              items: [
-                { label: 'Overview', slug: 'guides/database' },
-                { label: 'Client & Connections', slug: 'guides/database/client' },
-                { label: 'Schema Definitions', slug: 'guides/database/schema' },
-                { label: 'Migrations', slug: 'guides/database/migrations' },
-                { label: 'Repository Pattern', slug: 'guides/database/repositories' },
-                { label: 'Seeds', slug: 'guides/database/seeds' },
-                { label: 'Relations', slug: 'guides/database/relations' },
-                { label: 'Query Patterns', slug: 'guides/database/queries' },
-                { label: 'Transactions', slug: 'guides/database/transactions' },
-              ],
-            },
-            {
-              label: 'Security',
-              collapsed: true,
-              items: [
-                { label: 'Overview', slug: 'guides/security' },
-                { label: 'Authentication', slug: 'guides/security/authentication' },
-                { label: 'Authorization', slug: 'guides/security/authorization' },
-                { label: 'Password Hashing', slug: 'guides/security/passwords' },
-                { label: 'JWT Tokens', slug: 'guides/security/jwt' },
-                { label: 'Sessions', slug: 'guides/security/sessions' },
-                { label: 'OAuth', slug: 'guides/security/oauth' },
-                { label: 'CSRF Protection', slug: 'guides/security/csrf' },
-                { label: 'Encryption', slug: 'guides/security/crypto' },
-                { label: 'Audit Logging', slug: 'guides/security/audit' },
-              ],
-            },
-            {
-              label: 'Frontend',
-              collapsed: true,
-              items: [
-                { label: 'Overview', slug: 'guides/web' },
-                { label: 'Components', slug: 'guides/web/components' },
-                { label: 'CSS System', slug: 'guides/web/css-system' },
-                { label: 'React Hooks', slug: 'guides/web/hooks' },
-                { label: 'Routing', slug: 'guides/web/routing' },
-                { label: 'tRPC Client', slug: 'guides/web/trpc-client' },
-              ],
-            },
-            {
-              label: 'Infrastructure',
-              collapsed: true,
-              items: [
-                { label: 'Overview', slug: 'guides/infra' },
-                { label: 'Health Checks', slug: 'guides/infra/health' },
-                { label: 'Logging', slug: 'guides/infra/logging' },
-                { label: 'Background Jobs', slug: 'guides/infra/queue' },
-                { label: 'Scheduled Tasks', slug: 'guides/infra/cron' },
-                { label: 'Email', slug: 'guides/infra/email' },
-                { label: 'Caching', slug: 'guides/infra/cache' },
-                { label: 'File Storage', slug: 'guides/infra/storage' },
-                { label: 'Real-time', slug: 'guides/infra/realtime' },
-                { label: 'Monitoring', slug: 'guides/infra/monitoring' },
-              ],
-            },
-            {
-              label: 'CLI',
-              collapsed: true,
-              items: [
-                { label: 'Overview', slug: 'guides/cli' },
-                { label: 'Project Scaffolding', slug: 'guides/cli/create-project' },
-                { label: 'Code Generators', slug: 'guides/cli/generators' },
-                { label: 'Dev Server', slug: 'guides/cli/dev-server' },
-                { label: 'Database Commands', slug: 'guides/cli/database-commands' },
-                { label: 'Build & Deploy', slug: 'guides/cli/build-deploy' },
-              ],
-            },
-          ],
-        },
-        {
-          label: 'How-To Recipes',
-          badge: { text: 'Recipes', variant: 'caution' },
-          items: [
-            { label: 'Overview', slug: 'how-to' },
-            {
-              label: 'API',
-              collapsed: true,
-              autogenerate: { directory: 'how-to/api' },
-            },
-            {
-              label: 'Database',
-              collapsed: true,
-              autogenerate: { directory: 'how-to/database' },
-            },
-            {
-              label: 'Security',
-              collapsed: true,
-              autogenerate: { directory: 'how-to/security' },
-            },
-            {
-              label: 'Frontend',
-              collapsed: true,
-              autogenerate: { directory: 'how-to/web' },
-            },
-            {
-              label: 'Infrastructure',
-              collapsed: true,
-              autogenerate: { directory: 'how-to/infra' },
-            },
-            {
-              label: 'Testing',
-              collapsed: true,
-              autogenerate: { directory: 'how-to/testing' },
-            },
-            {
-              label: 'Deployment',
-              collapsed: true,
-              autogenerate: { directory: 'how-to/deployment' },
-            },
-          ],
-        },
-        {
-          label: 'Features',
-          items: [
-            {
-              label: 'Payments (Stripe)',
-              collapsed: true,
-              autogenerate: { directory: 'features/payments' },
-            },
-            {
-              label: 'Admin Panel',
-              collapsed: true,
-              autogenerate: { directory: 'features/admin' },
-            },
-            {
-              label: 'Support',
-              collapsed: true,
-              autogenerate: { directory: 'features/support' },
-            },
-            {
-              label: 'Sales',
-              collapsed: true,
-              autogenerate: { directory: 'features/sales' },
-            },
-            {
-              label: 'Marketing',
-              collapsed: true,
-              autogenerate: { directory: 'features/marketing' },
-            },
-          ],
-        },
-        {
-          label: 'Reference',
-          badge: { text: 'API', variant: 'danger' },
-          items: [
-            { label: 'Overview', slug: 'reference' },
-            {
-              label: 'API',
-              collapsed: true,
-              autogenerate: { directory: 'reference/api' },
-            },
-            {
-              label: 'Database',
-              collapsed: true,
-              autogenerate: { directory: 'reference/database' },
-            },
-            {
-              label: 'Security',
-              collapsed: true,
-              autogenerate: { directory: 'reference/security' },
-            },
-            {
-              label: 'Frontend',
-              collapsed: true,
-              autogenerate: { directory: 'reference/web' },
-            },
-            {
-              label: 'Infrastructure',
-              collapsed: true,
-              autogenerate: { directory: 'reference/infra' },
-            },
-            {
-              label: 'CLI',
-              collapsed: true,
-              autogenerate: { directory: 'reference/cli' },
-            },
-            {
-              label: 'Features',
-              collapsed: true,
-              autogenerate: { directory: 'reference/features' },
-            },
-            { label: 'Error Codes', slug: 'reference/errors' },
-            { label: 'Configuration', slug: 'reference/configuration' },
-          ],
-        },
-        {
-          label: 'Advanced',
-          collapsed: true,
-          autogenerate: { directory: 'advanced' },
-        },
-        {
-          label: 'Contributing',
-          collapsed: true,
-          autogenerate: { directory: 'contributing' },
-        },
-        {
-          label: 'More',
-          items: [
-            { label: 'Changelog', slug: 'changelog' },
-            { label: 'FAQ', slug: 'faq' },
-            { label: 'Troubleshooting', slug: 'troubleshooting' },
-            { label: 'Glossary', slug: 'glossary' },
-          ],
-        },
-      ],
-    }),
-  ],
+  integrations: [starlight(starlightConfig)],
 });

@@ -5,7 +5,8 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**"]
     },
-    "@vibeonrails/docs#build": {
+    "@vibeonrails/docs-site#build": {
+      "dependsOn": ["@vibeonrails/docs#build"],
       "outputs": ["dist/**"]
     },
     "typecheck": {

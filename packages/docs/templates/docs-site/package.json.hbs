@@ -1,5 +1,5 @@
 {
-  "name": "@vibeonrails/docs-site",
+  "name": "{{name}}-docs",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -7,13 +7,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "typecheck": "astro check",
-    "lint": "echo 'Docs lint skipped'",
-    "test": "echo 'Docs test skipped'"
+    "typecheck": "astro check"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.32.0",
-    "@vibeonrails/docs": "workspace:*",
+    "@vibeonrails/docs": "^0.1.0",
     "astro": "^5.1.0",
     "sharp": "^0.33.0"
   },

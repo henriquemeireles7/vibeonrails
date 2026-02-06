@@ -1,0 +1,19 @@
+import { defineConfig } from 'astro/config';
+import starlight from '@astrojs/starlight';
+import { createStarlightConfig, link, group, autogenerate } from '@vibeonrails/docs/presets';
+
+const starlightConfig = createStarlightConfig({
+  title: '{{title}}',
+  description: '{{description}}',
+  sidebar: [
+    group('Getting Started', [
+      link('Introduction', 'getting-started'),
+    ], { collapsed: false }),
+    autogenerate('Guides', 'guides', false),
+    autogenerate('Reference', 'reference'),
+  ],
+});
+
+export default defineConfig({
+  integrations: [starlight(starlightConfig)],
+});

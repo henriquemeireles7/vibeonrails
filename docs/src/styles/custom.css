@@ -1,7 +1,15 @@
-/* VibeonRails Documentation Custom Styles */
+/*
+ * VibeonRails Documentation Theme
+ *
+ * This CSS is the default VibeonRails theme from @vibeonrails/docs.
+ * It uses the same values as generateThemeCSS() from the package.
+ * In a non-monorepo setup, you'd generate this with:
+ *
+ *   import { generateThemeCSS } from '@vibeonrails/docs/presets';
+ *   writeFileSync('src/styles/custom.css', generateThemeCSS());
+ */
 
 :root {
-  /* Brand colors */
   --sl-color-accent-low: #1a1a2e;
   --sl-color-accent: #6366f1;
   --sl-color-accent-high: #a5b4fc;
@@ -13,20 +21,16 @@
   --sl-color-gray-5: #353841;
   --sl-color-gray-6: #24272f;
   --sl-color-black: #17181c;
-
-  /* Font */
   --sl-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --sl-font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-/* Dark mode overrides */
 :root[data-theme='dark'] {
   --sl-color-accent-low: #1e1b4b;
   --sl-color-accent: #818cf8;
   --sl-color-accent-high: #c7d2fe;
 }
 
-/* Badge styles for documentation quadrants */
 .sl-badge {
   font-size: 0.75rem;
   font-weight: 600;

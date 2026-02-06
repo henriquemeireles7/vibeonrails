@@ -4,3 +4,4 @@ export { devCommand } from "./dev.js";
 export { dbCommand } from "./db.js";
 export { buildCommand } from "./build.js";
 export { deployCommand } from "./deploy.js";
+export { docsCommand } from "./docs.js";

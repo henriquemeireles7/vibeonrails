@@ -7,6 +7,7 @@ import {
   dbCommand,
   buildCommand,
   deployCommand,
+  docsCommand,
 } from "./commands/index.js";
 
 const program = new Command();
@@ -23,6 +24,7 @@ program.addCommand(devCommand());
 program.addCommand(dbCommand());
 program.addCommand(buildCommand());
 program.addCommand(deployCommand());
+program.addCommand(docsCommand());
 
 // If invoked as `create-vibe`, auto-run the create command
 const binName = basename(process.argv[1] ?? "");
