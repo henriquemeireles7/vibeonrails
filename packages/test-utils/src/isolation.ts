@@ -125,13 +125,13 @@ export async function withTestTransaction<TDb extends Record<string, unknown>>(
 
   try {
     // Use Drizzle's transaction method which provides a tx context
-    await (transactionFn as Function).call(
+    await (transactionFn as (...args: unknown[]) => unknown).call(
       db,
       async (tx: TDb) => {
         // Set a statement timeout for safety
         if (typeof (tx as Record<string, unknown>)["execute"] === "function") {
           try {
-            await (tx as Record<string, unknown> & { execute: Function }).execute(
+            await (tx as Record<string, unknown> & { execute: (sql: string) => Promise<unknown> }).execute(
               `SET LOCAL statement_timeout = '${timeoutMs}ms'`,
             );
           } catch {
@@ -210,7 +210,7 @@ export async function createSavepoint(
     throw new Error("Transaction context does not support execute()");
   }
 
-  await (executeFn as Function).call(tx, `SAVEPOINT ${spName}`);
+  await (executeFn as (sql: string) => Promise<unknown>).call(tx, `SAVEPOINT ${spName}`);
   return spName;
 }
 
@@ -226,7 +226,7 @@ export async function rollbackToSavepoint(
     throw new Error("Transaction context does not support execute()");
   }
 
-  await (executeFn as Function).call(tx, `ROLLBACK TO SAVEPOINT ${name}`);
+  await (executeFn as (sql: string) => Promise<unknown>).call(tx, `ROLLBACK TO SAVEPOINT ${name}`);
 }
 
 /**
@@ -241,7 +241,7 @@ export async function releaseSavepoint(
     throw new Error("Transaction context does not support execute()");
   }
 
-  await (executeFn as Function).call(tx, `RELEASE SAVEPOINT ${name}`);
+  await (executeFn as (sql: string) => Promise<unknown>).call(tx, `RELEASE SAVEPOINT ${name}`);
 }
 
 // ---------------------------------------------------------------------------

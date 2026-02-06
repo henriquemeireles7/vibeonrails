@@ -120,7 +120,7 @@ describe("withTestTransaction", () => {
     const db = createMockDb();
 
     const result = await withTestTransaction(db, async (tx) => {
-      const insert = (tx as Record<string, unknown>)["insert"] as Function;
+      const insert = (tx as Record<string, (...args: unknown[]) => unknown>)["insert"] as (...args: unknown[]) => { values: (v: unknown) => Promise<unknown> };
       await insert("users").values({ name: "Alice" });
     });
 
@@ -145,10 +145,10 @@ describe("withTestTransaction", () => {
     const db = createMockDb();
 
     await withTestTransaction(db, async (tx) => {
-      const insert = (tx as Record<string, unknown>)["insert"] as Function;
+      const insert = (tx as Record<string, (...args: unknown[]) => unknown>)["insert"] as (...args: unknown[]) => { values: (v: unknown) => Promise<unknown> };
       await insert("users").values({ name: "Alice" });
 
-      const select = (tx as Record<string, unknown>)["select"] as Function;
+      const select = (tx as Record<string, (...args: unknown[]) => unknown>)["select"] as (...args: unknown[]) => { from: (t: string) => Promise<unknown[]> };
       await select().from("users");
     });
 
@@ -163,14 +163,14 @@ describe("withTestTransaction", () => {
 
     // First transaction
     await withTestTransaction(db, async (tx) => {
-      const insert = (tx as Record<string, unknown>)["insert"] as Function;
+      const insert = (tx as Record<string, (...args: unknown[]) => unknown>)["insert"] as (...args: unknown[]) => { values: (v: unknown) => Promise<unknown> };
       await insert("users").values({ name: "Alice" });
     });
 
     // Create a fresh mock to simulate no persistence
     const db2 = createMockDb();
     await withTestTransaction(db2, async (tx) => {
-      const select = (tx as Record<string, unknown>)["select"] as Function;
+      const select = (tx as Record<string, (...args: unknown[]) => unknown>)["select"] as (...args: unknown[]) => { from: (t: string) => Promise<unknown[]> };
       const results = await select().from("users");
       expect(results).toEqual([]);
     });

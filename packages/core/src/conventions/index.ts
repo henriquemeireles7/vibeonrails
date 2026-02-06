@@ -2,7 +2,7 @@
  * Conventions barrel export
  */
 
-export { pathFor, toKebabCase, toPascalCase } from "./paths.js";
+export { pathFor, toKebabCase } from "./paths.js";
 
 export type {
   PathIntent,

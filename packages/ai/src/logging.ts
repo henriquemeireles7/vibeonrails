@@ -93,7 +93,7 @@ export function estimateCost(
   const table = costTable ?? COST_PER_1K_TOKENS;
 
   // Try exact match first, then prefix match
-  let costs = table[model];
+  let costs: { input: number; output: number } | undefined = table[model];
   if (!costs) {
     const prefix = Object.keys(table).find((k) => model.startsWith(k));
     costs = prefix ? table[prefix] : undefined;

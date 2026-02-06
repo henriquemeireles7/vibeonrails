@@ -9,7 +9,7 @@
  */
 
 import { Command } from "commander";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import chalk from "chalk";
 import { createFormatter } from "../output/formatter.js";
@@ -214,7 +214,6 @@ export function saveReport(projectRoot: string, report: WeeklyReport): string {
   const filePath = join(reportsDir, `weekly-${date}.md`);
 
   // Ensure directory exists
-  const { mkdirSync } = require("node:fs") as typeof import("node:fs");
   mkdirSync(reportsDir, { recursive: true });
 
   writeFileSync(filePath, report.markdown, "utf-8");

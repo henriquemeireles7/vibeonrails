@@ -124,7 +124,7 @@ export function extractHeadings(content: string): readonly MarkdownHeading[] {
  */
 export function countWords(content: string): number {
   return content
-    .replace(/[#*_`\[\]()>-]/g, " ")
+    .replace(/[#*_`[\]()>-]/g, " ")
     .split(/\s+/)
     .filter((w) => w.length > 0).length;
 }

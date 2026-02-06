@@ -8,7 +8,7 @@
  * AI reads branding heuristic + product heuristic from content/ directory.
  */
 
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 // ---------------------------------------------------------------------------
@@ -158,7 +158,6 @@ function loadProductHeuristic(
   if (!existsSync(productsDir)) return null;
 
   try {
-    const { readdirSync } = require("node:fs") as typeof import("node:fs");
     const files = readdirSync(productsDir).filter((f: string) =>
       f.endsWith(".md"),
     );
@@ -355,13 +354,10 @@ export function generateCtaSection(config: LandingPageConfig): string {
 export function generateLandingPage(
   config: LandingPageConfig,
 ): LandingPageOutput {
-  // Load heuristics if project root is provided
-  let _branding: BrandingHeuristic | null = null;
-  let _product: ProductHeuristic | null = null;
-
+  // Load heuristics if project root is provided (reserved for AI-enhanced generation)
   if (config.projectRoot) {
-    _branding = loadBrandingHeuristic(config.projectRoot);
-    _product = loadProductHeuristic(config.projectRoot);
+    loadBrandingHeuristic(config.projectRoot);
+    loadProductHeuristic(config.projectRoot);
   }
 
   // Generate sections

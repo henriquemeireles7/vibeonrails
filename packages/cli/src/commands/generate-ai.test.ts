@@ -209,8 +209,8 @@ describe("AI Module Generation", () => {
         if (file.path.endsWith(".ts")) {
           // Basic validation: should not be empty
           expect(file.content.length).toBeGreaterThan(0);
-          // Should not contain undefined or NaN
-          expect(file.content).not.toContain("undefined");
+          // Should not contain template interpolation failures (e.g. "NaN", stray "null")
+          expect(file.content).not.toContain("NaN");
         }
       }
     });

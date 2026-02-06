@@ -98,7 +98,7 @@ describe("generateExcerpt", () => {
     const long = "word ".repeat(100);
     const excerpt = generateExcerpt(long, 50);
     expect(excerpt.length).toBeLessThanOrEqual(55); // +3 for "..."
-    expect(excerpt).toEndWith("...");
+    expect(excerpt.endsWith("...")).toBe(true);
   });
 
   it("should strip headings", () => {

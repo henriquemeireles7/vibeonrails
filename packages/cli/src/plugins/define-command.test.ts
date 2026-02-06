@@ -87,9 +87,7 @@ describe("defineCommand", () => {
     });
 
     // Simulate commander calling the action
-    await cmd.parseAsync(["node", "vibe", "my-target", "--force"], {
-      from: "user",
-    });
+    await cmd.parseAsync(["node", "vibe", "my-target", "--force"]);
 
     expect(capturedCtx).toBeDefined();
     expect(capturedCtx!.args["target"]).toBe("my-target");

@@ -8,7 +8,7 @@
 
 import { Command } from "commander";
 import { execSync } from "node:child_process";
-import { existsSync, statSync, readFileSync } from "node:fs";
+import { existsSync, statSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import chalk from "chalk";
 import ora from "ora";
@@ -94,7 +94,6 @@ export function detectChangedContent(
 
   function scanDir(dir: string): void {
     try {
-      const { readdirSync } = require("node:fs") as typeof import("node:fs");
       const entries = readdirSync(dir, { withFileTypes: true });
 
       for (const entry of entries) {

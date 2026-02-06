@@ -197,7 +197,10 @@ export function generateLocalAnswer(
   // Simple keyword matching against SKILL.md contents
   for (const skill of context.skillFiles) {
     const contentLower = skill.content.toLowerCase();
-    const words = questionLower.split(/\s+/).filter((w) => w.length > 3);
+    const words = questionLower
+      .split(/\s+/)
+      .map((w) => w.replace(/[^a-z0-9]/g, ""))
+      .filter((w) => w.length > 3);
     const matches = words.filter((w) => contentLower.includes(w));
     if (matches.length > 0) {
       relevantSkills.push(skill);

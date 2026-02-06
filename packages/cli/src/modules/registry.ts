@@ -78,6 +78,81 @@ export interface InstalledFile {
   readonly checksum: string;
 }
 
+// --- Templates ---
+
+const TWITTER_PROMPT_TEMPLATE = `---
+channel: twitter
+max_length: 280
+---
+
+Write a tweet for the audience described in the client heuristic.
+Use the hook to grab attention.
+Reference the product naturally.
+Include a clear CTA.
+Stay under 280 characters.
+`;
+
+const BLUESKY_PROMPT_TEMPLATE = `---
+channel: bluesky
+max_length: 300
+---
+
+Write a Bluesky post for the audience described in the client heuristic.
+Use the hook to grab attention.
+Reference the product naturally.
+Include a clear CTA.
+Stay under 300 characters.
+`;
+
+const SUPPORT_PROMPT_TEMPLATE = `---
+role: support-agent
+---
+
+You are a helpful support agent. Answer questions using the help center knowledge base.
+If you cannot answer a question, offer to create a support ticket.
+Be concise, professional, and empathetic.
+`;
+
+const SALES_SKILL_TEMPLATE = `# Sales Module
+
+## Purpose
+CRM with contacts, deals, and outreach sequences.
+
+## Patterns
+- Contacts: CRUD operations with stage management (lead, qualified, customer, churned)
+- Deals: Pipeline management with stages (discovery, proposal, negotiation, closed)
+- Outreach: Email sequences with personalization from marketing heuristics
+`;
+
+const PAYMENTS_SKILL_TEMPLATE = `# Payments Module
+
+## Purpose
+Stripe checkout, subscriptions, and webhook handling.
+
+## Patterns
+- Checkout: Create sessions, handle success/cancel callbacks
+- Subscriptions: Create, update, cancel with proration
+- Webhooks: Verify signatures, handle events idempotently
+`;
+
+const AGENT_PERSONALITY_TEMPLATE = `# Companion Personality
+
+You are a business operations assistant.
+
+## Communication Style
+- Professional but approachable
+- Action-oriented with specific next steps
+- Data-driven with numbers when available
+- Proactive about flagging issues
+
+## Responsibilities
+1. Marketing: Generate and review content
+2. Support: Triage tickets, summarize feedback
+3. Finance: Report metrics, track costs
+4. Analytics: Answer data questions
+5. Operations: Run CLI commands, monitor health
+`;
+
 /**
  * The complete module registry.
  */
@@ -393,78 +468,3 @@ export function generateFileManifest(
 
   return mod.files.map((f) => join(projectRoot, f.path));
 }
-
-// --- Templates ---
-
-const TWITTER_PROMPT_TEMPLATE = `---
-channel: twitter
-max_length: 280
----
-
-Write a tweet for the audience described in the client heuristic.
-Use the hook to grab attention.
-Reference the product naturally.
-Include a clear CTA.
-Stay under 280 characters.
-`;
-
-const BLUESKY_PROMPT_TEMPLATE = `---
-channel: bluesky
-max_length: 300
----
-
-Write a Bluesky post for the audience described in the client heuristic.
-Use the hook to grab attention.
-Reference the product naturally.
-Include a clear CTA.
-Stay under 300 characters.
-`;
-
-const SUPPORT_PROMPT_TEMPLATE = `---
-role: support-agent
----
-
-You are a helpful support agent. Answer questions using the help center knowledge base.
-If you cannot answer a question, offer to create a support ticket.
-Be concise, professional, and empathetic.
-`;
-
-const SALES_SKILL_TEMPLATE = `# Sales Module
-
-## Purpose
-CRM with contacts, deals, and outreach sequences.
-
-## Patterns
-- Contacts: CRUD operations with stage management (lead, qualified, customer, churned)
-- Deals: Pipeline management with stages (discovery, proposal, negotiation, closed)
-- Outreach: Email sequences with personalization from marketing heuristics
-`;
-
-const PAYMENTS_SKILL_TEMPLATE = `# Payments Module
-
-## Purpose
-Stripe checkout, subscriptions, and webhook handling.
-
-## Patterns
-- Checkout: Create sessions, handle success/cancel callbacks
-- Subscriptions: Create, update, cancel with proration
-- Webhooks: Verify signatures, handle events idempotently
-`;
-
-const AGENT_PERSONALITY_TEMPLATE = `# Companion Personality
-
-You are a business operations assistant.
-
-## Communication Style
-- Professional but approachable
-- Action-oriented with specific next steps
-- Data-driven with numbers when available
-- Proactive about flagging issues
-
-## Responsibilities
-1. Marketing: Generate and review content
-2. Support: Triage tickets, summarize feedback
-3. Finance: Report metrics, track costs
-4. Analytics: Answer data questions
-5. Operations: Run CLI commands, monitor health
-`;

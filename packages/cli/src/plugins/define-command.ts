@@ -27,6 +27,8 @@
  */
 
 import { Command } from "commander";
+import { existsSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 import {
   createFormatter,
   type OutputFormatter,
@@ -207,9 +209,6 @@ export function discoverCommands(
   projectRoot: string,
   commandsDir = "src/commands",
 ): readonly DiscoveredCommand[] {
-  const { existsSync, readdirSync } = require("node:fs") as typeof import("node:fs");
-  const { join } = require("node:path") as typeof import("node:path");
-
   const dir = join(projectRoot, commandsDir);
   if (!existsSync(dir)) {
     return [];
@@ -245,7 +244,6 @@ export async function loadCommand(
   projectRoot: string,
   filePath: string,
 ): Promise<Command | null> {
-  const { join } = require("node:path") as typeof import("node:path");
   const fullPath = join(projectRoot, filePath);
 
   try {

@@ -11,6 +11,9 @@
  *   const order = createOrder({ userId: user.id, total: 99.99 });
  */
 
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+
 // ---------------------------------------------------------------------------
 // Counters (reset between tests via resetFactories())
 // ---------------------------------------------------------------------------
@@ -440,9 +443,6 @@ export function createMany<T>(
 export function detectInstalledModules(
   projectRoot: string,
 ): readonly string[] {
-  const { existsSync, readFileSync } = require("node:fs") as typeof import("node:fs");
-  const { join } = require("node:path") as typeof import("node:path");
-
   const manifestPath = join(projectRoot, ".vibe", "modules.json");
   if (!existsSync(manifestPath)) {
     return [];

@@ -65,7 +65,6 @@ export function FocusGuard({
         previousFocusRef.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, autoFocus]);
 
   // Return focus on deactivation

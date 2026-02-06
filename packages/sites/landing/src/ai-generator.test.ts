@@ -155,7 +155,7 @@ describe("Landing Page Generator", () => {
 
     it("always includes universal features", () => {
       const html = generateFeaturesSection(baseConfig);
-      expect(html).toContain("Fast & Reliable");
+      expect(html).toContain("Fast &amp; Reliable");
       expect(html).toContain("Secure by Default");
     });
   });

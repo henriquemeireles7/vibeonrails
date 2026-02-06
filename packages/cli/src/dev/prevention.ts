@@ -115,7 +115,7 @@ export const DETECTION_PATTERNS: DetectionPattern[] = [
     id: "hardcoded-secret",
     category: "security",
     severity: "error",
-    pattern: /(?:password|secret|api_key|apiKey|token|private_key)\s*[:=]\s*["'`][A-Za-z0-9+/=]{8,}/i,
+    pattern: /(?:password|secret|api_key|apiKey|token|private_key)\s*[:=]\s*["'`][A-Za-z0-9_+/=\-.]{8,}/i,
     safePattern: /process\.env|import\.meta\.env|getEnv\(|config\./,
     message: "Possible hardcoded secret detected",
     suggestion: "Move secrets to environment variables (process.env.SECRET_NAME)",
@@ -261,7 +261,7 @@ export function shouldAnalyzeFile(filePath: string): boolean {
   // Skip test files, config files, and generated files
   if (filePath.includes(".test.") || filePath.includes(".spec.")) return false;
   if (filePath.includes("node_modules/")) return false;
-  if (filePath.includes("/dist/")) return false;
+  if (filePath.includes("/dist/") || filePath.startsWith("dist/")) return false;
   if (filePath.includes(".config.")) return false;
 
   return true;

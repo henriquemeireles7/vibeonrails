@@ -58,7 +58,7 @@ export function LiveRegion({
     <div
       role={role}
       aria-live={mode}
-      aria-atomic={String(atomic)}
+      aria-atomic={atomic}
       className={classes}
     >
       {content}

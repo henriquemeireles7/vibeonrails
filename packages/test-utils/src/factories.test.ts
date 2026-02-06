@@ -87,7 +87,7 @@ describe("createPost", () => {
 
   it("should generate slug from title", () => {
     const post = createPost({ title: "My Great Blog Post!" });
-    expect(post.slug).toBe("my-great-blog-post-");
+    expect(post.slug).toBe("my-great-blog-post");
   });
 
   it("should accept overrides", () => {
