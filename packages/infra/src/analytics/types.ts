@@ -39,6 +39,9 @@ export const AnalyticsEventSchema = z.object({
 
 export type AnalyticsEvent = z.infer<typeof AnalyticsEventSchema>;
 
+/** Input type — fields with `.default()` (properties, timestamp) are optional. */
+export type AnalyticsEventInput = z.input<typeof AnalyticsEventSchema>;
+
 // ---------------------------------------------------------------------------
 // Analytics Config
 // ---------------------------------------------------------------------------
@@ -72,7 +75,7 @@ export type AnalyticsConfig = z.infer<typeof AnalyticsConfigSchema>;
 
 export interface AnalyticsTracker {
   /** Track a custom event */
-  track(event: Omit<AnalyticsEvent, 'timestamp'>): void;
+  track(event: Omit<AnalyticsEventInput, 'timestamp'>): void;
 
   /** Track a page view */
   trackPageView(url: string, properties?: Record<string, unknown>): void;

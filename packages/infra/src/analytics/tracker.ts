@@ -8,6 +8,7 @@
 
 import {
   type AnalyticsEvent,
+  type AnalyticsEventInput,
   type AnalyticsTracker,
   type AnalyticsConfig,
   type EventQueryOptions,
@@ -124,7 +125,7 @@ export function createTracker(options: {
   }
 
   return {
-    track(event: Omit<AnalyticsEvent, 'timestamp'>): void {
+    track(event: Omit<AnalyticsEventInput, 'timestamp'>): void {
       const fullEvent = AnalyticsEventSchema.parse({
         ...event,
         timestamp: new Date(),
