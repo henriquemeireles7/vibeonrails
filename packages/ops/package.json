@@ -1,0 +1,35 @@
+{
+  "name": "@vibeonrails/ops",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Meta-package re-exporting all VoR business operations: marketing, sales, support-chat, support-feedback, finance, notifications",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "test": "echo 'Meta-package: no tests'",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@vibeonrails/marketing": "workspace:*",
+    "@vibeonrails/sales": "workspace:*",
+    "@vibeonrails/support-chat": "workspace:*",
+    "@vibeonrails/support-feedback": "workspace:*",
+    "@vibeonrails/finance": "workspace:*",
+    "@vibeonrails/notifications": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.1",
+    "tsup": "^8.0.0",
+    "typescript": "^5.5.0"
+  }
+}
