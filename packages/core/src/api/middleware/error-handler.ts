@@ -28,7 +28,7 @@ export function errorHandler(): MiddlewareHandler {
         {
           code: 'E9999',
           message: 'Internal server error',
-          docs: 'https://aor.dev/errors/E9999',
+          docs: 'https://vibeonrails.dev/errors/E9999',
         },
         500,
       );

@@ -56,7 +56,7 @@ export async function loadTemplate(
       `[AOR] Email template not found: ${name}\n` +
       `  Expected path: ${templatePath}\n` +
       `  Fix: Create the template file at the path above.\n` +
-      `  Docs: https://aor.dev/errors/EMAIL_TEMPLATE_NOT_FOUND`,
+      `  Docs: https://vibeonrails.dev/errors/EMAIL_TEMPLATE_NOT_FOUND`,
     );
   }
 

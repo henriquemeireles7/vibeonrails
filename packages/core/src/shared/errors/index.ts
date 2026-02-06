@@ -52,7 +52,7 @@ export class AppError extends Error {
       code: this.code,
       message: this.message,
       details: this.details,
-      docs: `https://aor.dev/errors/${this.code}`,
+      docs: `https://vibeonrails.dev/errors/${this.code}`,
     };
   }
 }

@@ -29,7 +29,7 @@ export function createDatabase(connectionString?: string) {
       '[AOR] DATABASE_URL environment variable is required.\n' +
       '  Fix: Add DATABASE_URL to your .env file.\n' +
       '  Example: DATABASE_URL=postgresql://user:pass@localhost:5432/myapp\n' +
-      '  Docs: https://aor.dev/errors/DATABASE_URL_MISSING',
+      '  Docs: https://vibeonrails.dev/errors/DATABASE_URL_MISSING',
     );
   }
 

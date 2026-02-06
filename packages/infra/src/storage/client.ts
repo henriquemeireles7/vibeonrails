@@ -43,7 +43,7 @@ export function createStorage(config?: Partial<StorageConfig>): StorageClient {
     throw new Error(
       '[AOR] S3 storage configuration is incomplete.\n' +
       '  Required env vars: S3_BUCKET, S3_ENDPOINT, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY\n' +
-      '  Docs: https://aor.dev/errors/STORAGE_CONFIG_MISSING',
+      '  Docs: https://vibeonrails.dev/errors/STORAGE_CONFIG_MISSING',
     );
   }
 
