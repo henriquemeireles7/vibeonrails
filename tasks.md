@@ -107,52 +107,54 @@
 
 ### Package Setup
 
-- [ ] `packages/cli/package.json` — Package config with commander, inquirer, chalk, ora, handlebars deps
-- [ ] `packages/cli/tsconfig.json` — TypeScript config extending root
-- [ ] `packages/cli/tsup.config.ts` — Build config for CLI binary
-- [ ] `packages/cli/vitest.config.ts` — Test config
+- [x] `packages/cli/package.json` — Package config with commander, chalk, ora, handlebars deps
+- [x] `packages/cli/tsconfig.json` — TypeScript config extending root
+- [x] `packages/cli/tsup.config.ts` — Build config for CLI binary
+- [x] `packages/cli/vitest.config.ts` — Test config
 
 ### Binary Entry Point
 
-- [ ] `packages/cli/bin/aor.js` — CLI entry point (#!/usr/bin/env node, loads dist/index.js)
+- [x] `packages/cli/bin/aor.js` — CLI entry point (#!/usr/bin/env node, loads dist/index.js)
+- [x] `packages/cli/bin/create-aor.js` — create-aor entry point
 
 ### CLI Main Router
 
-- [ ] `packages/cli/src/index.ts` — Commander program setup, registers all commands
+- [x] `packages/cli/src/index.ts` — Commander program setup, registers all commands
 
 ### Commands
 
-- [ ] `packages/cli/src/commands/create.ts` — `npx create-aor <name>` — scaffold new project from app template
-- [ ] `packages/cli/src/commands/generate.ts` — `npx aor generate module|component <name>` — generate code from templates
-- [ ] `packages/cli/src/commands/dev.ts` — `npx aor dev` — start dev server (API + web concurrently)
-- [ ] `packages/cli/src/commands/db.ts` — `npx aor db:migrate|seed|reset` — database operations
-- [ ] `packages/cli/src/commands/build.ts` — `npx aor build` — production build
-- [ ] `packages/cli/src/commands/deploy.ts` — `npx aor deploy railway|fly` — deploy to cloud
+- [x] `packages/cli/src/commands/create.ts` — `npx create-aor <name>` — scaffold new project from app template
+- [x] `packages/cli/src/commands/generate.ts` — `npx aor generate module|component <name>` — generate code from templates
+- [x] `packages/cli/src/commands/dev.ts` — `npx aor dev` — start dev server (API + web concurrently)
+- [x] `packages/cli/src/commands/db.ts` — `npx aor db:migrate|seed|reset` — database operations
+- [x] `packages/cli/src/commands/build.ts` — `npx aor build` — production build
+- [x] `packages/cli/src/commands/deploy.ts` — `npx aor deploy railway|fly` — deploy to cloud (placeholder)
 
 ### Generators
 
-- [ ] `packages/cli/src/generators/app.generator.ts` — Copy app template, replace placeholders, install deps
-- [ ] `packages/cli/src/generators/module.generator.ts` — Generate types + service + controller + test for an API module
-- [ ] `packages/cli/src/generators/component.generator.ts` — Generate React component from template
+- [x] `packages/cli/src/generators/app.generator.ts` — Copy app template, replace placeholders, install deps
+- [x] `packages/cli/src/generators/module.generator.ts` — Generate types + service + controller + test for an API module
+- [ ] `packages/cli/src/generators/component.generator.ts` — Generate React component from template (needs @aor/web first)
 
 ### Utilities
 
-- [ ] `packages/cli/src/utils/template.ts` — Handlebars template helpers (pascalCase, camelCase, etc.)
-- [ ] `packages/cli/src/utils/fs.ts` — File system helpers (copyDir, replaceInFile, ensureDir)
+- [x] `packages/cli/src/utils/template.ts` — Handlebars template helpers (pascalCase, camelCase, etc.)
+- [x] `packages/cli/src/utils/fs.ts` — File system helpers (copyDir, replaceInFile, ensureDir)
 
 ### Tests
 
-- [ ] `packages/cli/src/generators/module.generator.test.ts` — Module generator tests
-- [ ] `packages/cli/src/generators/app.generator.test.ts` — App generator tests
-- [ ] `packages/cli/src/utils/template.test.ts` — Template helper tests
+- [x] `packages/cli/src/generators/module.generator.test.ts` — Module generator tests
+- [x] `packages/cli/src/generators/app.generator.test.ts` — App generator tests
+- [x] `packages/cli/src/utils/template.test.ts` — Template helper tests
+- [x] `packages/cli/src/utils/fs.test.ts` — FS helper tests
 
 ### Docs
 
-- [ ] `packages/cli/SKILL.md` — CLI skill document
+- [x] `packages/cli/SKILL.md` — CLI skill document
 
 ### Monorepo Config
 
-- [ ] `pnpm-workspace.yaml` — Verify packages/cli is included (already should be via packages/*)
+- [x] `pnpm-workspace.yaml` — Verified packages/cli is included via packages/*
 
 ---
 

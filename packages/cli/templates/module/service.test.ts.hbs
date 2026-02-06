@@ -1,0 +1,41 @@
+import { describe, it, expect } from "vitest";
+import { {{pascalCase name}}Service } from "./{{kebabCase name}}.service.js";
+
+describe("{{pascalCase name}}Service", () => {
+  describe("findAll", () => {
+    it("returns an empty array by default", async () => {
+      const result = await {{pascalCase name}}Service.findAll();
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe("findById", () => {
+    it("returns null for unknown id", async () => {
+      const result = await {{pascalCase name}}Service.findById("non-existent-id");
+      expect(result).toBeNull();
+    });
+  });
+
+  describe("create", () => {
+    it("returns a new {{camelCase name}} with an id", async () => {
+      const result = await {{pascalCase name}}Service.create({} as Parameters<typeof {{pascalCase name}}Service.create>[0]);
+      expect(result).toHaveProperty("id");
+      expect(result).toHaveProperty("createdAt");
+      expect(result).toHaveProperty("updatedAt");
+    });
+  });
+
+  describe("update", () => {
+    it("returns null for unknown id", async () => {
+      const result = await {{pascalCase name}}Service.update("non-existent-id", {});
+      expect(result).toBeNull();
+    });
+  });
+
+  describe("remove", () => {
+    it("returns false for unknown id", async () => {
+      const result = await {{pascalCase name}}Service.remove("non-existent-id");
+      expect(result).toBe(false);
+    });
+  });
+});

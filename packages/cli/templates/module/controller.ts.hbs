@@ -1,0 +1,43 @@
+import { z } from "zod";
+import { router, publicProcedure } from "@aor/core/api";
+import { {{pascalCase name}}Service } from "./{{kebabCase name}}.service.js";
+import { Create{{pascalCase name}}Schema, Update{{pascalCase name}}Schema } from "./types.js";
+
+// ---------------------------------------------------------------------------
+// {{pascalCase name}} — tRPC Controller
+// ---------------------------------------------------------------------------
+
+export const {{camelCase name}}Router = router({
+  list: publicProcedure.query(async () => {
+    return {{pascalCase name}}Service.findAll();
+  }),
+
+  getById: publicProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .query(async ({ input }) => {
+      return {{pascalCase name}}Service.findById(input.id);
+    }),
+
+  create: publicProcedure
+    .input(Create{{pascalCase name}}Schema)
+    .mutation(async ({ input }) => {
+      return {{pascalCase name}}Service.create(input);
+    }),
+
+  update: publicProcedure
+    .input(
+      z.object({
+        id: z.string().uuid(),
+        data: Update{{pascalCase name}}Schema,
+      }),
+    )
+    .mutation(async ({ input }) => {
+      return {{pascalCase name}}Service.update(input.id, input.data);
+    }),
+
+  remove: publicProcedure
+    .input(z.object({ id: z.string().uuid() }))
+    .mutation(async ({ input }) => {
+      return {{pascalCase name}}Service.remove(input.id);
+    }),
+});

@@ -1,0 +1,28 @@
+import { z } from "zod";
+
+// ---------------------------------------------------------------------------
+// {{pascalCase name}} — Schemas
+// ---------------------------------------------------------------------------
+
+export const {{pascalCase name}}Schema = z.object({
+  id: z.string().uuid(),
+  // TODO: add your fields here
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const Create{{pascalCase name}}Schema = {{pascalCase name}}Schema.omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const Update{{pascalCase name}}Schema = Create{{pascalCase name}}Schema.partial();
+
+// ---------------------------------------------------------------------------
+// {{pascalCase name}} — Types
+// ---------------------------------------------------------------------------
+
+export type {{pascalCase name}} = z.infer<typeof {{pascalCase name}}Schema>;
+export type Create{{pascalCase name}} = z.infer<typeof Create{{pascalCase name}}Schema>;
+export type Update{{pascalCase name}} = z.infer<typeof Update{{pascalCase name}}Schema>;

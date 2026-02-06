@@ -1,0 +1,35 @@
+{
+  "name": "{{projectName}}",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsup src/main.ts --format esm --dts --clean",
+    "start": "node dist/main.js",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "validate": "tsc --noEmit && eslint src/ && vitest run && tsup src/main.ts --format esm --dts --clean",
+    "db:migrate": "drizzle-kit push",
+    "db:seed": "tsx src/database/seeds/index.ts",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@aor/core": "workspace:*",
+    "@aor/infra": "workspace:*",
+    "hono": "^4.0.0",
+    "drizzle-orm": "^0.29.0",
+    "postgres": "^3.4.0",
+    "zod": "^3.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "drizzle-kit": "^0.20.0",
+    "eslint": "^9.0.0",
+    "tsup": "^8.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}
