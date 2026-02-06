@@ -5,13 +5,23 @@
  * reads SKILL.md files, and produces structured PackageContext objects.
  */
 
-import { Project, SyntaxKind, type SourceFile, type ExportedDeclarations } from 'ts-morph';
+import {
+  Project,
+  SyntaxKind,
+  ModuleResolutionKind,
+  ModuleKind,
+  Node,
+  type SourceFile,
+  type ExportedDeclarations,
+} from 'ts-morph';
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import type { PackageContext, ModuleContext, ExportInfo, ParamInfo } from './types.js';
 
 /**
  * Extract context from all packages in a monorepo.
+ *
+ * Uses a single shared ts-morph Project instance for performance.
  *
  * @param rootDir - Project root directory
  * @param packageFilter - Optional list of package names to include (e.g., ["core", "infra"])
@@ -24,6 +34,10 @@ export function extractAllPackages(
   const packagesDir = join(rootDir, 'packages');
   const featuresDir = join(rootDir, 'packages', 'features');
   const contexts: PackageContext[] = [];
+
+  // Create a single shared Project for all parsing (avoids re-initializing
+  // the TypeScript compiler for every module barrel)
+  const project = createProject();
 
   // Scan packages/ directory for top-level packages
   if (existsSync(packagesDir)) {
@@ -41,7 +55,7 @@ export function extractAllPackages(
 
       if (packageFilter && !packageFilter.includes(shortName)) continue;
 
-      const ctx = extractPackageContext(pkgPath, pkgJson.name as string);
+      const ctx = extractPackageContext(pkgPath, pkgJson.name as string, project);
       if (ctx.modules.length > 0) {
         contexts.push(ctx);
       }
@@ -63,7 +77,7 @@ export function extractAllPackages(
 
       if (packageFilter && !packageFilter.includes(shortName) && !packageFilter.includes(entry.name)) continue;
 
-      const ctx = extractPackageContext(pkgPath, pkgJson.name as string);
+      const ctx = extractPackageContext(pkgPath, pkgJson.name as string, project);
       if (ctx.modules.length > 0) {
         contexts.push(ctx);
       }
@@ -74,15 +88,33 @@ export function extractAllPackages(
 }
 
 /**
+ * Create a shared ts-morph Project with the correct compiler options.
+ */
+function createProject(): Project {
+  return new Project({
+    compilerOptions: {
+      declaration: false,
+      noEmit: true,
+      skipLibCheck: true,
+      moduleResolution: ModuleResolutionKind.NodeNext,
+      module: ModuleKind.NodeNext,
+    },
+    skipAddingFilesFromTsConfig: true,
+  });
+}
+
+/**
  * Extract context from a single package.
  *
  * @param packagePath - Absolute path to the package directory
  * @param packageName - npm package name (e.g., "@vibeonrails/core")
+ * @param project - Shared ts-morph Project instance (created if not provided)
  * @returns PackageContext
  */
 export function extractPackageContext(
   packagePath: string,
   packageName: string,
+  project?: Project,
 ): PackageContext {
   const skillContent = readSkillMd(packagePath);
   const srcDir = join(packagePath, 'src');
@@ -91,7 +123,8 @@ export function extractPackageContext(
     return { name: packageName, path: packagePath, skillContent, modules: [] };
   }
 
-  const modules = discoverModules(srcDir, packagePath);
+  const sharedProject = project ?? createProject();
+  const modules = discoverModules(srcDir, packagePath, sharedProject);
 
   return {
     name: packageName,
@@ -105,7 +138,7 @@ export function extractPackageContext(
  * Discover modules within a package's src/ directory.
  * A module is a directory with an index.ts barrel export.
  */
-function discoverModules(srcDir: string, packagePath: string): ModuleContext[] {
+function discoverModules(srcDir: string, packagePath: string, project: Project): ModuleContext[] {
   const modules: ModuleContext[] = [];
   const entries = readdirSync(srcDir, { withFileTypes: true });
 
@@ -119,7 +152,7 @@ function discoverModules(srcDir: string, packagePath: string): ModuleContext[] {
 
     const skillContent = readSkillMd(modulePath);
     const submodules = discoverSubmodules(modulePath);
-    const exports = extractExportsFromBarrel(indexPath, packagePath);
+    const exports = extractExportsFromBarrel(indexPath, packagePath, project);
 
     modules.push({
       name: entry.name,
@@ -151,25 +184,17 @@ function discoverSubmodules(modulePath: string): string[] {
 
 /**
  * Extract all public exports from a barrel index.ts file.
+ * Uses a shared Project instance for performance.
  */
 function extractExportsFromBarrel(
   indexPath: string,
   packagePath: string,
+  project: Project,
 ): ExportInfo[] {
-  const project = new Project({
-    compilerOptions: {
-      declaration: false,
-      noEmit: true,
-      skipLibCheck: true,
-      moduleResolution: 100, // NodeNext
-      module: 199, // NodeNext
-    },
-    skipAddingFilesFromTsConfig: true,
-  });
-
   // Add the barrel file and resolve its dependencies
   const sourceFile = project.addSourceFileAtPath(indexPath);
-  resolveExportSources(sourceFile, project);
+  const visited = new Set<string>();
+  resolveExportSources(sourceFile, project, visited);
 
   const exports: ExportInfo[] = [];
   const exportedDeclarations = sourceFile.getExportedDeclarations();
@@ -189,8 +214,19 @@ function extractExportsFromBarrel(
 
 /**
  * Resolve re-exported source files so ts-morph can analyze them.
+ * Tracks visited file paths to prevent infinite recursion on circular re-exports.
  */
-function resolveExportSources(sourceFile: SourceFile, project: Project): void {
+function resolveExportSources(
+  sourceFile: SourceFile,
+  project: Project,
+  visited: Set<string>,
+): void {
+  const filePath = sourceFile.getFilePath();
+
+  // Cycle detection: skip files we have already visited
+  if (visited.has(filePath)) return;
+  visited.add(filePath);
+
   const exportDecls = sourceFile.getExportDeclarations();
 
   for (const exportDecl of exportDecls) {
@@ -210,15 +246,14 @@ function resolveExportSources(sourceFile: SourceFile, project: Project): void {
         ];
 
         for (const candidate of candidates) {
-          if (existsSync(candidate)) {
+          if (existsSync(candidate) && !visited.has(candidate)) {
             const added = project.addSourceFileAtPath(candidate);
-            // Recursively resolve deeper re-exports
-            resolveExportSources(added, project);
+            resolveExportSources(added, project, visited);
             break;
           }
         }
       } else {
-        resolveExportSources(resolved, project);
+        resolveExportSources(resolved, project, visited);
       }
     } catch {
       // Skip unresolvable modules (external deps, etc.)
@@ -293,7 +328,7 @@ function extractExportInfo(
     return {
       name,
       kind: 'class',
-      signature: getClassSignature(decl.getText()),
+      signature: getClassSignature(decl),
       jsdoc,
       sourceFile: filePath,
     };
@@ -332,14 +367,15 @@ function extractParam(param: {
 
 /**
  * Extract JSDoc comment text from a declaration.
+ * Uses Node.isJSDocable() — the proper ts-morph type guard.
  */
 function extractJsDoc(decl: ExportedDeclarations): string | undefined {
-  if (!('getJsDocs' in decl)) return undefined;
+  if (!Node.isJSDocable(decl)) return undefined;
 
-  const docs = (decl as unknown as { getJsDocs(): Array<{ getFullText(): string }> }).getJsDocs();
+  const docs = decl.getJsDocs();
   if (docs.length === 0) return undefined;
 
-  return docs.map((d) => d.getFullText()).join('\n').trim();
+  return docs.map((d: { getFullText(): string }) => d.getFullText()).join('\n').trim();
 }
 
 /**
@@ -362,11 +398,20 @@ export function readSkillMd(dirPath: string): string | undefined {
 
 /**
  * Clean a type string by removing import() prefixes.
+ * Handles nested import() patterns like: import("foo").Bar<import("baz").Qux>
  */
 function cleanType(typeStr: string): string {
-  return typeStr
-    .replace(/import\([^)]+\)\./g, '')
-    .replace(/typeof import\([^)]+\)\./g, '');
+  // Iteratively strip import(...). and typeof import(...). patterns.
+  // Using a loop handles nested cases that a single regex pass would miss.
+  let result = typeStr;
+  let prev = '';
+  while (result !== prev) {
+    prev = result;
+    // Match import("..."). with a non-greedy quoted string inside
+    result = result.replace(/(?:typeof\s+)?import\("[^"]*"\)\./g, '');
+    result = result.replace(/(?:typeof\s+)?import\('[^']*'\)\./g, '');
+  }
+  return result;
 }
 
 /**
@@ -380,20 +425,48 @@ function getCleanSignature(text: string): string {
 }
 
 /**
- * Get a class signature (declaration without method bodies).
+ * Get a class signature: declaration line, properties, and method signatures
+ * without implementation bodies.
  */
-function getClassSignature(text: string): string {
-  // Take just the first few lines (class declaration + constructor)
-  const lines = text.split('\n');
-  const signatureLines: string[] = [];
-
-  for (const line of lines) {
-    signatureLines.push(line);
-    if (signatureLines.length > 20) {
-      signatureLines.push('  // ...');
-      break;
-    }
+function getClassSignature(decl: ExportedDeclarations): string {
+  if (!decl.isKind(SyntaxKind.ClassDeclaration)) {
+    return decl.getText().split('\n').slice(0, 5).join('\n');
   }
 
-  return signatureLines.join('\n');
+  const lines: string[] = [];
+
+  // Class declaration line (e.g., "export class Foo extends Bar {")
+  const name = decl.getName() ?? 'Anonymous';
+  const heritage = decl.getHeritageClauses().map((h) => h.getText()).join(' ');
+  lines.push(`class ${name}${heritage ? ' ' + heritage : ''} {`);
+
+  // Constructor signature (if present)
+  const ctors = decl.getConstructors();
+  if (ctors.length > 0) {
+    const ctor = ctors[0]!;
+    const params = ctor.getParameters().map((p) => p.getText()).join(', ');
+    lines.push(`  constructor(${params});`);
+  }
+
+  // Property signatures
+  for (const prop of decl.getProperties()) {
+    const modifiers = prop.getModifiers().map((m) => m.getText()).join(' ');
+    const propName = prop.getName();
+    const propType = cleanType(prop.getType().getText(prop));
+    const prefix = modifiers ? modifiers + ' ' : '';
+    lines.push(`  ${prefix}${propName}: ${propType};`);
+  }
+
+  // Method signatures (name + params + return, no body)
+  for (const method of decl.getMethods()) {
+    const modifiers = method.getModifiers().map((m) => m.getText()).join(' ');
+    const methodName = method.getName();
+    const params = method.getParameters().map((p) => p.getText()).join(', ');
+    const returnType = cleanType(method.getReturnType().getText(method));
+    const prefix = modifiers ? modifiers + ' ' : '';
+    lines.push(`  ${prefix}${methodName}(${params}): ${returnType};`);
+  }
+
+  lines.push('}');
+  return lines.join('\n');
 }

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { parseApiDirective, generateApiNodes } from './api-gen.js';
 import { resolveSkillContent } from './skill-loader.js';
 

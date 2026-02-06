@@ -1,5 +1,5 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
-import { join, dirname, relative } from "node:path";
+import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ensureDir, writeFile } from "../utils/fs.js";
 import { renderTemplate, registerHelpers } from "../utils/template.js";

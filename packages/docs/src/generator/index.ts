@@ -13,18 +13,20 @@ import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { extractAllPackages } from './extractor.js';
 import { createAIClient, generatePage } from './generator.js';
-import { validateGeneratedPage, cleanGeneratedContent } from './validator.js';
+import { validateGeneratedPage } from './validator.js';
 import {
   buildGuideOverviewContext,
   buildGuideDetailContext,
   buildReferenceContext,
+  buildImportPath,
 } from './templates.js';
-import type { TemplateContext } from './templates.js';
+import type { TemplateContext, TutorialContext } from './templates.js';
 import type {
   GenerateOptions,
   GenerateResult,
   PackageContext,
   PageSpec,
+  ModuleContext,
 } from './types.js';
 
 // Re-export all public APIs
@@ -63,6 +65,9 @@ export type * from './templates.js';
  * @returns Result summary
  */
 export async function generate(options: GenerateOptions = {}): Promise<GenerateResult> {
+  // Verify optional dependencies are installed before proceeding
+  assertGeneratorDeps();
+
   const startTime = Date.now();
   const rootDir = options.rootDir ?? process.cwd();
   const outputDir = options.outputDir ?? join(rootDir, 'docs', 'src', 'content', 'docs');
@@ -143,7 +148,7 @@ export async function generate(options: GenerateOptions = {}): Promise<GenerateR
 
     try {
       // Build template context
-      const templateContext = buildTemplateContext(spec);
+      const templateContext = buildTemplateContext(spec, packages);
 
       // Generate content via Claude
       const rawContent = await generatePage(client!, {
@@ -284,13 +289,36 @@ export function planPages(
     }
   }
 
+  // Tutorial pages (one per package, combining all modules)
+  if (types.includes('tutorial')) {
+    for (const pkg of packages) {
+      if (pkg.modules.length === 0) continue;
+
+      const shortName = pkg.name.replace('@vibeonrails/', '');
+      const pagePath = `tutorials/${toKebab(shortName)}`;
+
+      if (options.page && options.page !== pagePath) continue;
+
+      // Use the first module as the "primary" for the PageSpec
+      const primaryModule = pkg.modules[0]!;
+
+      specs.push({
+        outputPath: `${pagePath}.mdx`,
+        type: 'tutorial',
+        template: 'tutorial',
+        module: primaryModule,
+        packageName: pkg.name,
+      });
+    }
+  }
+
   return specs;
 }
 
 /**
  * Build the correct template context for a page spec.
  */
-function buildTemplateContext(spec: PageSpec): TemplateContext {
+function buildTemplateContext(spec: PageSpec, packages: PackageContext[]): TemplateContext {
   switch (spec.template) {
     case 'guide-overview':
       return buildGuideOverviewContext(spec.module, spec.packageName);
@@ -316,8 +344,65 @@ function buildTemplateContext(spec: PageSpec): TemplateContext {
       );
     }
 
+    case 'tutorial': {
+      // Find the full package to get all modules
+      const pkg = packages.find((p) => p.name === spec.packageName);
+      const modules = pkg?.modules ?? [spec.module];
+      return buildTutorialContext(spec.packageName, modules, extractSidebarOrder(spec.outputPath));
+    }
+
     default:
       return buildGuideOverviewContext(spec.module, spec.packageName);
+  }
+}
+
+/**
+ * Build a TutorialContext from a package's modules.
+ */
+function buildTutorialContext(
+  packageName: string,
+  modules: ModuleContext[],
+  sidebarOrder: number,
+): TutorialContext {
+  const shortName = packageName.replace('@vibeonrails/', '');
+  return {
+    tutorialTitle: `Building with ${shortName}`,
+    sidebarOrder,
+    modules: modules.map((mod) => ({
+      packageName,
+      moduleName: mod.name,
+      importPath: buildImportPath(packageName, mod.name),
+      skillContent: mod.skillContent,
+      exports: mod.exports.filter((e) => e.kind === 'function' || e.kind === 'class'),
+    })),
+  };
+}
+
+/**
+ * Verify that optional generator dependencies (ts-morph, @anthropic-ai/sdk, handlebars)
+ * are installed. These are optionalDependencies of @vibeonrails/docs so they won't be
+ * present for users who only use the presets/components/plugins.
+ *
+ * Uses import.meta.resolve (ESM-compatible) to check without actually loading.
+ */
+function assertGeneratorDeps(): void {
+  const missing: string[] = [];
+  const deps = ['ts-morph', '@anthropic-ai/sdk', 'handlebars'];
+
+  for (const dep of deps) {
+    try {
+      import.meta.resolve(dep);
+    } catch {
+      missing.push(dep);
+    }
+  }
+
+  if (missing.length > 0) {
+    throw new Error(
+      `[AOR] Missing dependencies for docs generator: ${missing.join(', ')}\n` +
+      `  These are optional dependencies of @vibeonrails/docs.\n` +
+      `  Install them: pnpm add ${missing.join(' ')}`,
+    );
   }
 }
 

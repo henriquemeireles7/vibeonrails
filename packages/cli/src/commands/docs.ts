@@ -180,9 +180,29 @@ export function docsCommand(): Command {
           durationMs: number;
         }
 
-        const generatorModule = await import("@vibeonrails/docs/generator" as string) as {
+        let generatorModule: {
           generate: (opts: Record<string, unknown>) => Promise<GenerateResult>;
         };
+
+        try {
+          // Dynamic import: @vibeonrails/docs must be installed in the user's project.
+          // Uses Function() to prevent bundlers from trying to resolve the specifier at build time.
+          generatorModule = await Function('specifier', 'return import(specifier)')("@vibeonrails/docs/generator");
+        } catch {
+          console.error(
+            chalk.red("  Error: @vibeonrails/docs package not found.\n"),
+          );
+          console.log(
+            chalk.dim("  Install it: pnpm add @vibeonrails/docs\n"),
+          );
+          console.log(
+            chalk.dim("  The generator also requires optional deps:"),
+          );
+          console.log(
+            chalk.dim("    pnpm add ts-morph @anthropic-ai/sdk handlebars\n"),
+          );
+          process.exit(1);
+        }
 
         const spinner = ora("Extracting codebase context...").start();
 
