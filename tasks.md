@@ -551,6 +551,143 @@
 
 ---
 
+## Project 17: @vibeonrails/docs — Documentation Package + Content
+
+> What exists: Astro Starlight docs site with 179 page stubs, DOCS_STRATEGY.md, Getting Started content
+> What's needed: A `@vibeonrails/docs` package for end users + fill in all documentation content
+
+### Phase 1: @vibeonrails/docs Package (Framework Feature)
+
+> A package that wraps Astro Starlight with VibeonRails conventions.
+> Users run `vibe docs init` to scaffold a docs site, `vibe docs dev` to run it.
+> We dogfood this by using it for our own documentation.
+
+#### Package Setup
+
+- [ ] `packages/docs/package.json` — Package config (depends on astro, @astrojs/starlight)
+- [ ] `packages/docs/tsconfig.json` — TypeScript config
+- [ ] `packages/docs/tsup.config.ts` — Build config
+- [ ] `packages/docs/SKILL.md` — Package skill document
+- [ ] `packages/docs/vitest.config.ts` — Test config
+
+#### Starlight Presets (Convention over Configuration)
+
+- [ ] `packages/docs/src/presets/starlight.ts` — Default Starlight config factory (createDocsConfig)
+- [ ] `packages/docs/src/presets/sidebar.ts` — Auto-generate sidebar from file structure conventions
+- [ ] `packages/docs/src/presets/theme.ts` — VibeonRails default theme (colors, fonts, CSS)
+- [ ] `packages/docs/src/presets/index.ts` — Presets barrel export
+- [ ] `packages/docs/src/presets/presets.test.ts` — Preset tests
+
+#### Custom Components (MDX Components for Docs)
+
+- [ ] `packages/docs/src/components/ApiReference.tsx` — Renders function signature + params table from JSDoc
+- [ ] `packages/docs/src/components/CodeExample.tsx` — Tabbed code examples (TypeScript/JavaScript)
+- [ ] `packages/docs/src/components/PackageInstall.tsx` — Install command for pnpm/npm/yarn
+- [ ] `packages/docs/src/components/PropTable.tsx` — Component props table from TypeScript types
+- [ ] `packages/docs/src/components/StatusBadge.tsx` — Feature status badge (stable/beta/experimental)
+- [ ] `packages/docs/src/components/index.ts` — Components barrel export
+- [ ] `packages/docs/src/components/components.test.tsx` — Component tests
+
+#### Remark/Rehype Plugins
+
+- [ ] `packages/docs/src/plugins/skill-loader.ts` — Remark plugin: include SKILL.md content in docs
+- [ ] `packages/docs/src/plugins/api-gen.ts` — Remark plugin: auto-generate API reference from TypeScript exports
+- [ ] `packages/docs/src/plugins/index.ts` — Plugins barrel export
+- [ ] `packages/docs/src/plugins/plugins.test.ts` — Plugin tests
+
+#### Docs Site Template (for `vibe docs init`)
+
+- [ ] `packages/docs/templates/docs-site/package.json.hbs` — Template package.json
+- [ ] `packages/docs/templates/docs-site/astro.config.mjs.hbs` — Template Astro config
+- [ ] `packages/docs/templates/docs-site/tsconfig.json` — Template TS config
+- [ ] `packages/docs/templates/docs-site/src/content.config.ts.hbs` — Template content config
+- [ ] `packages/docs/templates/docs-site/src/content/docs/index.mdx.hbs` — Template homepage
+- [ ] `packages/docs/templates/docs-site/src/content/docs/getting-started.mdx.hbs` — Template getting started
+
+#### CLI Integration
+
+- [ ] `packages/cli/src/commands/docs.ts` — `vibe docs init|dev|build` commands
+- [ ] `packages/cli/src/generators/docs.generator.ts` — Scaffold docs site from template
+- [ ] `packages/cli/src/generators/docs.generator.test.ts` — Docs generator tests
+- [ ] `packages/cli/src/index.ts` — Register docs command
+
+#### Package Entry & Exports
+
+- [ ] `packages/docs/src/index.ts` — Main barrel export (createDocsConfig, components, plugins)
+
+### Phase 2: Dogfooding (Migrate Our Docs to Use @vibeonrails/docs)
+
+> Replace the manual Astro config in docs/ with our own package.
+
+- [ ] `docs/package.json` — Add @vibeonrails/docs dependency
+- [ ] `docs/astro.config.mjs` — Use createDocsConfig() from @vibeonrails/docs
+- [ ] `docs/src/content.config.ts` — Update to use our package's schema if needed
+
+### Phase 3: Fill Documentation Content (P0 — Core User Journey)
+
+> These are the most important pages. Written from source code + SKILL.md files.
+
+#### Getting Started (already partially done)
+
+- [x] `docs/src/content/docs/getting-started/introduction.mdx` — Full content
+- [x] `docs/src/content/docs/getting-started/installation.mdx` — Full content
+- [x] `docs/src/content/docs/getting-started/quick-start.mdx` — Full content
+- [x] `docs/src/content/docs/getting-started/project-structure.mdx` — Full content
+- [x] `docs/src/content/docs/getting-started/philosophy.mdx` — Full content
+
+#### Guides — Database (P0)
+
+- [ ] `docs/src/content/docs/guides/database/index.mdx` — Database overview
+- [ ] `docs/src/content/docs/guides/database/client.mdx` — Client & connections
+- [ ] `docs/src/content/docs/guides/database/schema.mdx` — Schema definitions
+- [ ] `docs/src/content/docs/guides/database/migrations.mdx` — Migrations
+- [ ] `docs/src/content/docs/guides/database/repositories.mdx` — Repository pattern
+- [ ] `docs/src/content/docs/guides/database/seeds.mdx` — Seeds
+- [ ] `docs/src/content/docs/guides/database/relations.mdx` — Relations
+- [ ] `docs/src/content/docs/guides/database/queries.mdx` — Query patterns
+- [ ] `docs/src/content/docs/guides/database/transactions.mdx` — Transactions
+
+#### Guides — API (P0)
+
+- [ ] `docs/src/content/docs/guides/api/index.mdx` — API overview
+- [ ] `docs/src/content/docs/guides/api/server.mdx` — Hono server
+- [ ] `docs/src/content/docs/guides/api/trpc.mdx` — tRPC integration
+- [ ] `docs/src/content/docs/guides/api/procedures.mdx` — Procedures
+- [ ] `docs/src/content/docs/guides/api/context.mdx` — Request context
+- [ ] `docs/src/content/docs/guides/api/middleware.mdx` — Middleware
+- [ ] `docs/src/content/docs/guides/api/error-handling.mdx` — Error handling
+- [ ] `docs/src/content/docs/guides/api/rate-limiting.mdx` — Rate limiting
+
+#### Guides — Security (P0)
+
+- [ ] `docs/src/content/docs/guides/security/index.mdx` — Security overview
+- [ ] `docs/src/content/docs/guides/security/authentication.mdx` — Authentication
+- [ ] `docs/src/content/docs/guides/security/jwt.mdx` — JWT tokens
+
+#### Tutorials (P0)
+
+- [ ] `docs/src/content/docs/tutorials/your-first-app.mdx` — Build a todo app
+- [ ] `docs/src/content/docs/tutorials/authentication.mdx` — Add authentication
+
+#### Reference (P0)
+
+- [ ] `docs/src/content/docs/reference/api/create-server.mdx` — createServer() reference
+- [ ] `docs/src/content/docs/reference/database/create-database.mdx` — createDatabase() reference
+- [ ] `docs/src/content/docs/reference/security/jwt-api.mdx` — JWT functions reference
+
+### Phase 4: Fill Documentation Content (P1 — Essential)
+
+> All remaining guides, how-to recipes, and feature docs.
+> ~100 pages to be written from source code.
+
+- [ ] All remaining Guide pages (security, web, infra, CLI)
+- [ ] All How-To recipe pages
+- [ ] Feature docs (payments, admin, support, sales, marketing)
+- [ ] All Reference pages
+- [ ] Advanced, Contributing, FAQ, Glossary, Troubleshooting, Changelog
+
+---
+
 ## Summary — Build Order (Recommended)
 
 | Priority | Project | Why |
@@ -571,5 +708,6 @@
 | 14 | **Project 11: @vibeonrails/sales** | Feature package |
 | 15 | **Project 12: @vibeonrails/marketing** | Feature package |
 | 16 | **Project 16: @vibeonrails/mobile** | Future |
+| **17** | **Project 17: @vibeonrails/docs** | **Docs package + content (ACTIVE)** |
 
-**Total remaining tasks: ~195 file changes across 16 projects.**
+**Total remaining tasks: ~50 file changes for Project 17 (all prior projects complete).**
