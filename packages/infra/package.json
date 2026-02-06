@@ -32,6 +32,14 @@
     "./storage": {
       "import": "./dist/storage/index.js",
       "types": "./dist/storage/index.d.ts"
+    },
+    "./realtime": {
+      "import": "./dist/realtime/index.js",
+      "types": "./dist/realtime/index.d.ts"
+    },
+    "./monitoring": {
+      "import": "./dist/monitoring/index.js",
+      "types": "./dist/monitoring/index.d.ts"
     }
   },
   "scripts": {

@@ -9,6 +9,8 @@ export default defineConfig({
     'email/index': 'src/email/index.ts',
     'cache/index': 'src/cache/index.ts',
     'storage/index': 'src/storage/index.ts',
+    'realtime/index': 'src/realtime/index.ts',
+    'monitoring/index': 'src/monitoring/index.ts',
   },
   format: ['esm'],
   dts: true,

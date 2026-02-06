@@ -21,3 +21,5 @@ export * from './queue/index.js';
 export * from './email/index.js';
 export * from './cache/index.js';
 export * from './storage/index.js';
+export * from './realtime/index.js';
+export * from './monitoring/index.js';
