@@ -11,7 +11,8 @@ to work with it. Predictable conventions mean zero ambiguity for both humans and
 ```
 packages/
 ├── core/       @aor/core   — API (Hono + tRPC), Database (Drizzle), Security (JWT + Argon2)
-└── infra/      @aor/infra  — Health, Logging, Queue (BullMQ), Email (Resend), Cache, Storage
+├── infra/      @aor/infra  — Health, Logging, Queue (BullMQ), Email (Resend), Cache, Storage
+└── cli/        @aor/cli    — CLI: create projects, generate modules, dev/build/db commands
 ```
 
 ## Tech Stack
@@ -29,7 +30,29 @@ packages/
 | Queue          | BullMQ              | Mature, Redis-based          |
 | Email          | Resend              | Modern API                   |
 
-## Getting Started
+## Quick Start
+
+```bash
+# Create a new project
+npx create-aor my-app
+cd my-app
+
+# Configure environment
+cp .env.example .env
+
+# Start developing
+pnpm run dev
+```
+
+### Generate a Module
+
+```bash
+# Generate a full module (types, service, controller, test)
+npx aor generate module user
+npx aor generate module blog-post
+```
+
+## Getting Started (Monorepo Development)
 
 ### Prerequisites
 
@@ -108,6 +131,22 @@ import { registerHealthCheck } from '@aor/infra/health';
 import { logger } from '@aor/infra/logging';
 import { defineJob, enqueue } from '@aor/infra/queue';
 import { sendEmail } from '@aor/infra/email';
+```
+
+### @aor/cli
+
+The CLI that makes the framework usable:
+
+- **`aor create <name>`** — Scaffold a new project from the app template
+- **`aor generate module <name>`** — Generate module with types, service, controller, test
+- **`aor dev`** — Start development server with hot reload
+- **`aor db migrate|seed|reset|studio`** — Database operations
+- **`aor build`** — Production build
+
+```bash
+npx create-aor my-app
+npx aor generate module user
+npx aor dev
 ```
 
 ## Development

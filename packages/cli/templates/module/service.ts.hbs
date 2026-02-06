@@ -1,0 +1,41 @@
+import type { Create{{pascalCase name}}, Update{{pascalCase name}}, {{pascalCase name}} } from "./types.js";
+
+// ---------------------------------------------------------------------------
+// {{pascalCase name}}Service — Business Logic
+// ---------------------------------------------------------------------------
+
+export const {{pascalCase name}}Service = {
+  async findAll(): Promise<{{pascalCase name}}[]> {
+    // TODO: replace with database query
+    return [];
+  },
+
+  async findById(id: string): Promise<{{pascalCase name}} | null> {
+    // TODO: replace with database query
+    void id;
+    return null;
+  },
+
+  async create(data: Create{{pascalCase name}}): Promise<{{pascalCase name}}> {
+    // TODO: replace with database insert
+    return {
+      id: crypto.randomUUID(),
+      ...data,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } as {{pascalCase name}};
+  },
+
+  async update(id: string, data: Update{{pascalCase name}}): Promise<{{pascalCase name}} | null> {
+    // TODO: replace with database update
+    void id;
+    void data;
+    return null;
+  },
+
+  async remove(id: string): Promise<boolean> {
+    // TODO: replace with database delete
+    void id;
+    return false;
+  },
+};

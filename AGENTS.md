@@ -20,15 +20,8 @@ A full-stack TypeScript framework designed for AI-assisted development. Predicta
 ```
 packages/
 ├── core/          # API (Hono + tRPC), Database (Drizzle), Security (JWT + Argon2)
-│   ├── src/api/
-│   ├── src/database/
-│   ├── src/security/
-│   └── src/shared/
 ├── infra/         # Health, Logging, Queue, Email, Cache, Storage
-│   ├── src/health/
-│   ├── src/logging/
-│   ├── src/queue/
-│   └── src/email/
+├── cli/           # CLI: create projects, generate modules, dev/build/db commands
 specs/             # Feature specifications
 ai-workflow/       # AI workflow templates, agents, rules, skills
 ```
@@ -66,11 +59,12 @@ pnpm run validate     # Full check: typecheck + lint + test + build + git add
 - Use Vitest for all testing
 
 ## Current Status
-- ✅ Initial monorepo structure with Turborepo + pnpm
-- ✅ Package.json with validate script
-- ✅ AI workflow integrated (agents, rules, skills, templates)
-- 🔄 Building out @aor/core and @aor/infra packages
-- 📋 Next: Implement core modules following SKILL.md conventions
+- ✅ Monorepo structure with Turborepo + pnpm
+- ✅ @aor/core: API, Database, Security, Shared
+- ✅ @aor/infra: Health, Logging, Queue, Email, Cache, Storage
+- ✅ @aor/cli: create, generate module, dev, db, build commands
+- ✅ AI workflow integrated
+- 📋 Next: App template refinement, @aor/web frontend package
 
 ## Important Notes
 - Don't add dependencies without discussing (keep the stack minimal)
