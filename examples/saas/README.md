@@ -52,34 +52,34 @@ pnpm start
 
 ### Public Endpoints
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/health` | GET | Health check with service status |
-| `/trpc/auth.ping` | GET | API health ping |
-| `/trpc/auth.login` | POST | Log in with email + password |
-| `/trpc/post.list` | GET | List published posts |
-| `/trpc/post.get` | GET | Get post by ID |
+| Endpoint           | Method | Description                      |
+| ------------------ | ------ | -------------------------------- |
+| `/health`          | GET    | Health check with service status |
+| `/trpc/auth.ping`  | GET    | API health ping                  |
+| `/trpc/auth.login` | POST   | Log in with email + password     |
+| `/trpc/post.list`  | GET    | List published posts             |
+| `/trpc/post.get`   | GET    | Get post by ID                   |
 
 ### Protected Endpoints (require JWT)
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/trpc/auth.me` | GET | Get current user |
-| `/trpc/user.profile` | GET | Get user profile |
-| `/trpc/user.updateProfile` | POST | Update profile |
-| `/trpc/post.create` | POST | Create a post |
-| `/trpc/post.togglePublish` | POST | Publish/unpublish a post |
-| `/trpc/post.delete` | POST | Delete a post |
+| Endpoint                   | Method | Description              |
+| -------------------------- | ------ | ------------------------ |
+| `/trpc/auth.me`            | GET    | Get current user         |
+| `/trpc/user.profile`       | GET    | Get user profile         |
+| `/trpc/user.updateProfile` | POST   | Update profile           |
+| `/trpc/post.create`        | POST   | Create a post            |
+| `/trpc/post.togglePublish` | POST   | Publish/unpublish a post |
+| `/trpc/post.delete`        | POST   | Delete a post            |
 
 ### Admin Endpoints (require admin role)
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/trpc/admin.listUsers` | GET | List all users |
-| `/trpc/admin.listPosts` | GET | List all posts (including unpublished) |
-| `/trpc/admin.changeUserRole` | POST | Change user role |
-| `/trpc/admin.toggleUserActive` | POST | Activate/deactivate user |
-| `/trpc/admin.stats` | GET | Dashboard statistics |
+| Endpoint                       | Method | Description                            |
+| ------------------------------ | ------ | -------------------------------------- |
+| `/trpc/admin.listUsers`        | GET    | List all users                         |
+| `/trpc/admin.listPosts`        | GET    | List all posts (including unpublished) |
+| `/trpc/admin.changeUserRole`   | POST   | Change user role                       |
+| `/trpc/admin.toggleUserActive` | POST   | Activate/deactivate user               |
+| `/trpc/admin.stats`            | GET    | Dashboard statistics                   |
 
 ## Testing the API
 
@@ -117,11 +117,11 @@ examples/saas/
 
 ## Modules Demonstrated
 
-| Module | Features |
-|--------|----------|
-| **Auth** | Login, token refresh, current user |
-| **User** | Profile management, update |
-| **Post** | CRUD, publish/unpublish, ownership checks |
+| Module    | Features                                       |
+| --------- | ---------------------------------------------- |
+| **Auth**  | Login, token refresh, current user             |
+| **User**  | Profile management, update                     |
+| **Post**  | CRUD, publish/unpublish, ownership checks      |
 | **Admin** | User management, role changes, dashboard stats |
 
 ## Architecture Notes

@@ -1,4 +1,4 @@
-import type { Platform } from './platforms.js';
+import type { Platform } from "./platforms.js";
 
 export interface ScheduledPost {
   id: string;

@@ -1,4 +1,4 @@
-export type Platform = 'twitter' | 'linkedin' | 'instagram';
+export type Platform = "twitter" | "linkedin" | "instagram";
 
 export interface PlatformAdapter {
   post(content: string): Promise<{ id: string }>;

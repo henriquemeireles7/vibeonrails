@@ -8,18 +8,21 @@
  * - Module-based routing
  */
 
-import { createServer } from '@vibeonrails/core/api';
-import { registerHealthCheck, memoryHealthCheck } from '@vibeonrails/infra/health';
-import { appRouter } from './router.js';
+import { createServer } from "@vibeonrails/core/api";
+import {
+  registerHealthCheck,
+  memoryHealthCheck,
+} from "@vibeonrails/infra/health";
+import { appRouter } from "./router.js";
 
 // Register health checks
-registerHealthCheck('memory', memoryHealthCheck);
+registerHealthCheck("memory", memoryHealthCheck);
 
 // Create the server with tRPC router
 const app = createServer({
   router: appRouter,
-  trpcPath: '/trpc',
-  corsOrigin: process.env.CORS_ORIGIN ?? '*',
+  trpcPath: "/trpc",
+  corsOrigin: process.env.CORS_ORIGIN ?? "*",
 });
 
 // Start listening

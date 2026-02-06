@@ -40,14 +40,14 @@ pnpm start
 
 ## Endpoints
 
-| Endpoint | Method | Auth | Description |
-|----------|--------|------|-------------|
-| `/health` | GET | No | Health check |
-| `/trpc/auth.ping` | GET | No | API ping |
-| `/trpc/auth.me` | GET | Yes | Get current user |
-| `/trpc/post.list` | GET | No | List all posts |
-| `/trpc/post.get` | GET | No | Get post by ID |
-| `/trpc/post.create` | POST | Yes | Create a new post |
+| Endpoint            | Method | Auth | Description       |
+| ------------------- | ------ | ---- | ----------------- |
+| `/health`           | GET    | No   | Health check      |
+| `/trpc/auth.ping`   | GET    | No   | API ping          |
+| `/trpc/auth.me`     | GET    | Yes  | Get current user  |
+| `/trpc/post.list`   | GET    | No   | List all posts    |
+| `/trpc/post.get`    | GET    | No   | Get post by ID    |
+| `/trpc/post.create` | POST   | Yes  | Create a new post |
 
 ## Testing the API
 

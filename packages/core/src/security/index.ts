@@ -7,3 +7,4 @@ export * from './authorization/index.js';
 export * from './crypto/index.js';
 export * from './middleware/index.js';
 export * from './audit/index.js';
+export * from './oauth/index.js';
