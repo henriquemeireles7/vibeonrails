@@ -1,4 +1,4 @@
-export type ContentType = 'social_post' | 'email' | 'blog_outline';
+export type ContentType = "social_post" | "email" | "blog_outline";
 
 export interface GenerateContentOptions {
   type: ContentType;
@@ -22,10 +22,10 @@ export function generateContent(
 ): GeneratedContent {
   return {
     type: options.type,
-    content: '',
+    content: "",
     metadata: {
       topic: options.topic,
-      tone: options.tone ?? 'professional',
+      tone: options.tone ?? "professional",
     },
   };
 }

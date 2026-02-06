@@ -1,7 +1,7 @@
 export interface ChatMessage {
   id: string;
   content: string;
-  sender: 'user' | 'agent' | 'bot';
+  sender: "user" | "agent" | "bot";
   timestamp: Date;
 }
 
@@ -15,7 +15,7 @@ function generateId(): string {
 
 export function sendMessage(
   content: string,
-  sender: ChatMessage['sender'],
+  sender: ChatMessage["sender"],
 ): ChatMessage {
   const message: ChatMessage = {
     id: generateId(),

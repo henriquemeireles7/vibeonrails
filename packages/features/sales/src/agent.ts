@@ -1,4 +1,4 @@
-export type SalesAction = 'faq' | 'qualify' | 'book_demo' | 'handoff';
+export type SalesAction = "faq" | "qualify" | "book_demo" | "handoff";
 
 export interface SalesActionResult {
   action: SalesAction;

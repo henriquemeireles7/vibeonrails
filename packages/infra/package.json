@@ -40,6 +40,18 @@
     "./monitoring": {
       "import": "./dist/monitoring/index.js",
       "types": "./dist/monitoring/index.d.ts"
+    },
+    "./rate-limit": {
+      "import": "./dist/rate-limit/index.js",
+      "types": "./dist/rate-limit/index.d.ts"
+    },
+    "./flags": {
+      "import": "./dist/flags/index.js",
+      "types": "./dist/flags/index.d.ts"
+    },
+    "./analytics": {
+      "import": "./dist/analytics/index.js",
+      "types": "./dist/analytics/index.d.ts"
     }
   },
   "scripts": {
@@ -55,6 +67,18 @@
     "ioredis": "^5.3.0",
     "resend": "^2.0.0",
     "zod": "^3.22.0"
+  },
+  "peerDependencies": {
+    "hono": "^4.0.0",
+    "drizzle-orm": "^0.29.0"
+  },
+  "peerDependenciesMeta": {
+    "hono": {
+      "optional": true
+    },
+    "drizzle-orm": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/node": "^25.2.1",

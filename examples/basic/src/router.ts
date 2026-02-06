@@ -10,15 +10,15 @@ import {
   router,
   publicProcedure,
   protectedProcedure,
-} from '@vibeonrails/core/api';
-import { z } from 'zod';
+} from "@vibeonrails/core/api";
+import { z } from "zod";
 
 // --- Auth Router ---
 
 const authRouter = router({
   /** Public: health check */
   ping: publicProcedure.query(() => {
-    return { status: 'ok', timestamp: new Date().toISOString() };
+    return { status: "ok", timestamp: new Date().toISOString() };
   }),
 
   /** Protected: get current user info */
@@ -44,10 +44,10 @@ interface Post {
 // In-memory store for demonstration
 const posts: Post[] = [
   {
-    id: '1',
-    title: 'Hello from Vibe on Rails',
-    content: 'This is a basic example showing the module pattern.',
-    authorId: 'system',
+    id: "1",
+    title: "Hello from Vibe on Rails",
+    content: "This is a basic example showing the module pattern.",
+    authorId: "system",
     createdAt: new Date().toISOString(),
   },
 ];

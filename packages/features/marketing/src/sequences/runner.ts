@@ -1,11 +1,11 @@
-import type { EmailSequence } from './define.js';
+import type { EmailSequence } from "./define.js";
 
 export type SequenceStatus =
-  | 'pending'
-  | 'running'
-  | 'paused'
-  | 'completed'
-  | 'failed';
+  | "pending"
+  | "running"
+  | "paused"
+  | "completed"
+  | "failed";
 
 export interface SequenceRun {
   sequenceId: string;
@@ -21,7 +21,7 @@ export interface SequenceRun {
 export function runSequence(sequence: EmailSequence): SequenceRun {
   return {
     sequenceId: sequence.id,
-    status: 'pending',
+    status: "pending",
     currentStep: 0,
     startedAt: new Date(),
   };

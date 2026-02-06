@@ -24,6 +24,38 @@
     "./shared": {
       "import": "./dist/shared/index.js",
       "types": "./dist/shared/index.d.ts"
+    },
+    "./errors": {
+      "import": "./dist/errors/index.js",
+      "types": "./dist/errors/index.d.ts"
+    },
+    "./config": {
+      "import": "./dist/config/index.js",
+      "types": "./dist/config/index.d.ts"
+    },
+    "./manifest": {
+      "import": "./dist/manifest/index.js",
+      "types": "./dist/manifest/index.d.ts"
+    },
+    "./env": {
+      "import": "./dist/env/index.js",
+      "types": "./dist/env/index.d.ts"
+    },
+    "./content": {
+      "import": "./dist/content/index.js",
+      "types": "./dist/content/index.d.ts"
+    },
+    "./webhooks": {
+      "import": "./dist/webhooks/index.js",
+      "types": "./dist/webhooks/index.d.ts"
+    },
+    "./api-keys": {
+      "import": "./dist/api-keys/index.js",
+      "types": "./dist/api-keys/index.d.ts"
+    },
+    "./integrations": {
+      "import": "./dist/integrations/index.js",
+      "types": "./dist/integrations/index.d.ts"
     }
   },
   "scripts": {

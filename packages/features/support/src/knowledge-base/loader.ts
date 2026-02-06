@@ -10,7 +10,7 @@ export interface Article {
 export function loadArticle(_path: string): Article {
   // Stub: will read markdown file and extract frontmatter title
   return {
-    title: '',
-    content: '',
+    title: "",
+    content: "",
   };
 }
