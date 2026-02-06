@@ -10,10 +10,19 @@ to work with it. Predictable conventions mean zero ambiguity for both humans and
 
 ```
 packages/
-├── core/       @vibeonrails/core   — API (Hono + tRPC), Database (Drizzle), Security (JWT + Argon2)
-├── infra/      @vibeonrails/infra  — Health, Logging, Queue (BullMQ), Email (Resend), Cache, Storage
-├── web/        @vibeonrails/web    — CSS system, React components, hooks, tRPC client, routing
-└── cli/        @vibeonrails/cli    — CLI: create projects, generate modules, dev/build/db commands
+├── core/              @vibeonrails/core       — API, Database (repos, seeds), Security (JWT, sessions, OAuth, crypto, CSRF, audit)
+├── infra/             @vibeonrails/infra      — Health, Logging, Queue/Cron, Email, Cache, Storage, Realtime, Monitoring
+├── web/               @vibeonrails/web        — CSS system, React components, hooks, tRPC client, routing
+├── cli/               @vibeonrails/cli        — CLI: create/generate/dev/build/db commands
+└── features/
+    ├── payments/      @vibeonrails/payments   — Stripe checkout, subscriptions, webhooks
+    ├── admin/         @vibeonrails/admin      — Auto-generated CRUD admin panel
+    ├── support/       @vibeonrails/support    — Tickets, knowledge base, chat widget
+    ├── sales/         @vibeonrails/sales      — AI sales agent, multi-channel
+    └── marketing/     @vibeonrails/marketing  — Content, social scheduling, email sequences
+templates/             — App, module, and component templates
+docs/                  — Documentation site (14 pages)
+examples/              — basic + SaaS example applications
 ```
 
 ## Tech Stack
@@ -45,12 +54,15 @@ cp .env.example .env
 pnpm run dev
 ```
 
-### Generate a Module
+### Generate Code
 
 ```bash
 # Generate a full module (types, service, controller, test)
 npx vibe generate module user
 npx vibe generate module blog-post
+
+# Generate a React component
+npx vibe generate component card
 ```
 
 ## Getting Started (Monorepo Development)
@@ -106,14 +118,14 @@ packages/{name}/
 The core package provides:
 
 - **API** — `createServer()`, `router()`, `publicProcedure`, `protectedProcedure`
-- **Database** — `createDatabase()`, Drizzle schema definitions, migration runner
-- **Security** — `signAccessToken()`, `verifyToken()`, `hashPassword()`, `verifyPassword()`, `requireRole()`, `requireOwnership()`
+- **Database** — `createDatabase()`, Drizzle schema, migration runner, repositories (`createUserRepository`, `createPostRepository`), seeds
+- **Security** — JWT, sessions (`createSessionManager`), OAuth (`defineGoogleProvider`, `defineGitHubProvider`), crypto (`encrypt`/`decrypt`, `sha256`, `generateToken`), CSRF, audit logging
 - **Shared** — `AppError`, `NotFoundError`, `ValidationError`, utility functions
 
 ```typescript
 import { createServer, router, protectedProcedure } from '@vibeonrails/core/api';
-import { createDatabase } from '@vibeonrails/core/database';
-import { signAccessToken, hashPassword } from '@vibeonrails/core/security';
+import { createDatabase, createUserRepository } from '@vibeonrails/core/database';
+import { signAccessToken, hashPassword, createSessionManager } from '@vibeonrails/core/security';
 ```
 
 ### @vibeonrails/infra
@@ -122,16 +134,20 @@ The infrastructure package provides:
 
 - **Health** — `registerHealthCheck()`, `runHealthChecks()`
 - **Logging** — `logger.info()`, `logger.child()`
-- **Queue** — `defineJob()`, `enqueue()`
+- **Queue** — `defineJob()`, `enqueue()`, `defineCron()`
 - **Email** — `sendEmail()` with Markdown templates
 - **Cache** — `createCache()` with Redis
 - **Storage** — `createStorage()` with S3
+- **Realtime** — WebSocket server, channels, broadcasting
+- **Monitoring** — Metrics (counter, gauge, histogram) + distributed tracing
 
 ```typescript
 import { registerHealthCheck } from '@vibeonrails/infra/health';
 import { logger } from '@vibeonrails/infra/logging';
-import { defineJob, enqueue } from '@vibeonrails/infra/queue';
+import { defineJob, enqueue, defineCron } from '@vibeonrails/infra/queue';
 import { sendEmail } from '@vibeonrails/infra/email';
+import { registerClient, broadcast } from '@vibeonrails/infra/realtime';
+import { increment, observe } from '@vibeonrails/infra/monitoring';
 ```
 
 ### @vibeonrails/web
@@ -158,6 +174,7 @@ The CLI that makes the framework usable:
 
 - **`vibe create <name>`** — Scaffold a new project with auth, user, post modules, seeds, and planning system
 - **`vibe generate module <name>`** — Generate module with types, service, controller, test, SKILL.md
+- **`vibe generate component <name>`** — Generate React component with tests
 - **`vibe dev`** — Start development server with hot reload
 - **`vibe db migrate|seed|reset|studio`** — Database operations
 - **`vibe build`** — Production build
@@ -165,6 +182,7 @@ The CLI that makes the framework usable:
 ```bash
 npx create-vibe my-app
 npx vibe generate module order
+npx vibe generate component profile-card
 npx vibe dev
 ```
 
@@ -185,6 +203,24 @@ my-app/
 │   └── router.ts         # Root tRPC router (merges all modules)
 ├── SKILL.md              # Project-level AI skill document
 └── README.md             # Getting started guide
+```
+
+### Feature Packages
+
+| Package | Purpose |
+|---------|---------|
+| `@vibeonrails/payments` | Stripe checkout, subscriptions, customer portal, webhooks |
+| `@vibeonrails/admin` | Auto-generated CRUD admin panel with resource config |
+| `@vibeonrails/support` | Ticket system, knowledge base, chat widget |
+| `@vibeonrails/sales` | AI sales agent with webchat, WhatsApp, Telegram channels |
+| `@vibeonrails/marketing` | Content generation, social scheduling, email sequences |
+
+```typescript
+import { createCheckout, handleWebhook } from '@vibeonrails/payments';
+import { defineAdmin, defineResource } from '@vibeonrails/admin';
+import { createTicket, resolveTicket } from '@vibeonrails/support';
+import { defineSalesAgent } from '@vibeonrails/sales';
+import { schedulePost, defineSequence } from '@vibeonrails/marketing';
 ```
 
 ## Development

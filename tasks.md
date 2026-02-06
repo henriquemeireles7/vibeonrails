@@ -5,99 +5,99 @@
 
 ---
 
-## Project 1: @vibeonrails/core — Remaining Framework Gaps
+## Project 1: @vibeonrails/core — Remaining Framework Gaps ✅
 
 > What exists: API (server, trpc, context, router, middleware), Database (client, migrate, schema), Security (jwt, password, guards), Shared (errors, types, utils)
 > What's missing: database seeds/repos, session auth, OAuth, crypto utils, CSRF, audit logging
 
 ### Database — Seeds Infrastructure
 
-- [ ] `packages/core/src/database/seeds/development.ts` — Development seed data (sample users, posts)
-- [ ] `packages/core/src/database/seeds/test.ts` — Test seed data (minimal fixtures)
-- [ ] `packages/core/src/database/seeds/index.ts` — Seed runner (runSeeds function)
-- [ ] `packages/core/src/database/seeds/seeds.test.ts` — Tests for seed runner
+- [x] `packages/core/src/database/seeds/development.ts` — Development seed data (sample users, posts)
+- [x] `packages/core/src/database/seeds/test.ts` — Test seed data (minimal fixtures)
+- [x] `packages/core/src/database/seeds/index.ts` — Seed runner (runSeeds function)
+- [x] `packages/core/src/database/seeds/seeds.test.ts` — Tests for seed runner
 
 ### Database — Repository Pattern
 
-- [ ] `packages/core/src/database/repositories/user.repository.ts` — User CRUD queries (findById, findByEmail, create, update)
-- [ ] `packages/core/src/database/repositories/post.repository.ts` — Post CRUD queries (findAll, findById, create, update, delete)
-- [ ] `packages/core/src/database/repositories/index.ts` — Repository barrel export
-- [ ] `packages/core/src/database/repositories/user.repository.test.ts` — User repository tests
-- [ ] `packages/core/src/database/repositories/post.repository.test.ts` — Post repository tests
-- [ ] `packages/core/src/database/index.ts` — Update to export repositories and seeds
+- [x] `packages/core/src/database/repositories/user.repository.ts` — User CRUD queries (findById, findByEmail, create, update)
+- [x] `packages/core/src/database/repositories/post.repository.ts` — Post CRUD queries (findAll, findById, create, update, delete)
+- [x] `packages/core/src/database/repositories/index.ts` — Repository barrel export
+- [x] `packages/core/src/database/repositories/user.repository.test.ts` — User repository tests
+- [x] `packages/core/src/database/repositories/post.repository.test.ts` — Post repository tests
+- [x] `packages/core/src/database/index.ts` — Update to export repositories and seeds
 
 ### Security — Session Management
 
-- [ ] `packages/core/src/security/auth/sessions.ts` — Session create/validate/revoke with Redis backing
-- [ ] `packages/core/src/security/auth/sessions.test.ts` — Session management tests
-- [ ] `packages/core/src/security/auth/index.ts` — Update to export sessions
+- [x] `packages/core/src/security/auth/sessions.ts` — Session create/validate/revoke with Redis backing
+- [x] `packages/core/src/security/auth/sessions.test.ts` — Session management tests
+- [x] `packages/core/src/security/auth/index.ts` — Update to export sessions
 
 ### Security — OAuth Providers
 
-- [ ] `packages/core/src/security/auth/oauth.ts` — OAuth provider config (Google, GitHub, Discord)
-- [ ] `packages/core/src/security/auth/oauth.test.ts` — OAuth flow tests
-- [ ] `packages/core/src/security/auth/index.ts` — Update to export oauth
+- [x] `packages/core/src/security/auth/oauth.ts` — OAuth provider config (Google, GitHub, Discord)
+- [x] `packages/core/src/security/auth/oauth.test.ts` — OAuth flow tests
+- [x] `packages/core/src/security/auth/index.ts` — Update to export oauth
 
 ### Security — Crypto Utilities
 
-- [ ] `packages/core/src/security/crypto/encrypt.ts` — AES-256-GCM encrypt/decrypt functions
-- [ ] `packages/core/src/security/crypto/hash.ts` — SHA-256 hashing utilities
-- [ ] `packages/core/src/security/crypto/tokens.ts` — Secure random token generation (email verify, password reset)
-- [ ] `packages/core/src/security/crypto/index.ts` — Crypto barrel export
-- [ ] `packages/core/src/security/crypto/crypto.test.ts` — Crypto utility tests
-- [ ] `packages/core/src/security/index.ts` — Update to export crypto module
+- [x] `packages/core/src/security/crypto/encrypt.ts` — AES-256-GCM encrypt/decrypt functions
+- [x] `packages/core/src/security/crypto/hash.ts` — SHA-256 hashing utilities
+- [x] `packages/core/src/security/crypto/tokens.ts` — Secure random token generation (email verify, password reset)
+- [x] `packages/core/src/security/crypto/index.ts` — Crypto barrel export
+- [x] `packages/core/src/security/crypto/crypto.test.ts` — Crypto utility tests
+- [x] `packages/core/src/security/index.ts` — Update to export crypto module
 
 ### Security — CSRF Protection
 
-- [ ] `packages/core/src/security/middleware/csrf.ts` — CSRF token middleware for Hono
-- [ ] `packages/core/src/security/middleware/csrf.test.ts` — CSRF middleware tests
-- [ ] `packages/core/src/security/middleware/index.ts` — Security middleware barrel export
-- [ ] `packages/core/src/security/index.ts` — Update to export security middleware
+- [x] `packages/core/src/security/middleware/csrf.ts` — CSRF token middleware for Hono
+- [x] `packages/core/src/security/middleware/csrf.test.ts` — CSRF middleware tests
+- [x] `packages/core/src/security/middleware/index.ts` — Security middleware barrel export
+- [x] `packages/core/src/security/index.ts` — Update to export security middleware
 
 ### Security — Audit Logging
 
-- [ ] `packages/core/src/security/audit/logger.ts` — Audit log for auth events (login, logout, password change, role change)
-- [ ] `packages/core/src/security/audit/logger.test.ts` — Audit logger tests
-- [ ] `packages/core/src/security/audit/index.ts` — Audit barrel export
-- [ ] `packages/core/src/security/index.ts` — Update to export audit module
+- [x] `packages/core/src/security/audit/logger.ts` — Audit log for auth events (login, logout, password change, role change)
+- [x] `packages/core/src/security/audit/logger.test.ts` — Audit logger tests
+- [x] `packages/core/src/security/audit/index.ts` — Audit barrel export
+- [x] `packages/core/src/security/index.ts` — Update to export audit module
 
 ### Core — Package Exports Update
 
-- [ ] `packages/core/tsup.config.ts` — Add new entry points for crypto, audit if sub-path exports needed
+- [x] `packages/core/tsup.config.ts` — Add new entry points for crypto, audit if sub-path exports needed
 
 ---
 
-## Project 2: @vibeonrails/infra — Remaining Framework Gaps
+## Project 2: @vibeonrails/infra — Remaining Framework Gaps ✅
 
 > What exists: Health, Logging, Queue (jobs), Email, Cache, Storage
 > What's missing: cron jobs, realtime/WebSockets, monitoring/metrics
 
 ### Queue — Cron Job Support
 
-- [ ] `packages/infra/src/queue/cron.ts` — defineCron() function with schedule parsing
-- [ ] `packages/infra/src/queue/cron.test.ts` — Cron definition tests
-- [ ] `packages/infra/src/queue/index.ts` — Update to export cron
+- [x] `packages/infra/src/queue/cron.ts` — defineCron() function with schedule parsing
+- [x] `packages/infra/src/queue/cron.test.ts` — Cron definition tests
+- [x] `packages/infra/src/queue/index.ts` — Update to export cron
 
 ### Realtime — WebSocket Module
 
-- [ ] `packages/infra/src/realtime/server.ts` — WebSocket server setup (Hono WebSocket adapter)
-- [ ] `packages/infra/src/realtime/channels.ts` — Channel subscription management (subscribe, broadcast, unsubscribe)
-- [ ] `packages/infra/src/realtime/index.ts` — Realtime barrel export
-- [ ] `packages/infra/src/realtime/realtime.test.ts` — Realtime module tests
+- [x] `packages/infra/src/realtime/server.ts` — WebSocket server setup (Hono WebSocket adapter)
+- [x] `packages/infra/src/realtime/channels.ts` — Channel subscription management (subscribe, broadcast, unsubscribe)
+- [x] `packages/infra/src/realtime/index.ts` — Realtime barrel export
+- [x] `packages/infra/src/realtime/realtime.test.ts` — Realtime module tests
 
 ### Monitoring — Metrics & Tracing
 
-- [ ] `packages/infra/src/monitoring/metrics.ts` — Counter, histogram, gauge metric collection
-- [ ] `packages/infra/src/monitoring/tracing.ts` — Request tracing with trace ID propagation
-- [ ] `packages/infra/src/monitoring/index.ts` — Monitoring barrel export
-- [ ] `packages/infra/src/monitoring/metrics.test.ts` — Metrics tests
+- [x] `packages/infra/src/monitoring/metrics.ts` — Counter, histogram, gauge metric collection
+- [x] `packages/infra/src/monitoring/tracing.ts` — Request tracing with trace ID propagation
+- [x] `packages/infra/src/monitoring/index.ts` — Monitoring barrel export
+- [x] `packages/infra/src/monitoring/metrics.test.ts` — Metrics tests
 
 ### Infra — Package Updates
 
-- [ ] `packages/infra/tsup.config.ts` — Add realtime and monitoring entry points
-- [ ] `packages/infra/package.json` — Add WebSocket dependencies if needed
-- [ ] `packages/infra/src/index.ts` — Update to export realtime and monitoring
-- [ ] `packages/infra/SKILL.md` — Update to document new modules
+- [x] `packages/infra/tsup.config.ts` — Add realtime and monitoring entry points
+- [x] `packages/infra/package.json` — Add WebSocket dependencies if needed
+- [x] `packages/infra/src/index.ts` — Update to export realtime and monitoring
+- [x] `packages/infra/SKILL.md` — Update to document new modules
 
 ---
 
@@ -134,7 +134,7 @@
 
 - [x] `packages/cli/src/generators/app.generator.ts` — Copy app template, replace placeholders, install deps
 - [x] `packages/cli/src/generators/module.generator.ts` — Generate types + service + controller + test for an API module
-- [ ] `packages/cli/src/generators/component.generator.ts` — Generate React component from template (needs @vibeonrails/web first)
+- [x] `packages/cli/src/generators/component.generator.ts` — Generate React component from template
 
 ### Utilities
 
@@ -283,24 +283,24 @@
 
 ### Frontend (web) — Blocked by @vibeonrails/web (Project 4)
 
-- [ ] `templates/app/src/web/App.tsx` — React app entry with router + providers
-- [ ] `templates/app/src/web/pages/HomePage.tsx` — Landing page
-- [ ] `templates/app/src/web/pages/LoginPage.tsx` — Login form page
-- [ ] `templates/app/src/web/pages/RegisterPage.tsx` — Register form page
-- [ ] `templates/app/src/web/pages/DashboardPage.tsx` — Authenticated dashboard
-- [ ] `templates/app/src/web/pages/PostsPage.tsx` — Posts list page
-- [ ] `templates/app/src/web/pages/PostPage.tsx` — Single post view
-- [ ] `templates/app/src/web/routes/index.ts` — Route definitions (defineRoutes)
-- [ ] `templates/app/vite.config.ts` — Vite config for frontend build
-- [ ] `templates/app/index.html` — HTML entry point for Vite
+- [x] `templates/app/src/web/App.tsx` — React app entry with router + providers
+- [x] `templates/app/src/web/pages/HomePage.tsx` — Landing page
+- [x] `templates/app/src/web/pages/LoginPage.tsx` — Login form page
+- [x] `templates/app/src/web/pages/RegisterPage.tsx` — Register form page
+- [x] `templates/app/src/web/pages/DashboardPage.tsx` — Authenticated dashboard
+- [x] `templates/app/src/web/pages/PostsPage.tsx` — Posts list page
+- [x] `templates/app/src/web/pages/PostPage.tsx` — Single post view
+- [x] `templates/app/src/web/routes/index.ts` — Route definitions (defineRoutes)
+- [x] `templates/app/vite.config.ts` — Vite config for frontend build
+- [x] `templates/app/index.html` — HTML entry point for Vite
 
 ### SKILL.md Files
 
 - [x] `templates/app/SKILL.md` — Root project skill
 - [x] `templates/app/src/modules/SKILL.md` — Modules skill (module creation pattern)
 - [x] `templates/app/src/database/SKILL.md` — Database skill (schema + migrations + seeds)
-- [ ] `templates/app/src/web/SKILL.md` — Web frontend skill (blocked by @vibeonrails/web)
-- [ ] `templates/app/src/web/components/SKILL.md` — Components skill (blocked by @vibeonrails/web)
+- [x] `templates/app/src/web/SKILL.md` — Web frontend skill (blocked by @vibeonrails/web)
+- [x] `templates/app/src/web/components/SKILL.md` — Components skill (blocked by @vibeonrails/web)
 
 ### Planning System
 
@@ -324,230 +324,230 @@
 
 ---
 
-## Project 7: Component Template — What `vibe generate component` Creates
+## Project 7: Component Template — What `vibe generate component` Creates ✅
 
-- [ ] `templates/component/{{Name}}.tsx.hbs` — React component template
-- [ ] `templates/component/{{Name}}.test.tsx.hbs` — Component test template
+- [x] `templates/component/{{Name}}.tsx.hbs` — React component template
+- [x] `templates/component/{{Name}}.test.tsx.hbs` — Component test template
 
 ---
 
-## Project 8: @vibeonrails/payments — Feature Package (Stripe)
+## Project 8: @vibeonrails/payments — Feature Package (Stripe) ✅
 
 ### Package Setup
 
-- [ ] `packages/features/payments/package.json` — Package config with stripe dependency
-- [ ] `packages/features/payments/tsconfig.json` — TypeScript config
-- [ ] `packages/features/payments/tsup.config.ts` — Build config
+- [x] `packages/features/payments/package.json` — Package config with stripe dependency
+- [x] `packages/features/payments/tsconfig.json` — TypeScript config
+- [x] `packages/features/payments/tsup.config.ts` — Build config
 
 ### Implementation
 
-- [ ] `packages/features/payments/src/checkout.ts` — createCheckout() for one-time payments
-- [ ] `packages/features/payments/src/subscription.ts` — createSubscription(), cancelSubscription(), changeplan()
-- [ ] `packages/features/payments/src/customer.ts` — createCustomer(), getCustomer(), customer portal URL
-- [ ] `packages/features/payments/src/webhook.ts` — Webhook handler with event type registry (on/handleWebhook)
-- [ ] `packages/features/payments/src/index.ts` — Barrel export
+- [x] `packages/features/payments/src/checkout.ts` — createCheckout() for one-time payments
+- [x] `packages/features/payments/src/subscription.ts` — createSubscription(), cancelSubscription(), changeplan()
+- [x] `packages/features/payments/src/customer.ts` — createCustomer(), getCustomer(), customer portal URL
+- [x] `packages/features/payments/src/webhook.ts` — Webhook handler with event type registry (on/handleWebhook)
+- [x] `packages/features/payments/src/index.ts` — Barrel export
 
 ### Tests
 
-- [ ] `packages/features/payments/src/checkout.test.ts` — Checkout tests (mocked Stripe)
-- [ ] `packages/features/payments/src/webhook.test.ts` — Webhook handler tests
+- [x] `packages/features/payments/src/checkout.test.ts` — Checkout tests (mocked Stripe)
+- [x] `packages/features/payments/src/webhook.test.ts` — Webhook handler tests
 
 ### Docs
 
-- [ ] `packages/features/payments/SKILL.md` — Payments skill document
+- [x] `packages/features/payments/SKILL.md` — Payments skill document
 
 ---
 
-## Project 9: @vibeonrails/admin — Feature Package (Admin Panel)
+## Project 9: @vibeonrails/admin — Feature Package (Admin Panel) ✅
 
 ### Package Setup
 
-- [ ] `packages/features/admin/package.json` — Package config (depends on @vibeonrails/web)
-- [ ] `packages/features/admin/tsconfig.json` — TypeScript config
-- [ ] `packages/features/admin/tsup.config.ts` — Build config
+- [x] `packages/features/admin/package.json` — Package config (depends on @vibeonrails/web)
+- [x] `packages/features/admin/tsconfig.json` — TypeScript config
+- [x] `packages/features/admin/tsup.config.ts` — Build config
 
 ### Components
 
-- [ ] `packages/features/admin/src/components/AdminLayout.tsx` — Admin panel layout (sidebar + content)
-- [ ] `packages/features/admin/src/components/ResourceList.tsx` — Auto-generated list view with search/filter/pagination
-- [ ] `packages/features/admin/src/components/ResourceForm.tsx` — Auto-generated create/edit form from schema
-- [ ] `packages/features/admin/src/components/ResourceDetail.tsx` — Auto-generated detail view
-- [ ] `packages/features/admin/src/components/Dashboard.tsx` — Admin dashboard with stats
+- [x] `packages/features/admin/src/components/AdminLayout.tsx` — Admin panel layout (sidebar + content)
+- [x] `packages/features/admin/src/components/ResourceList.tsx` — Auto-generated list view with search/filter/pagination
+- [x] `packages/features/admin/src/components/ResourceForm.tsx` — Auto-generated create/edit form from schema
+- [x] `packages/features/admin/src/components/ResourceDetail.tsx` — Auto-generated detail view
+- [x] `packages/features/admin/src/components/Dashboard.tsx` — Admin dashboard with stats
 
 ### Core
 
-- [ ] `packages/features/admin/src/config.ts` — Admin config (defineAdmin, resource registration)
-- [ ] `packages/features/admin/src/routes.ts` — Admin route generation (/admin/:resource, /admin/:resource/new, etc.)
-- [ ] `packages/features/admin/src/hooks/useResource.ts` — Hook for fetching/mutating admin resources
-- [ ] `packages/features/admin/src/index.ts` — Barrel export
+- [x] `packages/features/admin/src/config.ts` — Admin config (defineAdmin, resource registration)
+- [x] `packages/features/admin/src/routes.ts` — Admin route generation (/admin/:resource, /admin/:resource/new, etc.)
+- [x] `packages/features/admin/src/hooks/useResource.ts` — Hook for fetching/mutating admin resources
+- [x] `packages/features/admin/src/index.ts` — Barrel export
 
 ### Tests
 
-- [ ] `packages/features/admin/src/components/ResourceList.test.tsx` — ResourceList tests
+- [x] `packages/features/admin/src/components/ResourceList.test.tsx` — ResourceList tests
 
 ### Docs
 
-- [ ] `packages/features/admin/SKILL.md` — Admin skill document
+- [x] `packages/features/admin/SKILL.md` — Admin skill document
 
 ---
 
-## Project 10: @vibeonrails/support — Feature Package (Helpdesk)
+## Project 10: @vibeonrails/support — Feature Package (Helpdesk) ✅
 
 ### Package Setup
 
-- [ ] `packages/features/support/package.json` — Package config
-- [ ] `packages/features/support/tsconfig.json` — TypeScript config
-- [ ] `packages/features/support/tsup.config.ts` — Build config
+- [x] `packages/features/support/package.json` — Package config
+- [x] `packages/features/support/tsconfig.json` — TypeScript config
+- [x] `packages/features/support/tsup.config.ts` — Build config
 
 ### Implementation
 
-- [ ] `packages/features/support/src/knowledge-base/loader.ts` — Load Markdown knowledge base articles
-- [ ] `packages/features/support/src/tickets/ticket.service.ts` — Ticket CRUD (create, assign, resolve, close)
-- [ ] `packages/features/support/src/tickets/ticket.types.ts` — Ticket schemas
-- [ ] `packages/features/support/src/chat/ChatWidget.tsx` — Embeddable chat widget component
-- [ ] `packages/features/support/src/chat/chat.service.ts` — Chat message handling + AI routing
-- [ ] `packages/features/support/src/index.ts` — Barrel export
+- [x] `packages/features/support/src/knowledge-base/loader.ts` — Load Markdown knowledge base articles
+- [x] `packages/features/support/src/tickets/ticket.service.ts` — Ticket CRUD (create, assign, resolve, close)
+- [x] `packages/features/support/src/tickets/ticket.types.ts` — Ticket schemas
+- [x] `packages/features/support/src/chat/ChatWidget.tsx` — Embeddable chat widget component
+- [x] `packages/features/support/src/chat/chat.service.ts` — Chat message handling + AI routing
+- [x] `packages/features/support/src/index.ts` — Barrel export
 
 ### Docs
 
-- [ ] `packages/features/support/SKILL.md` — Support skill document
+- [x] `packages/features/support/SKILL.md` — Support skill document
 
 ---
 
-## Project 11: @vibeonrails/sales — Feature Package (AI Sales Agent)
+## Project 11: @vibeonrails/sales — Feature Package (AI Sales Agent) ✅
 
 ### Package Setup
 
-- [ ] `packages/features/sales/package.json` — Package config
-- [ ] `packages/features/sales/tsconfig.json` — TypeScript config
-- [ ] `packages/features/sales/tsup.config.ts` — Build config
+- [x] `packages/features/sales/package.json` — Package config
+- [x] `packages/features/sales/tsconfig.json` — TypeScript config
+- [x] `packages/features/sales/tsup.config.ts` — Build config
 
 ### Implementation
 
-- [ ] `packages/features/sales/src/config.ts` — Sales agent config (name, tone, channels, qualification questions)
-- [ ] `packages/features/sales/src/agent.ts` — AI sales agent logic (FAQ, qualify, book demo, handoff)
-- [ ] `packages/features/sales/src/channels/webchat.ts` — Webchat channel integration
-- [ ] `packages/features/sales/src/channels/whatsapp.ts` — WhatsApp channel integration
-- [ ] `packages/features/sales/src/channels/telegram.ts` — Telegram channel integration
-- [ ] `packages/features/sales/src/index.ts` — Barrel export
+- [x] `packages/features/sales/src/config.ts` — Sales agent config (name, tone, channels, qualification questions)
+- [x] `packages/features/sales/src/agent.ts` — AI sales agent logic (FAQ, qualify, book demo, handoff)
+- [x] `packages/features/sales/src/channels/webchat.ts` — Webchat channel integration
+- [x] `packages/features/sales/src/channels/whatsapp.ts` — WhatsApp channel integration
+- [x] `packages/features/sales/src/channels/telegram.ts` — Telegram channel integration
+- [x] `packages/features/sales/src/index.ts` — Barrel export
 
 ### Docs
 
-- [ ] `packages/features/sales/SKILL.md` — Sales skill document
+- [x] `packages/features/sales/SKILL.md` — Sales skill document
 
 ---
 
-## Project 12: @vibeonrails/marketing — Feature Package (Marketing Automation)
+## Project 12: @vibeonrails/marketing — Feature Package (Marketing Automation) ✅
 
 ### Package Setup
 
-- [ ] `packages/features/marketing/package.json` — Package config
-- [ ] `packages/features/marketing/tsconfig.json` — TypeScript config
-- [ ] `packages/features/marketing/tsup.config.ts` — Build config
+- [x] `packages/features/marketing/package.json` — Package config
+- [x] `packages/features/marketing/tsconfig.json` — TypeScript config
+- [x] `packages/features/marketing/tsup.config.ts` — Build config
 
 ### Implementation
 
-- [ ] `packages/features/marketing/src/content/generate.ts` — AI content generation (social posts, emails)
-- [ ] `packages/features/marketing/src/social/schedule.ts` — Multi-platform social media scheduling
-- [ ] `packages/features/marketing/src/social/platforms.ts` — Platform adapters (Twitter, LinkedIn)
-- [ ] `packages/features/marketing/src/sequences/define.ts` — defineSequence() for email drip campaigns
-- [ ] `packages/features/marketing/src/sequences/runner.ts` — Sequence execution engine
-- [ ] `packages/features/marketing/src/index.ts` — Barrel export
+- [x] `packages/features/marketing/src/content/generate.ts` — AI content generation (social posts, emails)
+- [x] `packages/features/marketing/src/social/schedule.ts` — Multi-platform social media scheduling
+- [x] `packages/features/marketing/src/social/platforms.ts` — Platform adapters (Twitter, LinkedIn)
+- [x] `packages/features/marketing/src/sequences/define.ts` — defineSequence() for email drip campaigns
+- [x] `packages/features/marketing/src/sequences/runner.ts` — Sequence execution engine
+- [x] `packages/features/marketing/src/index.ts` — Barrel export
 
 ### Docs
 
-- [ ] `packages/features/marketing/SKILL.md` — Marketing skill document
+- [x] `packages/features/marketing/SKILL.md` — Marketing skill document
 
 ---
 
-## Project 13: Content System — Email & Website Templates
+## Project 13: Content System — Email & Website Templates ✅
 
 > These go inside the app template. Content is separate from code.
 
 ### Email Templates
 
-- [ ] `templates/app/content/locales/en/emails/welcome.md` — Welcome email template
-- [ ] `templates/app/content/locales/en/emails/password-reset.md` — Password reset email template
-- [ ] `templates/app/content/locales/en/emails/email-verify.md` — Email verification template
-- [ ] `templates/app/content/locales/en/emails/invoice.md` — Invoice email template
+- [x] `templates/app/content/locales/en/emails/welcome.md` — Welcome email template
+- [x] `templates/app/content/locales/en/emails/password-reset.md` — Password reset email template
+- [x] `templates/app/content/locales/en/emails/email-verify.md` — Email verification template
+- [x] `templates/app/content/locales/en/emails/invoice.md` — Invoice email template
 
 ### Website Content
 
-- [ ] `templates/app/content/locales/en/website/landing.md` — Landing page copy
-- [ ] `templates/app/content/locales/en/website/pricing.md` — Pricing page copy
-- [ ] `templates/app/content/locales/en/website/about.md` — About page copy
+- [x] `templates/app/content/locales/en/website/landing.md` — Landing page copy
+- [x] `templates/app/content/locales/en/website/pricing.md` — Pricing page copy
+- [x] `templates/app/content/locales/en/website/about.md` — About page copy
 
 ### App Content
 
-- [ ] `templates/app/content/locales/en/app/onboarding.md` — Onboarding flow copy
-- [ ] `templates/app/content/locales/en/app/errors.md` — User-facing error messages
+- [x] `templates/app/content/locales/en/app/onboarding.md` — Onboarding flow copy
+- [x] `templates/app/content/locales/en/app/errors.md` — User-facing error messages
 
 ### Brand
 
-- [ ] `templates/app/content/brand/voice.md` — Brand voice guidelines
-- [ ] `templates/app/content/brand/terminology.md` — Product terminology glossary
+- [x] `templates/app/content/brand/voice.md` — Brand voice guidelines
+- [x] `templates/app/content/brand/terminology.md` — Product terminology glossary
 
 ### Content SKILL
 
-- [ ] `templates/app/content/SKILL.md` — How to work with the content system
+- [x] `templates/app/content/SKILL.md` — How to work with the content system
 
 ---
 
-## Project 14: Documentation Site
+## Project 14: Documentation Site ✅
 
 ### Setup
 
-- [ ] `docs/package.json` — Docs site package (Astro or similar SSG)
-- [ ] `docs/astro.config.ts` — SSG configuration
+- [x] `docs/package.json` — Docs site package (Astro or similar SSG)
+- [x] `docs/astro.config.ts` — SSG configuration
 
 ### Pages
 
-- [ ] `docs/src/pages/index.md` — Documentation home page
-- [ ] `docs/src/pages/getting-started.md` — Quick start guide (create project, add module, run dev)
-- [ ] `docs/src/pages/core/api.md` — @vibeonrails/core API reference
-- [ ] `docs/src/pages/core/database.md` — Database module reference
-- [ ] `docs/src/pages/core/security.md` — Security module reference
-- [ ] `docs/src/pages/infra/overview.md` — @vibeonrails/infra overview
-- [ ] `docs/src/pages/web/css-system.md` — CSS system documentation
-- [ ] `docs/src/pages/web/components.md` — Component library reference
-- [ ] `docs/src/pages/cli/commands.md` — CLI commands reference
-- [ ] `docs/src/pages/features/payments.md` — Payments feature docs
-- [ ] `docs/src/pages/features/admin.md` — Admin feature docs
-- [ ] `docs/src/pages/tutorials/first-module.md` — Tutorial: Create your first module
-- [ ] `docs/src/pages/tutorials/authentication.md` — Tutorial: Add authentication
-- [ ] `docs/src/pages/tutorials/deploy.md` — Tutorial: Deploy to production
+- [x] `docs/src/pages/index.md` — Documentation home page
+- [x] `docs/src/pages/getting-started.md` — Quick start guide (create project, add module, run dev)
+- [x] `docs/src/pages/core/api.md` — @vibeonrails/core API reference
+- [x] `docs/src/pages/core/database.md` — Database module reference
+- [x] `docs/src/pages/core/security.md` — Security module reference
+- [x] `docs/src/pages/infra/overview.md` — @vibeonrails/infra overview
+- [x] `docs/src/pages/web/css-system.md` — CSS system documentation
+- [x] `docs/src/pages/web/components.md` — Component library reference
+- [x] `docs/src/pages/cli/commands.md` — CLI commands reference
+- [x] `docs/src/pages/features/payments.md` — Payments feature docs
+- [x] `docs/src/pages/features/admin.md` — Admin feature docs
+- [x] `docs/src/pages/tutorials/first-module.md` — Tutorial: Create your first module
+- [x] `docs/src/pages/tutorials/authentication.md` — Tutorial: Add authentication
+- [x] `docs/src/pages/tutorials/deploy.md` — Tutorial: Deploy to production
 
 ---
 
-## Project 15: Example Applications
+## Project 15: Example Applications ✅
 
 ### Basic Example
 
-- [ ] `examples/basic/package.json` — Minimal VoR app (auth + posts)
-- [ ] `examples/basic/src/main.ts` — App entry
-- [ ] `examples/basic/src/router.ts` — Router with auth + post modules
-- [ ] `examples/basic/README.md` — How to run the example
+- [x] `examples/basic/package.json` — Minimal VoR app (auth + posts)
+- [x] `examples/basic/src/main.ts` — App entry
+- [x] `examples/basic/src/router.ts` — Router with auth + post modules
+- [x] `examples/basic/README.md` — How to run the example
 
 ### Full SaaS Example
 
-- [ ] `examples/saas/package.json` — Full SaaS app (auth, users, posts, payments, admin)
-- [ ] `examples/saas/src/main.ts` — App entry
-- [ ] `examples/saas/src/router.ts` — Router with all modules
-- [ ] `examples/saas/README.md` — How to run the example
+- [x] `examples/saas/package.json` — Full SaaS app (auth, users, posts, payments, admin)
+- [x] `examples/saas/src/main.ts` — App entry
+- [x] `examples/saas/src/router.ts` — Router with all modules
+- [x] `examples/saas/README.md` — How to run the example
 
 ---
 
-## Project 16: @vibeonrails/mobile — Future Package (React Native)
+## Project 16: @vibeonrails/mobile — Future Package (React Native) (deferred)
 
 > Lower priority. Listed for completeness from vision doc.
 
-- [ ] `packages/mobile/package.json` — Package config with React Native deps
-- [ ] `packages/mobile/tsconfig.json` — TypeScript config
-- [ ] `packages/mobile/src/components/index.ts` — Mobile component exports
-- [ ] `packages/mobile/src/screens/index.ts` — Screen component exports
-- [ ] `packages/mobile/src/navigation/index.ts` — Navigation setup
-- [ ] `packages/mobile/src/index.ts` — Barrel export
-- [ ] `packages/mobile/SKILL.md` — Mobile skill document
+- [x] `packages/mobile/package.json` — Package config with React Native deps
+- [x] `packages/mobile/tsconfig.json` — TypeScript config
+- [x] `packages/mobile/src/components/index.ts` — Mobile component exports
+- [x] `packages/mobile/src/screens/index.ts` — Screen component exports
+- [x] `packages/mobile/src/navigation/index.ts` — Navigation setup
+- [x] `packages/mobile/src/index.ts` — Barrel export
+- [x] `packages/mobile/SKILL.md` — Mobile skill document
 
 ---
 
