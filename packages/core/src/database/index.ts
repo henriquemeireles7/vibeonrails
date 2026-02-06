@@ -1,5 +1,5 @@
 /**
- * @aor/core/database - Database module barrel export
+ * @vibeonrails/core/database - Database module barrel export
  */
 
 export { createDatabase, type Database } from './client.js';

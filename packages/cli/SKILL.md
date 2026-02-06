@@ -1,8 +1,8 @@
-# @aor/cli — CLI for Agent on Rails
+# @vibeonrails/cli — CLI for Vibe on Rails
 
 ## What This Package Does
 
-The CLI that makes Agent on Rails usable. It scaffolds new projects, generates
+The CLI that makes Vibe on Rails usable. It scaffolds new projects, generates
 modules/components from templates, and wraps common dev tasks (dev server, db
 operations, build, deploy).
 
@@ -10,23 +10,23 @@ operations, build, deploy).
 
 | Command | Alias | Description |
 |---------|-------|-------------|
-| `aor create <name>` | `create-aor <name>` | Scaffold a new project from the app template |
-| `aor generate module <name>` | `aor g m <name>` | Generate a module (types, service, controller, test) |
-| `aor dev` | | Start development server with hot reload |
-| `aor db migrate` | | Run database migrations |
-| `aor db seed` | | Run database seeds |
-| `aor db studio` | | Open Drizzle Studio |
-| `aor db reset` | | Drop + migrate + seed |
-| `aor build` | | Production build |
-| `aor deploy [target]` | | Deploy to cloud (coming soon) |
+| `vibe create <name>` | `create-vibe <name>` | Scaffold a new project from the app template |
+| `vibe generate module <name>` | `vibe g m <name>` | Generate a module (types, service, controller, test) |
+| `vibe dev` | | Start development server with hot reload |
+| `vibe db migrate` | | Run database migrations |
+| `vibe db seed` | | Run database seeds |
+| `vibe db studio` | | Open Drizzle Studio |
+| `vibe db reset` | | Drop + migrate + seed |
+| `vibe build` | | Production build |
+| `vibe deploy [target]` | | Deploy to cloud (coming soon) |
 
 ## Architecture
 
 ```
 packages/cli/
 ├── bin/                    # Entry points (#!/usr/bin/env node)
-│   ├── aor.js
-│   └── create-aor.js
+│   ├── vibe.js
+│   └── create-vibe.js
 ├── src/
 │   ├── index.ts            # Commander program setup
 │   ├── commands/            # CLI command definitions

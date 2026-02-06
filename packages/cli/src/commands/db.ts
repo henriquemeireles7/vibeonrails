@@ -3,7 +3,7 @@ import { execSync } from "node:child_process";
 import chalk from "chalk";
 
 /**
- * `aor db <action>` — Database operations (migrate, seed, reset, studio).
+ * `vibe db <action>` — Database operations (migrate, seed, reset, studio).
  */
 export function dbCommand(): Command {
   const db = new Command("db").description("Database operations");

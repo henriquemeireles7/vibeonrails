@@ -105,9 +105,9 @@ This helps AI agents understand the codebase structure.
 
 All packages export via barrel pattern:
 ```typescript
-import { createServer } from '@aor/core/api';
-import { createDatabase } from '@aor/core/database';
-import { logger } from '@aor/infra/logging';
+import { createServer } from '@vibeonrails/core/api';
+import { createDatabase } from '@vibeonrails/core/database';
+import { logger } from '@vibeonrails/infra/logging';
 ```
 
 ### Colocated Tests

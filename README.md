@@ -1,8 +1,8 @@
-# Agent on Rails
+# Vibe on Rails
 
-> The TypeScript Framework AI Agents Understand
+> The TypeScript Framework for Vibe Coding
 
-Agent on Rails (AoR) is a full-stack TypeScript framework designed from the ground up
+Vibe on Rails (VoR) is a full-stack TypeScript framework designed from the ground up
 for AI-assisted development. Every folder has a SKILL.md that teaches AI agents how
 to work with it. Predictable conventions mean zero ambiguity for both humans and AI.
 
@@ -10,9 +10,9 @@ to work with it. Predictable conventions mean zero ambiguity for both humans and
 
 ```
 packages/
-├── core/       @aor/core   — API (Hono + tRPC), Database (Drizzle), Security (JWT + Argon2)
-├── infra/      @aor/infra  — Health, Logging, Queue (BullMQ), Email (Resend), Cache, Storage
-└── cli/        @aor/cli    — CLI: create projects, generate modules, dev/build/db commands
+├── core/       @vibeonrails/core   — API (Hono + tRPC), Database (Drizzle), Security (JWT + Argon2)
+├── infra/      @vibeonrails/infra  — Health, Logging, Queue (BullMQ), Email (Resend), Cache, Storage
+└── cli/        @vibeonrails/cli    — CLI: create projects, generate modules, dev/build/db commands
 ```
 
 ## Tech Stack
@@ -34,7 +34,7 @@ packages/
 
 ```bash
 # Create a new project
-npx create-aor my-app
+npx create-vibe my-app
 cd my-app
 
 # Configure environment
@@ -48,8 +48,8 @@ pnpm run dev
 
 ```bash
 # Generate a full module (types, service, controller, test)
-npx aor generate module user
-npx aor generate module blog-post
+npx vibe generate module user
+npx vibe generate module blog-post
 ```
 
 ## Getting Started (Monorepo Development)
@@ -100,7 +100,7 @@ packages/{name}/
 
 ## Packages
 
-### @aor/core
+### @vibeonrails/core
 
 The core package provides:
 
@@ -110,12 +110,12 @@ The core package provides:
 - **Shared** — `AppError`, `NotFoundError`, `ValidationError`, utility functions
 
 ```typescript
-import { createServer, router, protectedProcedure } from '@aor/core/api';
-import { createDatabase } from '@aor/core/database';
-import { signAccessToken, hashPassword } from '@aor/core/security';
+import { createServer, router, protectedProcedure } from '@vibeonrails/core/api';
+import { createDatabase } from '@vibeonrails/core/database';
+import { signAccessToken, hashPassword } from '@vibeonrails/core/security';
 ```
 
-### @aor/infra
+### @vibeonrails/infra
 
 The infrastructure package provides:
 
@@ -127,26 +127,26 @@ The infrastructure package provides:
 - **Storage** — `createStorage()` with S3
 
 ```typescript
-import { registerHealthCheck } from '@aor/infra/health';
-import { logger } from '@aor/infra/logging';
-import { defineJob, enqueue } from '@aor/infra/queue';
-import { sendEmail } from '@aor/infra/email';
+import { registerHealthCheck } from '@vibeonrails/infra/health';
+import { logger } from '@vibeonrails/infra/logging';
+import { defineJob, enqueue } from '@vibeonrails/infra/queue';
+import { sendEmail } from '@vibeonrails/infra/email';
 ```
 
-### @aor/cli
+### @vibeonrails/cli
 
 The CLI that makes the framework usable:
 
-- **`aor create <name>`** — Scaffold a new project from the app template
-- **`aor generate module <name>`** — Generate module with types, service, controller, test
-- **`aor dev`** — Start development server with hot reload
-- **`aor db migrate|seed|reset|studio`** — Database operations
-- **`aor build`** — Production build
+- **`vibe create <name>`** — Scaffold a new project from the app template
+- **`vibe generate module <name>`** — Generate module with types, service, controller, test
+- **`vibe dev`** — Start development server with hot reload
+- **`vibe db migrate|seed|reset|studio`** — Database operations
+- **`vibe build`** — Production build
 
 ```bash
-npx create-aor my-app
-npx aor generate module user
-npx aor dev
+npx create-vibe my-app
+npx vibe generate module user
+npx vibe dev
 ```
 
 ## Development

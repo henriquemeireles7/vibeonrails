@@ -3,7 +3,7 @@ import { execSync } from "node:child_process";
 import chalk from "chalk";
 
 /**
- * `aor dev` — Start the development server.
+ * `vibe dev` — Start the development server.
  */
 export function devCommand(): Command {
   return new Command("dev")

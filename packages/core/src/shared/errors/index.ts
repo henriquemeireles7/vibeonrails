@@ -1,5 +1,5 @@
 /**
- * @aor/core - Error Handling System
+ * @vibeonrails/core - Error Handling System
  *
  * Provides structured, AI-friendly error classes with error codes,
  * locations, and suggested fixes. Every error includes a documentation link.

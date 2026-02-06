@@ -5,7 +5,7 @@
  * This is the foundation for all API endpoints.
  *
  * Usage in controllers:
- *   import { router, publicProcedure, protectedProcedure } from '@aor/core/api';
+ *   import { router, publicProcedure, protectedProcedure } from '@vibeonrails/core/api';
  */
 
 import { initTRPC, TRPCError } from '@trpc/server';

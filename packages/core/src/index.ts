@@ -1,5 +1,5 @@
 /**
- * @aor/core - Agent on Rails Core Package
+ * @vibeonrails/core - Vibe on Rails Core Package
  *
  * The core package provides the fundamental building blocks:
  * - API: Hono server + tRPC for type-safe endpoints
@@ -8,9 +8,9 @@
  * - Shared: Error classes, types, and utilities
  *
  * Import from sub-paths for tree-shaking:
- *   import { createServer } from '@aor/core/api';
- *   import { createDatabase } from '@aor/core/database';
- *   import { signAccessToken } from '@aor/core/security';
+ *   import { createServer } from '@vibeonrails/core/api';
+ *   import { createDatabase } from '@vibeonrails/core/database';
+ *   import { signAccessToken } from '@vibeonrails/core/security';
  */
 
 export * from './api/index.js';

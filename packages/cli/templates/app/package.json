@@ -16,8 +16,8 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@aor/core": "workspace:*",
-    "@aor/infra": "workspace:*",
+    "@vibeonrails/core": "workspace:*",
+    "@vibeonrails/infra": "workspace:*",
     "hono": "^4.0.0",
     "drizzle-orm": "^0.29.0",
     "postgres": "^3.4.0",

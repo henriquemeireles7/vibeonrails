@@ -1,5 +1,5 @@
 /**
- * @aor/core/api - API module barrel export
+ * @vibeonrails/core/api - API module barrel export
  */
 
 export { router, publicProcedure, protectedProcedure, middleware } from './trpc.js';

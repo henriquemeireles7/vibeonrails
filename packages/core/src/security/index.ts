@@ -1,5 +1,5 @@
 /**
- * @aor/core/security - Security module barrel export
+ * @vibeonrails/core/security - Security module barrel export
  */
 
 export * from './auth/index.js';

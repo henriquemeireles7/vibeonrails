@@ -20,7 +20,7 @@ export interface GenerateAppResult {
 }
 
 /**
- * Scaffold a new Agent on Rails project from the app template.
+ * Scaffold a new Vibe on Rails project from the app template.
  *
  * @param name   The project name (e.g. "my-app", "MyApp")
  * @param outDir The parent directory to create the project folder in

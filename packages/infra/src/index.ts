@@ -1,5 +1,5 @@
 /**
- * @aor/infra - Agent on Rails Infrastructure Package
+ * @vibeonrails/infra - Vibe on Rails Infrastructure Package
  *
  * Provides infrastructure modules for production applications:
  * - Health: Registry-based health check system
@@ -10,9 +10,9 @@
  * - Storage: S3-compatible file storage
  *
  * Import from sub-paths for tree-shaking:
- *   import { registerHealthCheck } from '@aor/infra/health';
- *   import { logger } from '@aor/infra/logging';
- *   import { defineJob, enqueue } from '@aor/infra/queue';
+ *   import { registerHealthCheck } from '@vibeonrails/infra/health';
+ *   import { logger } from '@vibeonrails/infra/logging';
+ *   import { defineJob, enqueue } from '@vibeonrails/infra/queue';
  */
 
 export * from './health/index.js';

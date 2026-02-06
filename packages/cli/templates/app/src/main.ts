@@ -1,4 +1,4 @@
-import { createServer } from "@aor/core/api";
+import { createServer } from "@vibeonrails/core/api";
 import { appRouter } from "./router.js";
 
 const port = Number(process.env["PORT"] ?? 3000);

@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { ensureDir, replaceInFile, copyDir } from "./fs.js";
 
 describe("fs utilities", () => {
-  const testDir = join(tmpdir(), "aor-cli-fs-test-" + Date.now());
+  const testDir = join(tmpdir(), "vibe-cli-fs-test-" + Date.now());
 
   beforeEach(() => {
     mkdirSync(testDir, { recursive: true });

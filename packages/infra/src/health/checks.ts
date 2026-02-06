@@ -5,7 +5,7 @@
  * and the health endpoint aggregates them.
  *
  * Usage:
- *   import { registerHealthCheck, runHealthChecks } from '@aor/infra/health';
+ *   import { registerHealthCheck, runHealthChecks } from '@vibeonrails/infra/health';
  *
  *   registerHealthCheck('database', async () => {
  *     await db.execute(sql`SELECT 1`);

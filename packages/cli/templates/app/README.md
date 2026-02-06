@@ -1,6 +1,6 @@
 # {{projectName}}
 
-Built with [Agent on Rails](https://github.com/vibeonrails/agent-on-rails) — The TypeScript Framework AI Agents Understand.
+Built with [Vibe on Rails](https://github.com/vibeonrails/vibeonrails) — The TypeScript Framework for Vibe Coding.
 
 ## Getting Started
 
@@ -36,7 +36,7 @@ src/
 ├── main.ts           # Server entry point
 ├── router.ts         # Root tRPC router (merges all modules)
 ├── database/         # Drizzle config and seeds
-└── modules/          # Feature modules (generate with `aor generate module <name>`)
+└── modules/          # Feature modules (generate with `vibe generate module <name>`)
     └── <module>/
         ├── types.ts              # Zod schemas and TypeScript types
         ├── <module>.service.ts   # Business logic
@@ -49,8 +49,8 @@ src/
 
 ```bash
 # Generate a new module
-npx aor generate module user
-npx aor generate module blog-post
+npx vibe generate module user
+npx vibe generate module blog-post
 ```
 
 Each module comes with types, service, controller, test, and barrel export — all wired up and ready to use.

@@ -5,7 +5,7 @@
  * logs for development. Supports child loggers with inherited context.
  *
  * Usage:
- *   import { logger } from '@aor/infra/logging';
+ *   import { logger } from '@vibeonrails/infra/logging';
  *
  *   logger.info('Server started', { port: 3000 });
  *   const childLog = logger.child({ requestId: '123' });

@@ -12,8 +12,8 @@ import {
 const program = new Command();
 
 program
-  .name("aor")
-  .description("Agent on Rails — The TypeScript Framework AI Agents Understand")
+  .name("vibe")
+  .description("Vibe on Rails — The TypeScript Framework for Vibe Coding")
   .version("0.1.0");
 
 // Register all commands
@@ -24,13 +24,13 @@ program.addCommand(dbCommand());
 program.addCommand(buildCommand());
 program.addCommand(deployCommand());
 
-// If invoked as `create-aor`, auto-run the create command
+// If invoked as `create-vibe`, auto-run the create command
 const binName = basename(process.argv[1] ?? "");
-if (binName === "create-aor" || binName === "create-aor.js") {
-  // Rewrite argv so Commander sees: aor create <rest...>
+if (binName === "create-vibe" || binName === "create-vibe.js") {
+  // Rewrite argv so Commander sees: vibe create <rest...>
   process.argv = [
     process.argv[0]!,
-    "aor",
+    "vibe",
     "create",
     ...process.argv.slice(2),
   ];

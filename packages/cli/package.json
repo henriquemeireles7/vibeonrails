@@ -1,13 +1,13 @@
 {
-  "name": "@aor/cli",
+  "name": "@vibeonrails/cli",
   "version": "0.1.0",
   "type": "module",
-  "description": "CLI for Agent on Rails — scaffold projects, generate modules, and manage development",
+  "description": "CLI for Vibe on Rails — scaffold projects, generate modules, and manage development",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "aor": "./bin/aor.js",
-    "create-aor": "./bin/create-aor.js"
+    "vibe": "./bin/vibe.js",
+    "create-vibe": "./bin/create-vibe.js"
   },
   "exports": {
     ".": {

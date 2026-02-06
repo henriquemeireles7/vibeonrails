@@ -2,7 +2,7 @@ import { Command } from "commander";
 import chalk from "chalk";
 
 /**
- * `aor deploy <target>` — Deploy to cloud providers.
+ * `vibe deploy <target>` — Deploy to cloud providers.
  * Currently a placeholder — will be expanded in future releases.
  */
 export function deployCommand(): Command {

@@ -1,4 +1,4 @@
-import { createAppRouter } from "@aor/core/api";
+import { createAppRouter } from "@vibeonrails/core/api";
 
 // Import your module routers here:
 // import { userRouter } from "./modules/user/index.js";
