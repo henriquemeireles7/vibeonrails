@@ -1,0 +1,65 @@
+/* ---------------------------------------------------------------------------
+ * Motion — Animations & Transitions
+ * Import: @vibeonrails/web/styles/motion.css
+ * --------------------------------------------------------------------------- */
+
+/* --- Keyframes --- */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes slide-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Animation classes --- */
+.animate-fade-in { animation: fade-in var(--duration-normal) var(--ease-out); }
+.animate-fade-out { animation: fade-out var(--duration-normal) var(--ease-in); }
+.animate-slide-up { animation: slide-in-up var(--duration-normal) var(--ease-out); }
+.animate-slide-down { animation: slide-in-down var(--duration-normal) var(--ease-out); }
+.animate-slide-right { animation: slide-in-right var(--duration-normal) var(--ease-out); }
+.animate-scale-in { animation: scale-in var(--duration-normal) var(--ease-out); }
+.animate-spin { animation: spin 1s linear infinite; }
+
+/* --- Transition utilities --- */
+.transition-all { transition: all var(--duration-normal) var(--ease-default); }
+.transition-colors { transition: color var(--duration-fast) var(--ease-default),
+                                 background-color var(--duration-fast) var(--ease-default),
+                                 border-color var(--duration-fast) var(--ease-default); }
+.transition-opacity { transition: opacity var(--duration-normal) var(--ease-default); }
+.transition-transform { transition: transform var(--duration-normal) var(--ease-default); }
+
+/* --- Reduced motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

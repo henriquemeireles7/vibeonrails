@@ -22,6 +22,7 @@ packages/
 ├── core/          # API (Hono + tRPC), Database (Drizzle), Security (JWT + Argon2)
 ├── infra/         # Health, Logging, Queue, Email, Cache, Storage
 ├── cli/           # CLI: create projects, generate modules, dev/build/db commands
+├── web/           # Frontend: CSS system, React components, hooks, tRPC client, routing
 specs/             # Feature specifications
 ai-workflow/       # AI workflow templates, agents, rules, skills
 ```
@@ -70,10 +71,11 @@ pnpm run validate     # Full check: typecheck + lint + test + build + git add
 - ✅ @vibeonrails/core: API, Database, Security, Shared
 - ✅ @vibeonrails/infra: Health, Logging, Queue, Email, Cache, Storage
 - ✅ @vibeonrails/cli: create, generate module, dev, db, build commands
+- ✅ @vibeonrails/web: CSS system, React components (Button, Input, Select, Modal, Toast, DataTable, Card, List, FormField, PageLayout, Header, Sidebar), hooks (useAuth, useApi), routing (defineRoutes)
 - ✅ App Template (backend): config, auth, user, post modules, seeds, planning system
 - ✅ Module Template: types, service, controller, test, index, SKILL.md
 - ✅ AI workflow integrated
-- 📋 Next: @vibeonrails/web frontend package, then frontend app template
+- 📋 Next: @vibeonrails/core gaps (seeds, repos, sessions, OAuth), then @vibeonrails/infra gaps
 
 ## Important Notes
 - Don't add dependencies without discussing (keep the stack minimal)

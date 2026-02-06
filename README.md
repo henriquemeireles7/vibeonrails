@@ -12,6 +12,7 @@ to work with it. Predictable conventions mean zero ambiguity for both humans and
 packages/
 ├── core/       @vibeonrails/core   — API (Hono + tRPC), Database (Drizzle), Security (JWT + Argon2)
 ├── infra/      @vibeonrails/infra  — Health, Logging, Queue (BullMQ), Email (Resend), Cache, Storage
+├── web/        @vibeonrails/web    — CSS system, React components, hooks, tRPC client, routing
 └── cli/        @vibeonrails/cli    — CLI: create projects, generate modules, dev/build/db commands
 ```
 
@@ -131,6 +132,24 @@ import { registerHealthCheck } from '@vibeonrails/infra/health';
 import { logger } from '@vibeonrails/infra/logging';
 import { defineJob, enqueue } from '@vibeonrails/infra/queue';
 import { sendEmail } from '@vibeonrails/infra/email';
+```
+
+### @vibeonrails/web
+
+The frontend package provides:
+
+- **CSS System** — Design tokens, layout utilities, component classes, animations (all pure CSS)
+- **UI Components** — `Button`, `Input`, `Select`, `Modal`, `Toast`
+- **Form Components** — `FormField` (label + input + error wrapper)
+- **Data Components** — `DataTable` (sorting + pagination), `Card`, `List`
+- **Layout Components** — `PageLayout`, `Header`, `Sidebar`
+- **Hooks** — `createTRPCReact`, `createQueryClient`, `createTRPCLink`, `useAuth` (Zustand store)
+- **Routing** — `defineRoutes()`, `flattenRoutes()`, `getProtectedRoutes()`
+
+```typescript
+import { Button, Input, Modal, DataTable, PageLayout } from '@vibeonrails/web/components';
+import { useAuth, createTRPCReact, createTRPCLink } from '@vibeonrails/web/hooks';
+import { defineRoutes } from '@vibeonrails/web/routing';
 ```
 
 ### @vibeonrails/cli

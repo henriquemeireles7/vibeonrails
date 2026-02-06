@@ -158,76 +158,76 @@
 
 ---
 
-## Project 4: @vibeonrails/web — New Package (Frontend)
+## Project 4: @vibeonrails/web — New Package (Frontend) ✅
 
 > CSS system, React components, hooks, tRPC client. Published as `@vibeonrails/web`.
 
 ### Package Setup
 
-- [ ] `packages/web/package.json` — Package config with React 19, @trpc/react-query, zustand, @tanstack/react-query
-- [ ] `packages/web/tsconfig.json` — TypeScript config with JSX support
-- [ ] `packages/web/tsup.config.ts` — Build config with multiple entry points
-- [ ] `packages/web/vitest.config.ts` — Test config
+- [x] `packages/web/package.json` — Package config with React 18/19, @trpc/react-query, zustand, @tanstack/react-query
+- [x] `packages/web/tsconfig.json` — TypeScript config with JSX support
+- [x] `packages/web/tsup.config.ts` — Build config with multiple entry points
+- [x] `packages/web/vitest.config.ts` — Test config with jsdom environment
 
 ### CSS System — Design Tokens
 
-- [ ] `packages/web/src/styles/tokens.css` — CSS custom properties (colors, spacing, typography, radius, shadows, dark mode)
-- [ ] `packages/web/src/styles/layout.css` — Layout utilities (.stack, .row, .row-between, .row-center, gap classes)
-- [ ] `packages/web/src/styles/components.css` — Component classes (.btn, .btn-primary, .input, .card, .badge, etc.)
-- [ ] `packages/web/src/styles/motion.css` — Animation utilities (transitions, keyframes)
+- [x] `packages/web/src/styles/tokens.css` — CSS custom properties (colors, spacing, typography, radius, shadows, dark mode)
+- [x] `packages/web/src/styles/layout.css` — Layout utilities (.stack, .row, .row-between, .row-center, gap classes)
+- [x] `packages/web/src/styles/components.css` — Component classes (.btn, .btn-primary, .input, .card, .badge, etc.)
+- [x] `packages/web/src/styles/motion.css` — Animation utilities (transitions, keyframes, reduced-motion)
 
 ### UI Components
 
-- [ ] `packages/web/src/components/ui/Button.tsx` — Button component (primary, secondary, ghost variants + sizes + loading)
-- [ ] `packages/web/src/components/ui/Input.tsx` — Input component (text, email, password, with label + error)
-- [ ] `packages/web/src/components/ui/Select.tsx` — Select dropdown component
-- [ ] `packages/web/src/components/ui/Modal.tsx` — Modal/dialog component with overlay
-- [ ] `packages/web/src/components/ui/Toast.tsx` — Toast notification component (success, error, info)
-- [ ] `packages/web/src/components/ui/index.ts` — UI components barrel export
+- [x] `packages/web/src/components/ui/Button.tsx` — Button component (primary, secondary, ghost, danger + sizes + loading)
+- [x] `packages/web/src/components/ui/Input.tsx` — Input component (text, email, password, with label + error + helpText)
+- [x] `packages/web/src/components/ui/Select.tsx` — Select dropdown component
+- [x] `packages/web/src/components/ui/Modal.tsx` — Modal/dialog component (native <dialog>)
+- [x] `packages/web/src/components/ui/Toast.tsx` — Toast notification component (success, error, info, warning)
+- [x] `packages/web/src/components/ui/index.ts` — UI components barrel export
 
 ### Form Components
 
-- [ ] `packages/web/src/components/forms/FormField.tsx` — FormField wrapper (label + input + error message)
-- [ ] `packages/web/src/components/forms/index.ts` — Forms barrel export
+- [x] `packages/web/src/components/forms/FormField.tsx` — FormField wrapper (label + input + error message)
+- [x] `packages/web/src/components/forms/index.ts` — Forms barrel export
 
 ### Data Display Components
 
-- [ ] `packages/web/src/components/data/DataTable.tsx` — Data table with sorting, pagination
-- [ ] `packages/web/src/components/data/Card.tsx` — Card component
-- [ ] `packages/web/src/components/data/List.tsx` — List component
-- [ ] `packages/web/src/components/data/index.ts` — Data components barrel export
+- [x] `packages/web/src/components/data/DataTable.tsx` — Data table with sorting, pagination
+- [x] `packages/web/src/components/data/Card.tsx` — Card component
+- [x] `packages/web/src/components/data/List.tsx` — List component with click handler
+- [x] `packages/web/src/components/data/index.ts` — Data components barrel export
 
 ### Layout Components
 
-- [ ] `packages/web/src/components/layout/PageLayout.tsx` — Page layout with header + sidebar + content
-- [ ] `packages/web/src/components/layout/Header.tsx` — App header (logo, nav, user menu)
-- [ ] `packages/web/src/components/layout/Sidebar.tsx` — Sidebar navigation
-- [ ] `packages/web/src/components/layout/index.ts` — Layout components barrel export
+- [x] `packages/web/src/components/layout/PageLayout.tsx` — Page layout with header + sidebar + content
+- [x] `packages/web/src/components/layout/Header.tsx` — App header (logo, nav, actions)
+- [x] `packages/web/src/components/layout/Sidebar.tsx` — Sidebar navigation
+- [x] `packages/web/src/components/layout/index.ts` — Layout components barrel export
 
 ### Hooks
 
-- [ ] `packages/web/src/hooks/useApi.ts` — tRPC client hook setup (createTRPCReact, QueryClient provider)
-- [ ] `packages/web/src/hooks/useAuth.ts` — Zustand auth store (user, token, login, logout, isAuthenticated)
-- [ ] `packages/web/src/hooks/index.ts` — Hooks barrel export
+- [x] `packages/web/src/hooks/useApi.ts` — tRPC client helpers (createTRPCReact re-export, QueryClient, httpBatchLink)
+- [x] `packages/web/src/hooks/useAuth.ts` — Zustand auth store (user, token, login, logout, isAuthenticated)
+- [x] `packages/web/src/hooks/index.ts` — Hooks barrel export
 
 ### Routing
 
-- [ ] `packages/web/src/routing/defineRoutes.ts` — Type-safe route definition helper
-- [ ] `packages/web/src/routing/index.ts` — Routing barrel export
+- [x] `packages/web/src/routing/defineRoutes.ts` — Type-safe route definitions + flattenRoutes + getProtected/PublicRoutes
+- [x] `packages/web/src/routing/index.ts` — Routing barrel export
 
 ### Package Entry
 
-- [ ] `packages/web/src/index.ts` — Main barrel export for entire @vibeonrails/web package
+- [x] `packages/web/src/index.ts` — Main barrel export for entire @vibeonrails/web package
 
 ### Tests
 
-- [ ] `packages/web/src/components/ui/Button.test.tsx` — Button component tests
-- [ ] `packages/web/src/components/ui/Input.test.tsx` — Input component tests
-- [ ] `packages/web/src/hooks/useAuth.test.ts` — Auth hook tests
+- [x] `packages/web/src/components/ui/Button.test.tsx` — Button component tests (7 tests)
+- [x] `packages/web/src/components/ui/Input.test.tsx` — Input component tests (7 tests)
+- [x] `packages/web/src/hooks/useAuth.test.ts` — Auth hook tests (6 tests)
 
 ### Docs
 
-- [ ] `packages/web/SKILL.md` — Web package skill document
+- [x] `packages/web/SKILL.md` — Web package skill document
 
 ---
 
