@@ -1,0 +1,32 @@
+---
+description: Testing requirements and TDD workflow for VibeonRails
+globs: ["**/*.test.ts", "**/*.test.tsx"]
+alwaysApply: false
+---
+
+# Testing Requirements
+
+## Minimum Test Coverage: 80%
+
+Test Types (ALL required):
+1. **Unit Tests** - Individual functions, utilities, components
+2. **Integration Tests** - API endpoints, database operations
+3. **E2E Tests** - Critical user flows
+
+## Test-Driven Development
+
+MANDATORY workflow:
+1. Write test first (RED)
+2. Run test - it should FAIL
+3. Write minimal implementation (GREEN)
+4. Run test - it should PASS
+5. Refactor (IMPROVE)
+6. Verify coverage (80%+)
+
+## Rules
+
+- Use Vitest for all testing
+- Colocate tests: `feature.test.ts` next to `feature.ts`
+- Fix implementation, not tests (unless tests are wrong)
+- Check test isolation - tests should not depend on each other
+- Verify mocks are correct

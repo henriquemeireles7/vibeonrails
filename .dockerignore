@@ -7,7 +7,6 @@ coverage
 .turbo
 docs
 examples
-ai-workflow
 *.test.ts
 *.spec.ts
 .eslintrc*

@@ -1,0 +1,37 @@
+---
+description: Git workflow and commit conventions for VibeonRails
+alwaysApply: false
+---
+
+# Git Workflow
+
+## Commit Message Format
+
+```
+<type>: <description>
+```
+
+Types: feat, fix, refactor, docs, test, chore, perf, ci
+
+## Branch Naming
+
+- `feat/description` - New features
+- `fix/description` - Bug fixes
+- `refactor/description` - Code refactoring
+- `docs/description` - Documentation only
+- `test/description` - Test changes
+
+## Feature Implementation Workflow
+
+1. **Plan First** - Break down into steps, identify dependencies
+2. **TDD Approach** - Write tests first (RED), implement (GREEN), refactor (IMPROVE)
+3. **Code Review** - Review after writing code, address critical/high issues
+4. **Commit & Push** - Detailed messages, conventional commits format
+
+## Pull Request Workflow
+
+1. Analyze full commit history (not just latest commit)
+2. Use `git diff [base-branch]...HEAD` to see all changes
+3. Draft comprehensive PR summary
+4. Include test plan
+5. Push with `-u` flag if new branch

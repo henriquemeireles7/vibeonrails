@@ -1,0 +1,29 @@
+---
+description: Performance and build troubleshooting guidelines
+alwaysApply: false
+---
+
+# Performance & Build Guidelines
+
+## Build Troubleshooting
+
+If build fails:
+1. Analyze error messages carefully
+2. Fix incrementally (one error at a time)
+3. Run `pnpm run validate` after each fix
+4. Verify the full pipeline passes
+
+## Context Window Management
+
+For large tasks, break them into smaller steps:
+- Single-file edits are preferred
+- Extract utilities into separate files
+- Keep functions under 50 lines
+- Keep files under 400 lines
+
+## Runtime Performance
+
+- Use the cache layer (`@vibeonrails/infra/cache`) for expensive operations
+- Use the queue system (`@vibeonrails/infra/queue`) for background jobs
+- Use rate limiting for all public endpoints
+- Use circuit breakers for external service calls

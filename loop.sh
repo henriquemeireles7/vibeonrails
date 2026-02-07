@@ -67,7 +67,7 @@ check_prerequisites() {
     case "$MODE" in
         plan)
             if [[ ! -f "$PROMPT_PLAN" ]]; then
-                log_error "Missing $PROMPT_PLAN - copy from prompts/ in the ai-workflow template"
+                log_error "Missing $PROMPT_PLAN - create it in the prompts/ directory"
                 missing=1
             fi
             if [[ ! -d "specs" ]] || [[ -z "$(ls -A specs/ 2>/dev/null)" ]]; then
@@ -76,7 +76,7 @@ check_prerequisites() {
             ;;
         build)
             if [[ ! -f "$PROMPT_BUILD" ]]; then
-                log_error "Missing $PROMPT_BUILD - copy from prompts/ in the ai-workflow template"
+                log_error "Missing $PROMPT_BUILD - create it in the prompts/ directory"
                 missing=1
             fi
             if [[ ! -f "$PLAN_FILE" ]]; then
@@ -86,7 +86,7 @@ check_prerequisites() {
             ;;
         plan-work)
             if [[ ! -f "$PROMPT_PLAN_WORK" ]]; then
-                log_error "Missing $PROMPT_PLAN_WORK - copy from prompts/ in the ai-workflow template"
+                log_error "Missing $PROMPT_PLAN_WORK - create it in the prompts/ directory"
                 missing=1
             fi
             ;;

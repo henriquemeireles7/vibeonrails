@@ -1,0 +1,62 @@
+---
+description: Common code patterns used in VibeonRails
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: false
+---
+
+# Common Patterns
+
+## API Response Format
+
+```typescript
+interface ApiResponse<T> {
+  success: boolean
+  data?: T
+  error?: string
+  meta?: {
+    total: number
+    page: number
+    limit: number
+  }
+}
+```
+
+## Repository Pattern
+
+```typescript
+interface Repository<T> {
+  findAll(filters?: Filters): Promise<T[]>
+  findById(id: string): Promise<T | null>
+  create(data: CreateDto): Promise<T>
+  update(id: string, data: UpdateDto): Promise<T>
+  delete(id: string): Promise<void>
+}
+```
+
+## Error Handling Pattern
+
+```typescript
+// Use AppError from @vibeonrails/core/errors
+// Never expose internal error details to users
+// Always validate inputs with Zod before processing
+try {
+  const result = await service.doSomething()
+  return { success: true, data: result }
+} catch (error) {
+  if (error instanceof AppError) {
+    return { success: false, error: error.message }
+  }
+  return { success: false, error: 'Internal server error' }
+}
+```
+
+## Module Structure (Convention)
+
+```
+src/modules/<name>/
+  <name>.types.ts       # Zod schemas + types
+  <name>.service.ts     # Business logic
+  <name>.controller.ts  # tRPC procedures
+  <name>.test.ts        # Tests
+  index.ts              # Barrel export
+```
