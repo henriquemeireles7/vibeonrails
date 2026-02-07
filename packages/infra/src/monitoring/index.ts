@@ -20,3 +20,9 @@ export {
   clearSpans,
 } from "./tracing.js";
 export type { SpanContext } from "./tracing.js";
+
+export {
+  formatPrometheusMetrics,
+  createPrometheusExporter,
+} from "./prometheus-adapter.js";
+export type { PrometheusExporter } from "./prometheus-adapter.js";

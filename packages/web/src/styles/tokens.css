@@ -3,6 +3,9 @@
  * Import: @vibeonrails/web/styles/tokens.css
  * --------------------------------------------------------------------------- */
 
+/* Font Loading: When adding custom @font-face rules, always use font-display: swap
+   to prevent invisible text during font loading. System fonts are used by default. */
+
 :root {
   /* --- Colors (Light Mode) --- */
   --color-primary: #2563eb;

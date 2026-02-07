@@ -5,6 +5,12 @@
 export { errorHandler } from "./error-handler.js";
 export { rateLimit } from "./rate-limit.js";
 export {
+  hardenedHeaders,
+  type HardenedHeadersOptions,
+  type CspDirectives,
+} from "./security-headers.js";
+export { bodyLimit, type BodyLimitOptions } from "./body-limit.js";
+export {
   timingMiddleware,
   addTimingPhase,
   colorizeDuration,

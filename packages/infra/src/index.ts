@@ -23,6 +23,8 @@ export * from './cache/index.js';
 export * from './storage/index.js';
 export * from './realtime/index.js';
 export * from './monitoring/index.js';
+export * from './http/index.js';
+export * from './resilience/index.js';
 export * from './rate-limit/index.js';
 export * from './flags/index.js';
 export * from './analytics/index.js';

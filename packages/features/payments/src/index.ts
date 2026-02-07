@@ -25,3 +25,6 @@ export {
   SubscriptionStateError,
 } from "./subscription-state.js";
 export type { SubscriptionStatus } from "./subscription-state.js";
+
+export { createTrialGuard, normalizeEmail } from "./trial-guard.js";
+export type { TrialGuard, TrialGuardOptions } from "./trial-guard.js";

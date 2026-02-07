@@ -1,0 +1,65 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    environment:
+      name: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+      # Placeholder: Replace with your deployment provider
+      # Examples: Vercel, Fly.io, Railway, AWS, etc.
+      - name: Deploy application
+        run: |
+          echo "Deploy step placeholder"
+          echo "Configure this step for your deployment target"
+          echo "Environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}"
+
+      # Deploy notification via webhook (Slack, Discord, or custom)
+      # Set DEPLOY_WEBHOOK_URL in repository secrets to enable
+      - name: Notify deployment status
+        if: always()
+        env:
+          WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL }}
+          DEPLOY_STATUS: ${{ job.status }}
+          DEPLOY_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+          COMMIT_SHA: ${{ github.sha }}
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+        run: |
+          if [ -z "$WEBHOOK_URL" ]; then
+            echo "DEPLOY_WEBHOOK_URL not set, skipping notification"
+            exit 0
+          fi
+          curl -s -X POST "$WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d "{\"content\":\"Deploy to **${DEPLOY_ENV}**: ${DEPLOY_STATUS}\\nCommit: \`${COMMIT_SHA:0:7}\` ${COMMIT_MSG}\"}" \
+            || echo "Notification failed (non-blocking)"

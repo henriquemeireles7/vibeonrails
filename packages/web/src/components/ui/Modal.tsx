@@ -14,15 +14,25 @@ export interface ModalProps {
 
 export function Modal({ open, onClose, title, children, className }: ModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
 
     if (open && !dialog.open) {
+      // Save the currently focused element before opening
+      previousFocusRef.current = document.activeElement as HTMLElement | null;
       dialog.showModal();
+      // Move focus into the dialog
+      dialog.focus();
     } else if (!open && dialog.open) {
       dialog.close();
+      // Restore focus to the element that was focused before the modal opened
+      if (previousFocusRef.current && typeof previousFocusRef.current.focus === "function") {
+        previousFocusRef.current.focus();
+        previousFocusRef.current = null;
+      }
     }
   }, [open]);
 

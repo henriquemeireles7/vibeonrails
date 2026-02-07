@@ -60,6 +60,24 @@ export type { ErrorBoundaryProps } from "./error/ErrorBoundary.js";
 export { ErrorFallback } from "./error/ErrorFallback.js";
 export type { ErrorFallbackProps } from "./error/ErrorFallback.js";
 
+// Media Components
+export { Image } from "./media/Image.js";
+export type { ImageProps } from "./media/Image.js";
+
+// Loading Components
+export { Skeleton } from "./loading/Skeleton.js";
+export type { SkeletonProps } from "./loading/Skeleton.js";
+export { Spinner } from "./loading/Spinner.js";
+export type { SpinnerProps } from "./loading/Spinner.js";
+
+// Empty State Components
+export { EmptyState } from "./empty/EmptyState.js";
+export type { EmptyStateProps } from "./empty/EmptyState.js";
+
+// Compliance Components
+export { CookieConsent } from "./compliance/CookieConsent.js";
+export type { CookieConsentProps } from "./compliance/CookieConsent.js";
+
 // Welcome Components
 export { WelcomePage, getDefaultQuickLinks } from "./welcome/welcome-page.js";
 export type {

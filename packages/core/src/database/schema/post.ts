@@ -19,6 +19,7 @@ export const posts = pgTable('posts', {
   body: text('body').notNull(),
   published: boolean('published').notNull().default(false),
   authorId: uuid('author_id').references(() => users.id).notNull(),
+  deletedAt: timestamp('deleted_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 }, (table) => ({

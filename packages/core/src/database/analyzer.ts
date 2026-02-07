@@ -81,6 +81,10 @@ export interface QueryAnalyzerOptions {
   enabled?: boolean;
   /** Custom writer for warnings (default: console.warn) */
   writer?: (message: string) => void;
+  /** Throw an Error when N+1 is detected in report() (default: false) */
+  throwOnNPlusOne?: boolean;
+  /** Custom callback invoked for each N+1 detection */
+  onNPlusOne?: (detection: NPlusOneDetection) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -159,6 +163,8 @@ export class QueryAnalyzer {
   private readonly slowThresholdMs: number;
   private readonly nPlusOneThreshold: number;
   private readonly writer: (message: string) => void;
+  private readonly throwOnNPlusOne: boolean;
+  private readonly onNPlusOne?: (detection: NPlusOneDetection) => void;
 
   /** Queries grouped by request ID */
   private readonly queryMap = new Map<string, TrackedQuery[]>();
@@ -170,6 +176,8 @@ export class QueryAnalyzer {
     this.slowThresholdMs = options.slowQueryThresholdMs ?? 100;
     this.nPlusOneThreshold = options.nPlusOneThreshold ?? 3;
     this.writer = options.writer ?? ((msg) => console.warn(msg));
+    this.throwOnNPlusOne = options.throwOnNPlusOne ?? false;
+    this.onNPlusOne = options.onNPlusOne;
   }
 
   /**
@@ -243,19 +251,36 @@ export class QueryAnalyzer {
 
     for (const [pattern, count] of patternCounts) {
       if (count >= this.nPlusOneThreshold) {
-        nPlusOneDetections.push({
+        const detection: NPlusOneDetection = {
           pattern,
           count,
           requestId,
           suggestion: `Query executed ${count} times in one request. Consider using a JOIN or batch query (WHERE id IN (...)) instead.`,
-        });
+        };
+
+        nPlusOneDetections.push(detection);
 
         this.writer(
           `[N+1 DETECTED] Query repeated ${count}x in request ${requestId}\n` +
             `  Pattern: ${pattern}\n` +
             `  Fix: Use a JOIN or batch query (WHERE id IN (...))`,
         );
+
+        // Invoke custom callback if provided
+        if (this.onNPlusOne) {
+          this.onNPlusOne(detection);
+        }
       }
+    }
+
+    // Throw if throwOnNPlusOne is enabled and N+1 patterns were found
+    if (this.throwOnNPlusOne && nPlusOneDetections.length > 0) {
+      const summary = nPlusOneDetections
+        .map((d) => `  ${d.pattern} (${d.count}x)`)
+        .join("\n");
+      throw new Error(
+        `N+1 query detected in request ${requestId}:\n${summary}`,
+      );
     }
 
     const totalDurationMs = queries.reduce((sum, q) => sum + q.durationMs, 0);

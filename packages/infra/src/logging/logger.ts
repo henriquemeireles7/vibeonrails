@@ -21,6 +21,61 @@
  */
 
 // ---------------------------------------------------------------------------
+// Sensitive Data Redaction
+// ---------------------------------------------------------------------------
+
+/** Field names whose values will be replaced with '[REDACTED]' in log output. */
+export const REDACTED_FIELDS: ReadonlySet<string> = new Set([
+  'password',
+  'passwordHash',
+  'token',
+  'secret',
+  'authorization',
+  'cookie',
+  'apiKey',
+  'api_key',
+  'creditCard',
+  'credit_card',
+  'ssn',
+  'accessToken',
+  'access_token',
+  'refreshToken',
+  'refresh_token',
+]);
+
+/**
+ * Recursively replace values of sensitive keys with '[REDACTED]'.
+ *
+ * @param obj - Object to redact (not mutated; a new object is returned)
+ * @returns A deep copy with sensitive fields redacted
+ */
+export function redactSensitiveFields(obj: unknown): unknown {
+  if (obj === null || obj === undefined) {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map((item) => redactSensitiveFields(item));
+  }
+
+  if (typeof obj === 'object') {
+    const result: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
+      if (REDACTED_FIELDS.has(key)) {
+        result[key] = '[REDACTED]';
+      } else if (typeof value === 'object' && value !== null) {
+        result[key] = redactSensitiveFields(value);
+      } else {
+        result[key] = value;
+      }
+    }
+    return result;
+  }
+
+  return obj;
+}
+
+// ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
@@ -228,9 +283,12 @@ export class Logger {
     // Spread remaining context
     Object.assign(entry, merged);
 
+    // Redact sensitive fields before serializing
+    const redacted = redactSensitiveFields(entry) as LogEntry;
+
     const isDev =
       process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test";
-    const formatted = isDev ? formatDev(entry) : formatJson(entry);
+    const formatted = isDev ? formatDev(redacted) : formatJson(redacted);
 
     this.write(formatted);
   }

@@ -30,3 +30,6 @@ export {
   type QueryAnalysisReport,
   type QueryAnalyzerOptions,
 } from "./analyzer.js";
+export { exportUserData, type ExportedUserData } from "./data-export.js";
+export { anonymizeUser } from "./data-deletion.js";
+export { softDeleteFilter, softDelete, restore } from "./soft-delete.js";

@@ -14,3 +14,10 @@ export {
   exchangeCode,
 } from './oauth.js';
 export type { OAuthProviderConfig, OAuthUserInfo } from './oauth.js';
+export { AUTH_MESSAGES } from './auth-messages.js';
+export type { AuthMessageKey } from './auth-messages.js';
+export {
+  createSecureCookieOptions,
+  SESSION_COOKIE_NAME,
+} from './cookie-config.js';
+export type { SecureCookieOptions } from './cookie-config.js';

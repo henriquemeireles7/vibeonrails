@@ -1,0 +1,9 @@
+{
+  "files": [
+    { "path": "packages/web/dist/**/*.js", "maxSize": "200kB" },
+    { "path": "packages/core/dist/**/*.js", "maxSize": "150kB" }
+  ],
+  "ci": {
+    "trackBranches": ["main"]
+  }
+}

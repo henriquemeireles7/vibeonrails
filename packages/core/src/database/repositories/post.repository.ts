@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, and, isNull } from "drizzle-orm";
 import type { Database } from "../client.js";
 import { posts, type Post, type NewPost } from "../schema/post.js";
 import {
@@ -12,6 +12,8 @@ import {
  * Post repository — CRUD queries for the posts table.
  *
  * All list methods enforce server-side pagination with a max page size cap.
+ * Soft-deleted posts are excluded from list queries by default.
+ * The `remove` method performs a soft delete (sets `deletedAt`).
  */
 export function createPostRepository(db: Database) {
   return {
@@ -20,6 +22,7 @@ export function createPostRepository(db: Database) {
       const rows = await db
         .select()
         .from(posts)
+        .where(isNull(posts.deletedAt))
         .limit(limit + 1)
         .offset(offset);
       return paginatedResult(rows, limit, offset);
@@ -35,7 +38,7 @@ export function createPostRepository(db: Database) {
       const rows = await db
         .select()
         .from(posts)
-        .where(eq(posts.authorId, authorId))
+        .where(and(eq(posts.authorId, authorId), isNull(posts.deletedAt)))
         .limit(limit + 1)
         .offset(offset);
       return paginatedResult(rows, limit, offset);
@@ -56,7 +59,11 @@ export function createPostRepository(db: Database) {
     },
 
     async remove(id: string): Promise<boolean> {
-      const result = await db.delete(posts).where(eq(posts.id, id)).returning();
+      const result = await db
+        .update(posts)
+        .set({ deletedAt: new Date() })
+        .where(eq(posts.id, id))
+        .returning();
       return result.length > 0;
     },
   };

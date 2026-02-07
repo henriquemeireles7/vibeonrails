@@ -6,6 +6,8 @@ export {
   Logger,
   createLogger,
   logger,
+  REDACTED_FIELDS,
+  redactSensitiveFields,
   type LogLevel,
   type LogEntry,
   type LoggerOptions,
