@@ -25,6 +25,7 @@ import {
   askCommand,
   fixCommand,
   generateAiCommand,
+  auditCommand,
 } from "./commands/index.js";
 import { undoCommand } from "./undo/index.js";
 
@@ -71,6 +72,7 @@ program.addCommand(reportCommand());
 program.addCommand(askCommand());
 program.addCommand(fixCommand());
 program.addCommand(generateAiCommand());
+program.addCommand(auditCommand());
 
 // If invoked as `create-vibe`, auto-run the create command
 const binName = basename(process.argv[1] ?? "");

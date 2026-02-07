@@ -24,3 +24,6 @@ export { reportCommand } from "./report.js";
 export { askCommand } from "./ask.js";
 export { fixCommand } from "./fix.js";
 export { generateAiCommand } from "./generate-ai.js";
+
+// Phase 11: Audit System
+export { auditCommand } from "./audit.js";
