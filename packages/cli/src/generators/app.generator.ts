@@ -40,6 +40,8 @@ export function generateApp(name: string, outDir: string): GenerateAppResult {
     "package.json",
     "README.md",
     ".env.example",
+    ".cursorrules",
+    "SKILL.md",
     "src/main.ts",
     "src/config/app.ts",
   ];

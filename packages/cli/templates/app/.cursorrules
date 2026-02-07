@@ -1,0 +1,70 @@
+# {{projectName}} — Vibe on Rails Project
+
+## IMPORTANT: This project uses the VibeonRails framework.
+
+Before writing code for authentication, payments, email, logging, caching, file storage,
+background jobs, or any common feature, CHECK if @vibeonrails packages already provide it.
+
+Read the SKILL.md file in the project root for a complete list of available packages.
+Read the SKILL.md inside each module folder for usage patterns and import examples.
+
+Use `vibe add <module>` to install optional features (payments, admin, marketing, etc.).
+Use `vibe generate module <name>` to create new feature modules.
+
+## Tech Stack
+
+- Server: Hono (HTTP) + tRPC (type-safe API)
+- Database: Drizzle ORM (PostgreSQL)
+- Validation: Zod (all inputs)
+- Auth: JWT (jose) + Argon2 (passwords)
+- Testing: Vitest
+
+## Module Convention
+
+Every module follows the same structure:
+
+```
+src/modules/<name>/
+  <name>.types.ts        # Zod schemas + TypeScript types
+  <name>.service.ts      # Business logic
+  <name>.controller.ts   # tRPC router (API endpoints)
+  <name>.test.ts         # Colocated tests
+  SKILL.md               # AI instructions for this module
+```
+
+## Key Rules
+
+- Use `protectedProcedure` for authenticated endpoints, `publicProcedure` for public ones
+- Validate ALL inputs with Zod schemas (defined in types.ts)
+- Import security functions from `@vibeonrails/core/security` (never write your own)
+- Import error classes from `@vibeonrails/core/errors` (NotFoundError, ValidationError)
+- Use `src/config/env.ts` for environment variables (never access process.env directly)
+- No `any` type -- use `unknown` for external data
+- No `console.log` in production code -- use `logger` from `@vibeonrails/infra/logging`
+- Colocate tests: `feature.test.ts` next to `feature.ts`
+- Conventional commits: feat:, fix:, refactor:, docs:, test:, chore:
+
+## Quick Reference
+
+```typescript
+// Server & API
+import { createServer, router, publicProcedure, protectedProcedure } from "@vibeonrails/core/api";
+
+// Security
+import { hashPassword, verifyPassword, signAccessToken, verifyToken } from "@vibeonrails/core/security";
+
+// Database
+import { createDatabase } from "@vibeonrails/core/database";
+
+// Errors
+import { NotFoundError, ValidationError, AppError } from "@vibeonrails/core/errors";
+
+// Logging
+import { logger } from "@vibeonrails/infra/logging";
+
+// Email
+import { sendEmail } from "@vibeonrails/infra/email";
+
+// Background Jobs
+import { defineJob, enqueue } from "@vibeonrails/infra/queue";
+```
