@@ -1,9 +1,17 @@
 import { eq } from "drizzle-orm";
 import type { Database } from "../client.js";
 import { users, type User, type NewUser } from "../schema/user.js";
+import {
+  type PaginationOptions,
+  type OffsetPaginatedResult,
+  clampPagination,
+  paginatedResult,
+} from "../pagination.js";
 
 /**
  * User repository — CRUD queries for the users table.
+ *
+ * All list methods enforce server-side pagination with a max page size cap.
  */
 export function createUserRepository(db: Database) {
   return {
@@ -31,8 +39,14 @@ export function createUserRepository(db: Database) {
       return result[0];
     },
 
-    async list(): Promise<User[]> {
-      return db.select().from(users);
+    async list(options?: PaginationOptions): Promise<OffsetPaginatedResult<User>> {
+      const { limit, offset } = clampPagination(options);
+      const rows = await db
+        .select()
+        .from(users)
+        .limit(limit + 1)
+        .offset(offset);
+      return paginatedResult(rows, limit, offset);
     },
   };
 }

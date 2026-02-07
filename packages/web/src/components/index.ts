@@ -54,6 +54,12 @@ export type {
   ShortcutConflict,
 } from "./a11y/keyboard-shortcuts.js";
 
+// Error Components
+export { ErrorBoundary } from "./error/ErrorBoundary.js";
+export type { ErrorBoundaryProps } from "./error/ErrorBoundary.js";
+export { ErrorFallback } from "./error/ErrorFallback.js";
+export type { ErrorFallbackProps } from "./error/ErrorFallback.js";
+
 // Welcome Components
 export { WelcomePage, getDefaultQuickLinks } from "./welcome/welcome-page.js";
 export type {
